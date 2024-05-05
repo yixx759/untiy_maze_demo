@@ -41,6 +41,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\WFC.cs" />
      <Compile Include="Assets\MOV.cs" />
      <Reference Include="UnityEngine">
      <HintPath>E:\Program Files\Unity\Hub\Editor\2021.3.13f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
