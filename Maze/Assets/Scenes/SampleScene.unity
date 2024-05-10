@@ -294,8 +294,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.2, y: 11.9, z: -23.3}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 25.5, y: 31.5, z: -54.9}
+  m_LocalScale: {x: 1, y: 1, z: -9.49}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -333,15 +333,15 @@ MonoBehaviour:
   Plane: {fileID: 2533142966657687953, guid: ec8d57d2064db684aa90c44d921ed3cf, type: 3}
   Tex: {fileID: 2800000, guid: 8e7641dbcc8ada34f96998b268b535e6, type: 3}
   offset: 0
-  totalx: 10
-  totaly: 10
+  totalx: 20
+  totaly: 20
   TTemp:
-  - {fileID: 2800000, guid: b985f4e9d4a655d498490cb73e877e13, type: 3}
+  - {fileID: 2800000, guid: 8e7641dbcc8ada34f96998b268b535e6, type: 3}
   - {fileID: 2800000, guid: 306ff96d10f5b3d4c8b76cc8b5403391, type: 3}
   - {fileID: 2800000, guid: f168cb33318684e4daae193e0e4ac7e4, type: 3}
   - {fileID: 2800000, guid: 846760668b99f7847bacbaf15c145af0, type: 3}
   - {fileID: 2800000, guid: 7c255946ec7628e48972265d5a98b903, type: 3}
-  Timer: 0.4
+  Timer: 0
 --- !u!4 &1705347352
 Transform:
   m_ObjectHideFlags: 0

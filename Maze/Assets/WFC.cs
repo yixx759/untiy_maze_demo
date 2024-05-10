@@ -29,7 +29,14 @@ public class WFC : MonoBehaviour
     [SerializeField]  private Texture[] TTemp;
     [SerializeField]private float Timer= 2;
     private float TempTimer= 2;
-
+    
+    const  long m1  = 0x5555555555555555; //binary: 0101...
+    const  long m2  = 0x3333333333333333; //binary: 00110011..
+    const  long m4  = 0x0f0f0f0f0f0f0f0f; //binary:  4 zeros,  4 ones ...
+    const  long m8  = 0x00ff00ff00ff00ff; //binary:  8 zeros,  8 ones ...
+    const  long m16 = 0x0000ffff0000ffff; //binary: 16 zeros, 16 ones ...
+    const  long m32 = 0x00000000ffffffff; //binary: 32 zeros, 32 ones
+    const long h01 = 0x0101010101010101; //the sum of 256 to the power of 0,1,2,3...
 
     [Flags]
     enum TileType
@@ -83,7 +90,7 @@ public class WFC : MonoBehaviour
 
     struct TileInfo
     {
-        public int possibility ;
+        public long possibility ;
         public int Entropy;
         public bool Known;
 
@@ -100,7 +107,7 @@ public class WFC : MonoBehaviour
 
         public void Inst( GameObject Plane)
         {
-            possibility = (int) (TileType.Blank | TileType.Down | TileType.Left | TileType.Right | TileType.Up);
+            possibility = (long) (TileType.Blank | TileType.Down | TileType.Left | TileType.Right | TileType.Up);
            // print( possibility);
             Entropy = 5;
             Known = false;
@@ -253,21 +260,38 @@ public class WFC : MonoBehaviour
     //do better
     int nuentropy(int x, int y)
     {
-        int count = 0;
-        int num = MasterTiles[x, y].possibility;
-        //automate this
-        for (int i = 0; i < 5; i++)
-        {
-            if ((num & 1) == 1)
-            {
-                count++;
-
-            }
-            num = num >> 1;
-
-        }
-
-        return count;
+        // int count = 0;
+        // int num = MasterTiles[x, y].possibility;
+        // //automate this
+        // for (int i = 0; i < 5; i++)
+        // {
+        //     if ((num & 1) == 1)
+        //     {
+        //         count++;
+        //
+        //     }
+        //     num = num >> 1;
+        //
+        // }
+        //
+        // return count;
+         long xi = MasterTiles[x, y].possibility;
+        
+        
+        
+        // https://en.wikipedia.org/wiki/Hamming_weight#:~:text=The%20Hamming%20weight%20of%20a,string%20of%20the%20same%20length.
+        
+            xi = (xi & m1 ) + ((xi >>  1) & m1 ); //put count of each  2 bits into those  2 bits 
+            xi = (xi & m2 ) + ((xi >>  2) & m2 ); //put count of each  4 bits into those  4 bits 
+            xi = (xi & m4 ) + ((xi >>  4) & m4 ); //put count of each  8 bits into those  8 bits 
+            xi = (xi & m8 ) + ((xi >>  8) & m8 ); //put count of each 16 bits into those 16 bits 
+            xi = (xi & m16) + ((xi >> 16) & m16); //put count of each 32 bits into those 32 bits 
+            xi = (xi & m32) + ((xi >> 32) & m32); //put count of each 64 bits into those 64 bits 
+            return (int)xi;
+        
+        
+        
+        
 
     }
 
@@ -358,10 +382,14 @@ public class WFC : MonoBehaviour
 
 
 
+//optimze when finhsed generation
 
 
-        
-            if (!alltrue && TempTimer <= 0)
+//for large scale maze do parralel on opposite ends then once magnitude between points
+//low enough treat as one.
+
+
+        if (!alltrue && TempTimer <= 0)
             {
                 (int, int) tind = findTarget();
               
