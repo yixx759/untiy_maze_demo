@@ -19,7 +19,9 @@ public class MeshCreator : MonoBehaviour
     {
         
         verticies = new Vector3[(sx + 1) * (sy + 1)];
-
+        Vector2[] uv = new Vector2[verticies.Length];
+        Vector4[] tangent = new Vector4[verticies.Length];
+        
 
         for (int j = 0, count =0 ; j < sy + 1; j++)
         {
@@ -27,7 +29,8 @@ public class MeshCreator : MonoBehaviour
             {
 
                 verticies[count] = new Vector3(i, j);
-                
+                uv[count] = new Vector2((float)i / sx, (float)j / sy);
+                tangent[count] = new Vector4(1.0f, 0, 0, -1);
 
             }
             
@@ -35,27 +38,40 @@ public class MeshCreator : MonoBehaviour
             
         }
         
+        
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh =mesh;
        
        
 
-        tris= new int[6];
+        tris= new int[verticies.Length*6];
 
         mesh.name = "YAYAYAYAY";
         mesh.vertices = verticies;
+        int counter = 0;
+        //seperate x and y
+        for (int i = 0, vi = 0; i < sy; i++, vi++)
+        {
+            for (int j = 0; j < sx; j++ , vi++)
+            {
+                tris[counter++] = vi;
+                tris[counter++] =  sx+1+vi;
+                tris[counter++] =1+vi;
         
+                mesh.triangles = tris;
+                yield return new WaitForSeconds(0.06f);
+                tris[counter++] = 1+vi;
+                tris[counter++] =  sx+1+vi;
+                tris[counter++] =sx+2+vi;
+                mesh.triangles = tris;
+                yield return new WaitForSeconds(0.06f);
+            }
+            
+        }
         
-        tris[0] = 0;
-        tris[1] =  sx+1;
-        tris[2] =1;
-        
-        mesh.triangles = tris;
-        yield return new WaitForSeconds(0.08f);
-        tris[3] = 1;
-        tris[4] =  sx+1;
-        tris[5] =sx+2;
-        mesh.triangles = tris;
+        mesh.RecalculateNormals();
+        mesh.uv = uv;
+        mesh.tangents = tangent;
         yield return null;
 
 
