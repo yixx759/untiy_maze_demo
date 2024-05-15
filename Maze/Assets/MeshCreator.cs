@@ -8,71 +8,259 @@ public class MeshCreator : MonoBehaviour
 
     [SerializeField] private int sx;
     [SerializeField] private int sy;
+    [SerializeField] private int sz;
     private Vector3[] verticies;
     private Mesh mesh;
     private int[] tris;
-    
+    private int counttotal = 0;
+
     // Start is called before the first frame update
 
+    int createQuad(int[] triang, int i, int BL, int BR, int TL, int TR)
+    {
+        triang[i] = BL;
+        triang[i+1] = TL;
+        triang[i+2] = BR;
+        triang[i+3] = TL;
+        triang[i+4] = TR;
+        triang[i+5] = BR;
+       
+
+
+        return i + 6;
+    }
 
     IEnumerator delayer()
     {
+        int corner = 8;
+        int edges =  (sx + sy + sz - 3)*4 ;
+        int faces = ((sx - 1) * (sy - 1) +
+                     (sx - 1) * (sz - 1) +
+                     (sy - 1) * (sz - 1)) * 2 ;
         
-        verticies = new Vector3[(sx + 1) * (sy + 1)];
+        verticies = new Vector3[corner + edges+ faces];
         Vector2[] uv = new Vector2[verticies.Length];
         Vector4[] tangent = new Vector4[verticies.Length];
-        
 
-        for (int j = 0, count =0 ; j < sy + 1; j++)
+        int count = 0;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        for (int y = 0; y <= sy; y++)
         {
-            for (int i = 0; i < sx + 1; i++, count++)
+            for (int x = 0; x <= sx ; x++)
             {
 
-                verticies[count] = new Vector3(i, j);
-                uv[count] = new Vector2((float)i / sx, (float)j / sy);
-                tangent[count] = new Vector4(1.0f, 0, 0, -1);
+               
+                verticies[count++] = new Vector3(x,y,0);
+                
 
+            }
+        
+            
+            for (int i = 1; i <= sz; i++)
+            {
+               
+                verticies[count++] = new Vector3(sx,y,i);
+           
+            }
+
+            for (int i = sx-1; i >= 0; i--)
+            {
+               
+                verticies[count++] = new Vector3(i,y,sz);
+            
+            }
+            for (int i = sz -1 ; i > 0; i--)
+            {
+               
+                verticies[count++] = new Vector3(0,y,i);
+            
             }
             
             
+        }
+        for (int z = 1; z < sz; z++)
+        {
+            for (int x = 1; x < sx; x++)
+            {
+               
+                verticies[count++] = new Vector3(x,sy,z);
+            
+            }
+            
+        }
+        for (int z = 1; z < sz; z++)
+        {
+            for (int x = 1; x < sx; x++)
+            {
+               
+                verticies[count++] = new Vector3(x,0,z);
+            
+            }
             
         }
         
-        
-        mesh = new Mesh();
-        GetComponent<MeshFilter>().mesh =mesh;
-       
        
 
-        tris= new int[verticies.Length*6];
+        counttotal = count;
+
+        mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
+
+
+       
+        
+        
 
         mesh.name = "YAYAYAYAY";
         mesh.vertices = verticies;
-        int counter = 0;
-        //seperate x and y
-        for (int i = 0, vi = 0; i < sy; i++, vi++)
-        {
-            for (int j = 0; j < sx; j++ , vi++)
-            {
-                tris[counter++] = vi;
-                tris[counter++] =  sx+1+vi;
-                tris[counter++] =1+vi;
         
-                mesh.triangles = tris;
-                yield return new WaitForSeconds(0.06f);
-                tris[counter++] = 1+vi;
-                tris[counter++] =  sx+1+vi;
-                tris[counter++] =sx+2+vi;
-                mesh.triangles = tris;
-                yield return new WaitForSeconds(0.06f);
+        int quads = (sx * sz + sx * sy + sz * sy) * 2;
+        tris = new int[quads * 6];
+
+
+        int ring = ((sx + sz) * 2);
+        int v = 0 , index =0;
+
+        for (int y = 0; y < sy; y++, index++)
+        {
+            for (int i = 0; i < ring-1; i++, index++)
+            {
+                v = createQuad(tris, v, index, 1+index, index+ring, index+ring + 1);
+
             }
+
+            v = createQuad(tris, v, index, index - ring+1, index + ring, index+1);
+
+        }
+
+        int nuring = ring * sy;
+        for (int top = 0; top < sx - 1; top++, nuring++)
+        {
+            v = createQuad(tris, v, nuring, nuring + 1, nuring + ring - 1, nuring + ring);
+
+
+        }
+        v = createQuad(tris, v, nuring, nuring + 1, nuring + ring - 1, nuring + 2);
+
+        int vMin = ring * (sy + 1) - 1;
+        int vMid = vMin + 1;
+        
+        
+        int vMax = nuring + 2;
+
+        for (int j = 1; j < sz-1; j++, vMin--, vMid++, vMax++)
+        {
+            v = createQuad(tris, v, vMin, vMid, vMin - 1, vMid + sx - 1);
+
+            for (int i = 1; i < sx - 1; i++, vMid++)
+            {
+
+                v = createQuad(tris, v, vMid, vMid + 1, vMid + sx - 1, vMid + sx);
+
+            }
+
+            v = createQuad(tris, v, vMid, vMax, vMid + sx - 1, vMax + 1);
+        }
+
+        int vtop = vMin - 2;
+        v = createQuad(tris, v, vMin, vMid , vtop+1, vtop );
+
+        for (int i = 1; i < sx - 1; i++, vtop--, vMid++)
+        {
+
+            v = createQuad(tris, v, vMid, vMid + 1, vtop, vtop - 1);
+
+        }
+        v = createQuad(tris, v, vMid, vtop-2 , vtop, vtop-1 );
+
+
+        int luring = 1; 
+        vMid = verticies.Length - (sx - 1) * (sz - 1);
+        v = createQuad(tris, v, ring-1, vMid , 0, 1 );
+
+
+        for (int i = 1; i < sx - 1; i++, luring++, vMid++)
+        {
+            
+            v = createQuad(tris, v, vMid, vMid+1 , luring, luring+1 );
+
+            
             
         }
+
+        v = createQuad(tris, v, vMid, luring+2 , luring, luring+1 );
+
+        vMin = ring - 2;
+        vMid -= sx - 2;
+        vMax = luring + 2;
+        for (int j = 1; j < sz-1; j++, vMin--, vMid++, vMax++)
+        {
+            v = createQuad(tris, v, vMin, vMid+sx-1, vMin + 1, vMid);
+
+            for (int i = 1; i < sx - 1; i++, vMid++)
+            {
+
+                v = createQuad(tris, v, vMid+sx-1, vMid + sx, vMid , vMid + 1);
+
+            }
+
+            v = createQuad(tris, v, vMid+sx-1, vMax+1, vMid  , vMax );
+        }
+
+        vtop = vMin - 1;
+
         
-        mesh.RecalculateNormals();
-        mesh.uv = uv;
-        mesh.tangents = tangent;
-        yield return null;
+        v = createQuad(tris, v, vtop+1, vtop , vtop+2, vMid );
+
+
+        for (int i = 1; i < sx - 1; i++, vtop--, vMid++)
+        {
+            
+            v = createQuad(tris, v, vtop, vtop-1 , vMid, vMid+1 );
+
+            
+            
+        }
+
+        v = createQuad(tris, v, vtop, vtop-1 , vMid, vtop-2 );
+        
+        mesh.triangles = tris;
+        
+        
+        // int counter = 0;
+        // //seperate x and y
+        // for (int i = 0, vi = 0; i < sy; i++, vi++)
+        // {
+        //     for (int j = 0; j < sx; j++ , vi++)
+        //     {
+        //         tris[counter++] = vi;
+        //         tris[counter++] =  sx+1+vi;
+        //         tris[counter++] =1+vi;
+        //
+        //         mesh.triangles = tris;
+        //         yield return new WaitForSeconds(0.06f);
+        //         tris[counter++] = 1+vi;
+        //         tris[counter++] =  sx+1+vi;
+        //         tris[counter++] =sx+2+vi;
+        //         mesh.triangles = tris;
+        //         yield return new WaitForSeconds(0.06f);
+        //     }
+        //     
+        // }
+        //
+        // mesh.RecalculateNormals();
+        // mesh.uv = uv;
+        // mesh.tangents = tangent;
+         yield return null;
 
 
 
@@ -98,7 +286,7 @@ public class MeshCreator : MonoBehaviour
         {
             return;
         }
-        for (int i = 0; i < verticies.Length; i++)
+        for (int i = 0; i < counttotal; i++)
         {
             
             Gizmos.DrawSphere(transform.position+verticies[i],0.04f);
