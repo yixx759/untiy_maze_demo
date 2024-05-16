@@ -9,7 +9,9 @@ public class MeshCreator : MonoBehaviour
     [SerializeField] private int sx;
     [SerializeField] private int sy;
     [SerializeField] private int sz;
+    [SerializeField] private int roundness;
     private Vector3[] verticies;
+    private Vector3[] normals;
     private Mesh mesh;
     private int[] tris;
     private int counttotal = 0;
@@ -39,28 +41,70 @@ public class MeshCreator : MonoBehaviour
                      (sy - 1) * (sz - 1)) * 2 ;
         
         verticies = new Vector3[corner + edges+ faces];
+        normals = new Vector3[verticies.Length];
         Vector2[] uv = new Vector2[verticies.Length];
         Vector4[] tangent = new Vector4[verticies.Length];
 
         int count = 0;
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+        void SetVertex(int i, float x, float y, float z)
+        {
+            Vector3 inner = new Vector3(x, y, z);
+
+            if (inner.x < roundness)
+            {
+                inner.x = roundness;
+
+            }
+
+            else if (inner.x > sx - roundness)
+            {
+                inner.x = sx - roundness;
+            }
+            
+            
+            if (inner.y < roundness)
+            {
+                inner.y = roundness;
+
+            }
+
+            else if (inner.y > sy - roundness)
+            {
+                inner.y = sy - roundness;
+            }
+            
+            if (inner.z < roundness)
+            {
+                inner.z = roundness;
+
+            }
+
+            else if (inner.z > sz - roundness)
+            {
+                inner.z = sz - roundness;
+            }
+            
+            normals[i] = (new Vector3(x, y, z)-inner).normalized;
+            verticies[i] = inner + normals[i]*roundness ;
+            
+        }
+
+
+
+
+
+
+
+
         for (int y = 0; y <= sy; y++)
         {
             for (int x = 0; x <= sx ; x++)
             {
 
                
-                verticies[count++] = new Vector3(x,y,0);
-                
+                //verticies[count++] = new Vector3(x,y,0);
+                SetVertex(count++, x, y, 0);
 
             }
         
@@ -68,21 +112,23 @@ public class MeshCreator : MonoBehaviour
             for (int i = 1; i <= sz; i++)
             {
                
-                verticies[count++] = new Vector3(sx,y,i);
+               // verticies[count++] = new Vector3(sx,y,i);
+                SetVertex(count++, sx, y, i);
            
             }
 
             for (int i = sx-1; i >= 0; i--)
             {
                
-                verticies[count++] = new Vector3(i,y,sz);
+               // verticies[count++] = new Vector3(i,y,sz);
+                SetVertex(count++, i, y, sz);
             
             }
             for (int i = sz -1 ; i > 0; i--)
             {
                
-                verticies[count++] = new Vector3(0,y,i);
-            
+                //verticies[count++] = new Vector3(0,y,i);
+                SetVertex(count++, 0, y, i);
             }
             
             
@@ -92,8 +138,8 @@ public class MeshCreator : MonoBehaviour
             for (int x = 1; x < sx; x++)
             {
                
-                verticies[count++] = new Vector3(x,sy,z);
-            
+                //verticies[count++] = new Vector3(x,sy,z);
+                SetVertex(count++, x, sy, z);
             }
             
         }
@@ -102,8 +148,8 @@ public class MeshCreator : MonoBehaviour
             for (int x = 1; x < sx; x++)
             {
                
-                verticies[count++] = new Vector3(x,0,z);
-            
+                //verticies[count++] = new Vector3(x,0,z);
+                SetVertex(count++, x, 0, z);
             }
             
         }
@@ -122,6 +168,7 @@ public class MeshCreator : MonoBehaviour
 
         mesh.name = "YAYAYAYAY";
         mesh.vertices = verticies;
+        mesh.normals = normals;
         
         int quads = (sx * sz + sx * sy + sz * sy) * 2;
         tris = new int[quads * 6];

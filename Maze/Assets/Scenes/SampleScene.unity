@@ -316,6 +316,7 @@ MonoBehaviour:
   sx: 4
   sy: 4
   sz: 4
+  roundness: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
