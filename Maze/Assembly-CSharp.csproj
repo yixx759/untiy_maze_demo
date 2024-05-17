@@ -44,6 +44,7 @@
      <Compile Include="Assets\WFC.cs" />
      <Compile Include="Assets\MeshCreator.cs" />
      <Compile Include="Assets\MOV.cs" />
+     <None Include="Assets\Textures\Mater\Cube.shader" />
      <Reference Include="UnityEngine">
      <HintPath>E:\Program Files\Unity\Hub\Editor\2021.3.13f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>

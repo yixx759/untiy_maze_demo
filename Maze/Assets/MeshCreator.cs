@@ -13,7 +13,10 @@ public class MeshCreator : MonoBehaviour
     private Vector3[] verticies;
     private Vector3[] normals;
     private Mesh mesh;
-    private int[] tris;
+    private int[] tris1;
+    private int[] tris2;
+    private int[] tris3;
+   
     private int counttotal = 0;
 
     // Start is called before the first frame update
@@ -170,33 +173,52 @@ public class MeshCreator : MonoBehaviour
         mesh.vertices = verticies;
         mesh.normals = normals;
         
-        int quads = (sx * sz + sx * sy + sz * sy) * 2;
-        tris = new int[quads * 6];
+       // int quads = (sx * sz + sx * sy + sz * sy) * 2;
+        tris1 = new int[(sx*sy)*12];
+        tris2 = new int[(sy*sz)*12];
+        tris3 = new int[(sz*sx)*12];
 
 
         int ring = ((sx + sz) * 2);
-        int v = 0 , index =0;
+        int v = 0 , tx =0, ty =0, tz =0, index =0;
 
         for (int y = 0; y < sy; y++, index++)
         {
-            for (int i = 0; i < ring-1; i++, index++)
+            for (int i = 0; i < sx; i++, index++)
             {
-                v = createQuad(tris, v, index, 1+index, index+ring, index+ring + 1);
+                tz = createQuad(tris1, tz, index, 1+index, index+ring, index+ring + 1);
 
             }
+            
+            for (int i = 0; i < sz; i++, index++)
+            {
+                tx = createQuad(tris2, tx, index, 1+index, index+ring, index+ring + 1);
 
-            v = createQuad(tris, v, index, index - ring+1, index + ring, index+1);
+            }
+            for (int i = 0; i < sx; i++, index++)
+            {
+                tz = createQuad(tris1, tz, index, 1+index, index+ring, index+ring + 1);
+
+            }
+            for (int i = 0; i < sz-1; i++, index++)
+            {
+                tx = createQuad(tris2, tx, index, 1+index, index+ring, index+ring + 1);
+
+            }
+            tx = createQuad(tris2, tx, index, index - ring+1, index + ring, index+1);
 
         }
 
+        
+        //bottom
         int nuring = ring * sy;
         for (int top = 0; top < sx - 1; top++, nuring++)
         {
-            v = createQuad(tris, v, nuring, nuring + 1, nuring + ring - 1, nuring + ring);
+            ty = createQuad(tris3, ty, nuring, nuring + 1, nuring + ring - 1, nuring + ring);
 
 
         }
-        v = createQuad(tris, v, nuring, nuring + 1, nuring + ring - 1, nuring + 2);
+        ty = createQuad(tris3, ty, nuring, nuring + 1, nuring + ring - 1, nuring + 2);
 
         int vMin = ring * (sy + 1) - 1;
         int vMid = vMin + 1;
@@ -206,81 +228,85 @@ public class MeshCreator : MonoBehaviour
 
         for (int j = 1; j < sz-1; j++, vMin--, vMid++, vMax++)
         {
-            v = createQuad(tris, v, vMin, vMid, vMin - 1, vMid + sx - 1);
+            ty = createQuad(tris3, ty, vMin, vMid, vMin - 1, vMid + sx - 1);
 
             for (int i = 1; i < sx - 1; i++, vMid++)
             {
 
-                v = createQuad(tris, v, vMid, vMid + 1, vMid + sx - 1, vMid + sx);
+                ty = createQuad(tris3, ty, vMid, vMid + 1, vMid + sx - 1, vMid + sx);
 
             }
 
-            v = createQuad(tris, v, vMid, vMax, vMid + sx - 1, vMax + 1);
+            ty = createQuad(tris3, ty, vMid, vMax, vMid + sx - 1, vMax + 1);
         }
 
         int vtop = vMin - 2;
-        v = createQuad(tris, v, vMin, vMid , vtop+1, vtop );
+        ty = createQuad(tris3, ty, vMin, vMid , vtop+1, vtop );
 
         for (int i = 1; i < sx - 1; i++, vtop--, vMid++)
         {
 
-            v = createQuad(tris, v, vMid, vMid + 1, vtop, vtop - 1);
+            ty = createQuad(tris3, ty, vMid, vMid + 1, vtop, vtop - 1);
 
         }
-        v = createQuad(tris, v, vMid, vtop-2 , vtop, vtop-1 );
+        ty = createQuad(tris3, ty, vMid, vtop-2 , vtop, vtop-1 );
 
 
+        //bottom
         int luring = 1; 
         vMid = verticies.Length - (sx - 1) * (sz - 1);
-        v = createQuad(tris, v, ring-1, vMid , 0, 1 );
+        ty = createQuad(tris3, ty, ring-1, vMid , 0, 1 );
 
 
         for (int i = 1; i < sx - 1; i++, luring++, vMid++)
         {
             
-            v = createQuad(tris, v, vMid, vMid+1 , luring, luring+1 );
+            ty = createQuad(tris3, ty, vMid, vMid+1 , luring, luring+1 );
 
             
             
         }
 
-        v = createQuad(tris, v, vMid, luring+2 , luring, luring+1 );
+        ty = createQuad(tris3, ty, vMid, luring+2 , luring, luring+1 );
 
         vMin = ring - 2;
         vMid -= sx - 2;
         vMax = luring + 2;
         for (int j = 1; j < sz-1; j++, vMin--, vMid++, vMax++)
         {
-            v = createQuad(tris, v, vMin, vMid+sx-1, vMin + 1, vMid);
+            ty = createQuad(tris3, ty, vMin, vMid+sx-1, vMin + 1, vMid);
 
             for (int i = 1; i < sx - 1; i++, vMid++)
             {
 
-                v = createQuad(tris, v, vMid+sx-1, vMid + sx, vMid , vMid + 1);
+                ty = createQuad(tris3, ty, vMid+sx-1, vMid + sx, vMid , vMid + 1);
 
             }
 
-            v = createQuad(tris, v, vMid+sx-1, vMax+1, vMid  , vMax );
+            ty = createQuad(tris3, ty, vMid+sx-1, vMax+1, vMid  , vMax );
         }
 
         vtop = vMin - 1;
 
         
-        v = createQuad(tris, v, vtop+1, vtop , vtop+2, vMid );
+        ty = createQuad(tris3, ty, vtop+1, vtop , vtop+2, vMid );
 
 
         for (int i = 1; i < sx - 1; i++, vtop--, vMid++)
         {
             
-            v = createQuad(tris, v, vtop, vtop-1 , vMid, vMid+1 );
+            ty = createQuad(tris3, ty, vtop, vtop-1 , vMid, vMid+1 );
 
             
             
         }
 
-        v = createQuad(tris, v, vtop, vtop-1 , vMid, vtop-2 );
-        
-        mesh.triangles = tris;
+        ty = createQuad(tris3, ty, vtop, vtop-1 , vMid, vtop-2 );
+
+        mesh.subMeshCount = 3;
+        mesh.SetTriangles(tris1,0);
+        mesh.SetTriangles(tris2,1);
+        mesh.SetTriangles(tris3,2);
         
         
         // int counter = 0;
