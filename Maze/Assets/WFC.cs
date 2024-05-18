@@ -31,6 +31,7 @@ public class WFC : MonoBehaviour
     [SerializeField]  private Texture[] TTemp;
     [SerializeField]private float Timer= 2;
     private float TempTimer= 2;
+    [SerializeField] private int lesschanceofblank = 0;
     
     const  long m1  = 0x5555555555555555; //binary: 0101...
     const  long m2  = 0x3333333333333333; //binary: 00110011..
@@ -438,7 +439,20 @@ public class WFC : MonoBehaviour
         {
             ++count;
             tt = Random.Range(0, totalTiles);
-           // print("Heeeeeee");
+            int g = Random.Range(0, lesschanceofblank);
+            if (g != 0)
+            {
+                //simple imp improve later
+                if (tt == 0)
+                {
+                    tt = (tt+ g)%totalTiles; 
+                    
+                }
+                   
+                
+            }
+
+            // print("Heeeeeee");
            // print("t"+tt);
             //print("binar"+ (1 << tt));
            // print("pos"+MasterTiles[coord.Item1, coord.Item2].possibility);
