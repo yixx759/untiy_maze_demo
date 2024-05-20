@@ -28,6 +28,8 @@ public class WFC : MonoBehaviour
     private int[,] rulenum;
     private bool alltrue = false;
     [SerializeField] static private Texture[] Tiles;
+    [SerializeField] static private GameObject[] MazePart;
+    [SerializeField]  private GameObject[] TMaze;
     [SerializeField]  private Texture[] TTemp;
     [SerializeField]private float Timer= 2;
     private float TempTimer= 2;
