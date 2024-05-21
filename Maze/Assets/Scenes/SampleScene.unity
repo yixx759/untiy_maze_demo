@@ -235,7 +235,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &865712013
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -441,7 +441,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1705347350}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5663184519315a449bee98dc404b38d2, type: 3}
   m_Name: 
@@ -449,8 +449,21 @@ MonoBehaviour:
   Plane: {fileID: 2533142966657687953, guid: ec8d57d2064db684aa90c44d921ed3cf, type: 3}
   Tex: {fileID: 2800000, guid: 8e7641dbcc8ada34f96998b268b535e6, type: 3}
   offset: 0
-  totalx: 20
-  totaly: 20
+  totalx: 10
+  totaly: 10
+  TMaze:
+  - {fileID: 919132149155446097, guid: 7e050aee2e966c649af32b51170bc24a, type: 3}
+  - {fileID: 919132149155446097, guid: a2be7cf143955ba4abdf4070d59e31ad, type: 3}
+  - {fileID: 919132149155446097, guid: 0cc4821b07f03474b9918e8c7508777d, type: 3}
+  - {fileID: 919132149155446097, guid: b84c991a47bb876418e4803efd27b627, type: 3}
+  - {fileID: 919132149155446097, guid: ce9fc81c8699ad14c9615fdbc0e06782, type: 3}
+  - {fileID: 919132149155446097, guid: f550bd34946dd7f4bb764709163e79c8, type: 3}
+  - {fileID: 919132149155446097, guid: cf658b1f8a5258e4ba6a1212f6eb4a27, type: 3}
+  - {fileID: 919132149155446097, guid: 59b3c6c46052aef40b6eaf77c450c4bd, type: 3}
+  - {fileID: 919132149155446097, guid: 4ec9cf1c91be984418148ad92720bc2f, type: 3}
+  - {fileID: 919132149155446097, guid: 5d852d9838a76604996ea598b5b44c2f, type: 3}
+  - {fileID: 919132149155446097, guid: d340a9445ed5d7048bfa3ae0354711ee, type: 3}
+  - {fileID: 919132149155446097, guid: d81dd286a4eebab47bd9280623265403, type: 3}
   TTemp:
   - {fileID: 2800000, guid: 0b085cbe7b95f164e9cce2fc5b6a69ab, type: 3}
   - {fileID: 2800000, guid: 9aac0025d31e8a342bff3f36e799f333, type: 3}

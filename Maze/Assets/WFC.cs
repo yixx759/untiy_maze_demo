@@ -5,6 +5,7 @@ using System.Numerics;
 using Unity.VisualScripting;
 using UnityEditor.SceneTemplate;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
 
@@ -34,6 +35,9 @@ public class WFC : MonoBehaviour
     [SerializeField]private float Timer= 2;
     private float TempTimer= 2;
     [SerializeField] private int lesschanceofblank = 0;
+
+    private static Vector2 blockLength = new Vector2(17.5f, 17.5f);
+    //add colluider
     
     const  long m1  = 0x5555555555555555; //binary: 0101...
     const  long m2  = 0x3333333333333333; //binary: 00110011..
@@ -128,6 +132,7 @@ public class WFC : MonoBehaviour
         public GameObject plane;
 
         private Material mat;
+        private Vector2 xy;
         
         
         //just add tyle type
@@ -136,14 +141,15 @@ public class WFC : MonoBehaviour
         
         //create test tile
 
-        public void Inst( GameObject Plane)
+        public void Inst( GameObject Plane, Vector2 i_xy)
         {
             possibility = (long) (TileType.Cross|TileType.Blank | TileType.Down | TileType.Left | TileType.Right | TileType.Up | TileType.Ll | TileType.Lup | TileType.CBL | TileType.CBR | TileType.CTL | TileType.CTR);
            // print( possibility);
+           xy = i_xy;
             Entropy = totalTiles;
             Known = false;
-            plane = Plane;
-            mat = plane.GetComponent<Renderer>().material;
+           // plane = Plane;
+          //  mat = plane.GetComponent<Renderer>().material;
 //            print(mat);
 
         }
@@ -160,7 +166,13 @@ public class WFC : MonoBehaviour
 
 
         }
+        
+        public void AddNewBlock(int i)
+        {
+            Instantiate(MazePart[i] , new UnityEngine.Vector3(xy.x*blockLength.x,0,xy.y*blockLength.y), Quaternion.Euler(new UnityEngine.Vector3(-89.98f,0,0)) );
 
+//-89.98
+        }
 
 
     }
@@ -300,6 +312,7 @@ public class WFC : MonoBehaviour
        // print("HERERERE"+
            // (int)(TileType.Blank | TileType.Down | TileType.Left | TileType.Right | TileType.Up));
         Tiles = TTemp;
+        MazePart = TMaze;
         rules = initrules();
         
         
@@ -320,8 +333,8 @@ public class WFC : MonoBehaviour
         {
             for (int j = 0; j < totaly; j++)
             {
-               
-               MasterTiles[i,j].Inst( Instantiate(Plane, start+((Vector2.right*((bnds.x*i)+offset*i))+ Vector2.up*((bnds.y*j)+offset*j)),Plane.transform.rotation));
+               //Instantiate(Plane, start+((Vector2.right*((bnds.x*i)+offset*i))+ Vector2.up*((bnds.y*j)+offset*j)),Plane.transform.rotation)
+               MasterTiles[i,j].Inst(null, new Vector2(i,j) );
                
                 
                 
@@ -335,8 +348,8 @@ public class WFC : MonoBehaviour
         MasterTiles[sx, sy].Known = true;
         MasterTiles[sx, sy].Entropy = 1;
         MasterTiles[sx, sy].possibility = (MasterTiles[sx, sy].possibility & (int)1<<TT);
-        MasterTiles[sx,sy].IntetoImage(TT);
-
+        //MasterTiles[sx,sy].IntetoImage(TT);
+        MasterTiles[sx,sy].AddNewBlock(TT);
        
        UpdateNeighbour(1, 0, Direction.Right, (sx,sy), TT);
        UpdateNeighbour(-1, 0, Direction.Left, (sx,sy), TT);
@@ -531,8 +544,8 @@ public class WFC : MonoBehaviour
                 MasterTiles[tind.Item1, tind.Item2].possibility = 
                     (MasterTiles[tind.Item1, tind.Item2].possibility & 1 << TT);
                 
-                MasterTiles[tind.Item1, tind.Item2].IntetoImage(TT);
-      
+               // MasterTiles[tind.Item1, tind.Item2].IntetoImage(TT);
+               MasterTiles[tind.Item1, tind.Item2].AddNewBlock(TT);
 
                 UpdateNeighbour(1, 0, Direction.Right, tind, TT);
                 UpdateNeighbour(-1, 0, Direction.Left, tind, TT);
