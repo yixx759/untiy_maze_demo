@@ -14,7 +14,8 @@ public class WFC : MonoBehaviour
 {
     private Material mat;
     [SerializeField]private GameObject Plane;
-
+    [SerializeField] private static Texture tex;
+    [SerializeField] private  Texture stex;
     [SerializeField] private Texture Tex;
     [SerializeField] private float offset;
     
@@ -169,8 +170,8 @@ public class WFC : MonoBehaviour
         
         public void AddNewBlock(int i)
         {
-            Instantiate(MazePart[i] , new UnityEngine.Vector3(xy.x*blockLength.x,0,xy.y*blockLength.y), Quaternion.Euler(new UnityEngine.Vector3(-89.98f,0,0)) );
-
+             GameObject m = Instantiate(MazePart[i] , new UnityEngine.Vector3(xy.x*blockLength.x,0,xy.y*blockLength.y), Quaternion.Euler(new UnityEngine.Vector3(-89.98f,-90,0)) );
+             m.GetComponent<Renderer>().material.mainTexture = tex;
 //-89.98
         }
 
@@ -182,6 +183,7 @@ public class WFC : MonoBehaviour
     {
         BigInteger[,] a = new  BigInteger[totalTiles,4];
        //remove blank
+       //add blank
 
         a[TPowerReverse(TileType.Blank), (int)Direction.Up] = (int) (TileType.Blank | TileType.Up |TileType.Down | TileType.Left | TileType.Right |TileType.Ll | TileType.Lup | TileType.Up |TileType.CBL | TileType.CBR | TileType.CTL |TileType.CTR | TileType.Cross);
      
@@ -194,108 +196,226 @@ public class WFC : MonoBehaviour
         //
         a[TPowerReverse(TileType.Down), (int)Direction.Up] = (int) (TileType.Blank |TileType.Ll | TileType.Up | TileType.CBL | TileType.CBR );
      
-        a[TPowerReverse(TileType.Down), (int)Direction.Left] = (int) (TileType.Right | TileType.Up | TileType.Down | TileType.CTR | TileType.CBR | TileType.Down | TileType.Ll| TileType.Cross );
+        a[TPowerReverse(TileType.Down), (int)Direction.Left] = (int) (TileType.Blank |TileType.Right | TileType.Up | TileType.Down | TileType.CTR | TileType.CBR | TileType.Down | TileType.Ll| TileType.Cross );
       
-        a[TPowerReverse(TileType.Down), (int)Direction.Down] = (int) (TileType.Lup | TileType.Up | TileType.CBL | TileType.CBR | TileType.Left | TileType.Right| TileType.Cross );
+        a[TPowerReverse(TileType.Down), (int)Direction.Down] = (int) (TileType.Blank |TileType.Lup | TileType.Up | TileType.CBL | TileType.CBR | TileType.Left | TileType.Right| TileType.Cross );
       
-        a[TPowerReverse(TileType.Down), (int)Direction.Right] = (int) (TileType.Left | TileType.Up | TileType.Down | TileType.CTL |TileType.CBL | TileType.Ll | TileType.Cross);
+        a[TPowerReverse(TileType.Down), (int)Direction.Right] = (int) (TileType.Blank |TileType.Left | TileType.Up | TileType.Down | TileType.CTL |TileType.CBL | TileType.Ll | TileType.Cross);
        //
        
-        a[TPowerReverse(TileType.Right), (int)Direction.Up] = (int) (TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTL | TileType.CTR | TileType.Cross);
+        a[TPowerReverse(TileType.Right), (int)Direction.Up] = (int) (TileType.Blank |TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTL | TileType.CTR | TileType.Cross);
      
-        a[TPowerReverse(TileType.Right), (int)Direction.Left] = (int) (TileType.Blank | TileType.Left | TileType.Lup | TileType.CTL | TileType.CBL);
+        a[TPowerReverse(TileType.Right), (int)Direction.Left] = (int) (TileType.Blank |TileType.Blank | TileType.Left | TileType.Lup | TileType.CTL | TileType.CBL);
        
-        a[TPowerReverse(TileType.Right), (int)Direction.Down] = (int) (TileType.Left | TileType.Up | TileType.Right | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
+        a[TPowerReverse(TileType.Right), (int)Direction.Down] = (int) (TileType.Blank |TileType.Left | TileType.Up | TileType.Right | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
        
-        a[TPowerReverse(TileType.Right), (int)Direction.Right] = (int) ( TileType.Down | TileType.Up | TileType.Left | TileType.Ll  | TileType.CTL | TileType.CTR | TileType.Cross);
+        a[TPowerReverse(TileType.Right), (int)Direction.Right] = (int) (TileType.Blank | TileType.Down | TileType.Up | TileType.Left | TileType.Ll  | TileType.CTL | TileType.CBL | TileType.Cross);
         //
-        a[TPowerReverse(TileType.Left), (int)Direction.Up] = (int) (TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTL | TileType.CTR | TileType.Cross);
+        a[TPowerReverse(TileType.Left), (int)Direction.Up] = (int) (TileType.Blank |TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTL | TileType.CTR | TileType.Cross);
      
-        a[TPowerReverse(TileType.Left), (int)Direction.Left] = (int) (TileType.Up | TileType.Down | TileType.Right | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
+        a[TPowerReverse(TileType.Left), (int)Direction.Left] = (int) (TileType.Blank |TileType.Up | TileType.Down | TileType.Right | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
       
-        a[TPowerReverse(TileType.Left), (int)Direction.Down] = (int) (TileType.Left | TileType.Right | TileType.Up | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
+        a[TPowerReverse(TileType.Left), (int)Direction.Down] = (int) (TileType.Blank |TileType.Left | TileType.Right | TileType.Up | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
       
-        a[TPowerReverse(TileType.Left), (int)Direction.Right] = (int) (TileType.Blank |TileType.Blank | TileType.Right | TileType.CTR | TileType.CBR | TileType.Lup);
+        a[TPowerReverse(TileType.Left), (int)Direction.Right] = (int) (TileType.Blank |TileType.Blank |TileType.Blank | TileType.Right | TileType.CTR | TileType.CBR | TileType.Lup);
         //
         
-        a[TPowerReverse(TileType.Up), (int)Direction.Up] = (int) (TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTL | TileType.CTR | TileType.Cross );
+        a[TPowerReverse(TileType.Up), (int)Direction.Up] = (int) (TileType.Blank |TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTL | TileType.CTR | TileType.Cross );
    
-        a[TPowerReverse(TileType.Up), (int)Direction.Left] = (int) (TileType.Up | TileType.Down | TileType.Right | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
+        a[TPowerReverse(TileType.Up), (int)Direction.Left] = (int) (TileType.Blank |TileType.Up | TileType.Down | TileType.Right | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
      
-        a[TPowerReverse(TileType.Up), (int)Direction.Down] = (int) (TileType.Blank | TileType.Down | TileType.Ll | TileType.CTL | TileType.CTR);
+        a[TPowerReverse(TileType.Up), (int)Direction.Down] = (int) (TileType.Blank |TileType.Blank | TileType.Down | TileType.Ll | TileType.CTL | TileType.CTR);
      
-        a[TPowerReverse(TileType.Up), (int)Direction.Right] = (int) (TileType.Up | TileType.Down | TileType.Left | TileType.Ll | TileType.CTL | TileType.CBL | TileType.Cross);
+        a[TPowerReverse(TileType.Up), (int)Direction.Right] = (int) (TileType.Blank |TileType.Up | TileType.Down | TileType.Left | TileType.Ll | TileType.CTL | TileType.CBL | TileType.Cross);
      
         //
-        a[TPowerReverse(TileType.Lup), (int)Direction.Up] = (int) (TileType.Blank |TileType.Left | TileType.Down | TileType.Right | TileType.CTL | TileType.CTR | TileType.Lup | TileType.Cross);
+        a[TPowerReverse(TileType.Lup), (int)Direction.Up] = (int) (TileType.Blank |TileType.Blank |TileType.Left | TileType.Down | TileType.Right | TileType.CTL | TileType.CTR | TileType.Lup | TileType.Cross);
    
-        a[TPowerReverse(TileType.Lup), (int)Direction.Left] = (int) ( TileType.Left | TileType.CBL | TileType.CTL | TileType.Lup);
+        a[TPowerReverse(TileType.Lup), (int)Direction.Left] = (int) ( TileType.Blank |TileType.Left | TileType.CBL | TileType.CTL | TileType.Lup);
      
-        a[TPowerReverse(TileType.Lup), (int)Direction.Down] = (int) (TileType.Blank|TileType.Up | TileType.Left | TileType.Right | TileType.CBR | TileType.CBL | TileType.Lup | TileType.Cross);
+        a[TPowerReverse(TileType.Lup), (int)Direction.Down] = (int) (TileType.Blank |TileType.Blank|TileType.Up | TileType.Left | TileType.Right | TileType.CBR | TileType.CBL | TileType.Lup | TileType.Cross);
      
-        a[TPowerReverse(TileType.Lup), (int)Direction.Right] = (int) (TileType.Right | TileType.CBR | TileType.CTR | TileType.Lup);
+        a[TPowerReverse(TileType.Lup), (int)Direction.Right] = (int) (TileType.Blank |TileType.Right | TileType.CBR | TileType.CTR | TileType.Lup);
 
         //
         
-        a[TPowerReverse(TileType.Ll), (int)Direction.Up] = (int) (TileType.Up | TileType.Ll | TileType.CBL | TileType.CBR);
+        a[TPowerReverse(TileType.Ll), (int)Direction.Up] = (int) (TileType.Blank |TileType.Up | TileType.Ll | TileType.CBL | TileType.CBR);
    
-        a[TPowerReverse(TileType.Ll), (int)Direction.Left] = (int) (TileType.Blank |TileType.Up | TileType.Down | TileType.Right | TileType.Ll | TileType.CTR | TileType.CBR  | TileType.Cross);
+        a[TPowerReverse(TileType.Ll), (int)Direction.Left] = (int) (TileType.Blank |TileType.Blank |TileType.Up | TileType.Down | TileType.Right | TileType.Ll | TileType.CTR | TileType.CBR  | TileType.Cross);
      
-        a[TPowerReverse(TileType.Ll), (int)Direction.Down] = (int) (TileType.Down | TileType.Ll | TileType.CTL | TileType.CTR);
+        a[TPowerReverse(TileType.Ll), (int)Direction.Down] = (int) (TileType.Blank |TileType.Down | TileType.Ll | TileType.CTL | TileType.CTR);
      
-        a[TPowerReverse(TileType.Ll), (int)Direction.Right] = (int) (TileType.Blank |TileType.Blank |TileType.Up | TileType.Down | TileType.Left | TileType.Ll | TileType.CTL | TileType.CBL | TileType.Cross);
+        a[TPowerReverse(TileType.Ll), (int)Direction.Right] = (int) (TileType.Blank |TileType.Blank |TileType.Blank |TileType.Up | TileType.Down | TileType.Left | TileType.Ll | TileType.CTL | TileType.CBL | TileType.Cross);
 
         //
         
-        a[TPowerReverse(TileType.CBL), (int)Direction.Up] = (int) (TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTR | TileType.CTL | TileType.Cross );
+        a[TPowerReverse(TileType.CBL), (int)Direction.Up] = (int) (TileType.Blank |TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTR | TileType.CTL | TileType.Cross );
    
-        a[TPowerReverse(TileType.CBL), (int)Direction.Left] = (int) (TileType.Right | TileType.Down | TileType.Up | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
+        a[TPowerReverse(TileType.CBL), (int)Direction.Left] = (int) (TileType.Blank |TileType.Right | TileType.Down | TileType.Up | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
      
-        a[TPowerReverse(TileType.CBL), (int)Direction.Down] = (int) ( TileType.Down | TileType.Ll | TileType.CTR | TileType.CTL);
+        a[TPowerReverse(TileType.CBL), (int)Direction.Down] = (int) ( TileType.Blank |TileType.Down | TileType.Ll | TileType.CTR | TileType.CTL);
      
-        a[TPowerReverse(TileType.CBL), (int)Direction.Right] = (int) (TileType.Right |  TileType.Up | TileType.CBR | TileType.CTR);
+        a[TPowerReverse(TileType.CBL), (int)Direction.Right] = (int) (TileType.Blank |TileType.Right |  TileType.Lup | TileType.CBR | TileType.CTR);
 
         //
-        
-        a[TPowerReverse(TileType.CBR), (int)Direction.Up] = (int) (TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTR | TileType.CTL | TileType.Cross);
+      
+        a[TPowerReverse(TileType.CBR), (int)Direction.Up] = (int) (TileType.Blank |TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTR | TileType.CTL | TileType.Cross);
    
-        a[TPowerReverse(TileType.CBR), (int)Direction.Left] = (int) (TileType.Right | TileType.Down | TileType.Up | TileType.Ll | TileType.CTR | TileType.CBR);
+        a[TPowerReverse(TileType.CBR), (int)Direction.Left] = (int) (TileType.Blank |TileType.Right | TileType.Down | TileType.Up | TileType.Ll | TileType.CBL | TileType.CTL);
      
-        a[TPowerReverse(TileType.CBR), (int)Direction.Down] = (int) (TileType.Down | TileType.Ll | TileType.CTR | TileType.CTL);
+        a[TPowerReverse(TileType.CBR), (int)Direction.Down] = (int) (TileType.Blank |TileType.Down | TileType.Ll | TileType.CTR | TileType.CTL);
      
-        a[TPowerReverse(TileType.CBR), (int)Direction.Right] = (int) (TileType.Left |  TileType.Up  |  TileType.Down| TileType.Ll | TileType.CBL | TileType.CTL | TileType.Cross);
-
-        
-        //
-        
-        a[TPowerReverse(TileType.CTL), (int)Direction.Up] = (int) ( TileType.Up | TileType.Ll | TileType.CBR | TileType.CBL);
-   
-        a[TPowerReverse(TileType.CTL), (int)Direction.Left] = (int) (TileType.Right | TileType.Down | TileType.Up | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
-     
-        a[TPowerReverse(TileType.CTL), (int)Direction.Down] = (int) (TileType.Up | TileType.Left | TileType.Right | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
-     
-        a[TPowerReverse(TileType.CTL), (int)Direction.Right] = (int) (TileType.Right | TileType.Lup | TileType.CTR | TileType.CBR);
-
-        //
-        
-        a[TPowerReverse(TileType.CTR), (int)Direction.Up] = (int) (TileType.Up  | TileType.Ll | TileType.CBR | TileType.CBL);
-   
-        a[TPowerReverse(TileType.CTR), (int)Direction.Left] = (int) (TileType.Left | TileType.Lup | TileType.CTL | TileType.CBL);
-     
-        a[TPowerReverse(TileType.CTR), (int)Direction.Down] = (int) (TileType.Up | TileType.Left | TileType.Right | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
-     
-        a[TPowerReverse(TileType.CTR), (int)Direction.Right] = (int) (TileType.Left | TileType.Down | TileType.Up | TileType.Ll | TileType.CTL | TileType.CBL | TileType.Cross);
+        a[TPowerReverse(TileType.CBR), (int)Direction.Right] = (int) (TileType.Blank |TileType.Left |  TileType.Up  |  TileType.Down| TileType.Ll | TileType.CBL | TileType.CTL | TileType.Cross);
 
         
         //
-        a[TPowerReverse(TileType.Cross), (int)Direction.Up] = (int) (TileType.Down | TileType.Left | TileType.Right  | TileType.Lup | TileType.CTR | TileType.CTL | TileType.Cross);
+        
+        a[TPowerReverse(TileType.CTL), (int)Direction.Up] = (int) ( TileType.Blank |TileType.Up | TileType.Ll | TileType.CBR | TileType.CBL);
    
-        a[TPowerReverse(TileType.Cross), (int)Direction.Left] = (int) (TileType.Right | TileType.Down | TileType.Up |TileType.Ll | TileType.Cross | TileType.CBR | TileType.CTR);
+        a[TPowerReverse(TileType.CTL), (int)Direction.Left] = (int) (TileType.Blank |TileType.Right | TileType.Down | TileType.Up | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
      
-        a[TPowerReverse(TileType.Cross), (int)Direction.Down] = (int) (TileType.Up | TileType.Left | TileType.Right  | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
+        a[TPowerReverse(TileType.CTL), (int)Direction.Down] = (int) (TileType.Blank |TileType.Up | TileType.Left | TileType.Right | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
      
-        a[TPowerReverse(TileType.Cross), (int)Direction.Right] = (int) (TileType.Left | TileType.Down | TileType.Up |TileType.Ll | TileType.Cross | TileType.CBL | TileType.CTL | TileType.Cross);
+        a[TPowerReverse(TileType.CTL), (int)Direction.Right] = (int) (TileType.Blank |TileType.Right | TileType.Lup | TileType.CTR | TileType.CBR);
 
+        //
+        
+        a[TPowerReverse(TileType.CTR), (int)Direction.Up] = (int) (TileType.Blank |TileType.Up  | TileType.Ll | TileType.CBR | TileType.CBL);
+   
+        a[TPowerReverse(TileType.CTR), (int)Direction.Left] = (int) (TileType.Blank |TileType.Left | TileType.Lup | TileType.CTL | TileType.CBL);
+     
+        a[TPowerReverse(TileType.CTR), (int)Direction.Down] = (int) (TileType.Blank |TileType.Up | TileType.Left | TileType.Right | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
+     
+        a[TPowerReverse(TileType.CTR), (int)Direction.Right] = (int) (TileType.Blank |TileType.Left | TileType.Down | TileType.Up | TileType.Ll | TileType.CTL | TileType.CBL | TileType.Cross);
+
+        
+        //
+        a[TPowerReverse(TileType.Cross), (int)Direction.Up] = (int) (TileType.Blank |TileType.Down | TileType.Left | TileType.Right  | TileType.Lup | TileType.CTR | TileType.CTL | TileType.Cross);
+   
+        a[TPowerReverse(TileType.Cross), (int)Direction.Left] = (int) (TileType.Blank |TileType.Right | TileType.Down | TileType.Up |TileType.Ll | TileType.Cross | TileType.CBR | TileType.CTR);
+     
+        a[TPowerReverse(TileType.Cross), (int)Direction.Down] = (int) (TileType.Blank |TileType.Up | TileType.Left | TileType.Right  | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
+     
+        a[TPowerReverse(TileType.Cross), (int)Direction.Right] = (int) (TileType.Blank |TileType.Left | TileType.Down | TileType.Up |TileType.Ll | TileType.Cross | TileType.CBL | TileType.CTL | TileType.Cross);
+
+        
+        //////////////////////////////
+        ///
+        ///a[TPowerReverse(TileType.Blank), (int)Direction.Up] = (int) (TileType.Blank | TileType.Up |TileType.Down | TileType.Left | TileType.Right |TileType.Ll | TileType.Lup | TileType.Up |TileType.CBL | TileType.CBR | TileType.CTL |TileType.CTR | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Blank), (int)Direction.Left] =(int) (TileType.Blank | TileType.Up |TileType.Down | TileType.Left | TileType.Right |TileType.Ll | TileType.Lup | TileType.Up |TileType.CBL | TileType.CBR | TileType.CTL |TileType.CTR | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Blank), (int)Direction.Down] = (int) (TileType.Blank | TileType.Up |TileType.Down | TileType.Left | TileType.Right |TileType.Ll | TileType.Lup | TileType.Up |TileType.CBL | TileType.CBR | TileType.CTL |TileType.CTR | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Blank), (int)Direction.Right] = (int) (TileType.Blank | TileType.Up |TileType.Down | TileType.Left | TileType.Right |TileType.Ll | TileType.Lup | TileType.Up |TileType.CBL | TileType.CBR | TileType.CTL |TileType.CTR | TileType.Cross);
+       //
+       //  //
+       //  a[TPowerReverse(TileType.Down), (int)Direction.Up] = (int) (TileType.Blank |TileType.Ll | TileType.Up | TileType.CBL | TileType.CBR );
+       //
+       //  a[TPowerReverse(TileType.Down), (int)Direction.Left] = (int) (TileType.Right | TileType.Up | TileType.Down | TileType.CTR | TileType.CBR | TileType.Down | TileType.Ll| TileType.Cross );
+       //
+       //  a[TPowerReverse(TileType.Down), (int)Direction.Down] = (int) (TileType.Lup | TileType.Up | TileType.CBL | TileType.CBR | TileType.Left | TileType.Right| TileType.Cross );
+       //
+       //  a[TPowerReverse(TileType.Down), (int)Direction.Right] = (int) (TileType.Left | TileType.Up | TileType.Down | TileType.CTL |TileType.CBL | TileType.Ll | TileType.Cross);
+       // //
+       //
+       //  a[TPowerReverse(TileType.Right), (int)Direction.Up] = (int) (TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTL | TileType.CTR | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Right), (int)Direction.Left] = (int) (TileType.Blank | TileType.Left | TileType.Lup | TileType.CTL | TileType.CBL);
+       //
+       //  a[TPowerReverse(TileType.Right), (int)Direction.Down] = (int) (TileType.Left | TileType.Up | TileType.Right | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Right), (int)Direction.Right] = (int) ( TileType.Down | TileType.Up | TileType.Left | TileType.Ll  | TileType.CTL | TileType.CBL | TileType.Cross);
+       //  //
+       //  a[TPowerReverse(TileType.Left), (int)Direction.Up] = (int) (TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTL | TileType.CTR | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Left), (int)Direction.Left] = (int) (TileType.Up | TileType.Down | TileType.Right | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Left), (int)Direction.Down] = (int) (TileType.Left | TileType.Right | TileType.Up | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Left), (int)Direction.Right] = (int) (TileType.Blank |TileType.Blank | TileType.Right | TileType.CTR | TileType.CBR | TileType.Lup);
+       //  //
+       //  
+       //  a[TPowerReverse(TileType.Up), (int)Direction.Up] = (int) (TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTL | TileType.CTR | TileType.Cross );
+       //
+       //  a[TPowerReverse(TileType.Up), (int)Direction.Left] = (int) (TileType.Up | TileType.Down | TileType.Right | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Up), (int)Direction.Down] = (int) (TileType.Blank | TileType.Down | TileType.Ll | TileType.CTL | TileType.CTR);
+       //
+       //  a[TPowerReverse(TileType.Up), (int)Direction.Right] = (int) (TileType.Up | TileType.Down | TileType.Left | TileType.Ll | TileType.CTL | TileType.CBL | TileType.Cross);
+       //
+       //  //
+       //  a[TPowerReverse(TileType.Lup), (int)Direction.Up] = (int) (TileType.Blank |TileType.Left | TileType.Down | TileType.Right | TileType.CTL | TileType.CTR | TileType.Lup | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Lup), (int)Direction.Left] = (int) ( TileType.Left | TileType.CBL | TileType.CTL | TileType.Lup);
+       //
+       //  a[TPowerReverse(TileType.Lup), (int)Direction.Down] = (int) (TileType.Blank|TileType.Up | TileType.Left | TileType.Right | TileType.CBR | TileType.CBL | TileType.Lup | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Lup), (int)Direction.Right] = (int) (TileType.Right | TileType.CBR | TileType.CTR | TileType.Lup);
+       //
+       //  //
+       //  
+       //  a[TPowerReverse(TileType.Ll), (int)Direction.Up] = (int) (TileType.Up | TileType.Ll | TileType.CBL | TileType.CBR);
+       //
+       //  a[TPowerReverse(TileType.Ll), (int)Direction.Left] = (int) (TileType.Blank |TileType.Up | TileType.Down | TileType.Right | TileType.Ll | TileType.CTR | TileType.CBR  | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Ll), (int)Direction.Down] = (int) (TileType.Down | TileType.Ll | TileType.CTL | TileType.CTR);
+       //
+       //  a[TPowerReverse(TileType.Ll), (int)Direction.Right] = (int) (TileType.Blank |TileType.Blank |TileType.Up | TileType.Down | TileType.Left | TileType.Ll | TileType.CTL | TileType.CBL | TileType.Cross);
+       //
+       //  //
+       //  
+       //  a[TPowerReverse(TileType.CBL), (int)Direction.Up] = (int) (TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTR | TileType.CTL | TileType.Cross );
+       //
+       //  a[TPowerReverse(TileType.CBL), (int)Direction.Left] = (int) (TileType.Right | TileType.Down | TileType.Up | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.CBL), (int)Direction.Down] = (int) ( TileType.Down | TileType.Ll | TileType.CTR | TileType.CTL);
+       //
+       //  a[TPowerReverse(TileType.CBL), (int)Direction.Right] = (int) (TileType.Right |  TileType.Lup | TileType.CBR | TileType.CTR);
+       //
+       //  //
+       //
+       //  a[TPowerReverse(TileType.CBR), (int)Direction.Up] = (int) (TileType.Left | TileType.Down | TileType.Right | TileType.Lup | TileType.CTR | TileType.CTL | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.CBR), (int)Direction.Left] = (int) (TileType.Right | TileType.Down | TileType.Up | TileType.Ll | TileType.CBL | TileType.CTL);
+       //
+       //  a[TPowerReverse(TileType.CBR), (int)Direction.Down] = (int) (TileType.Down | TileType.Ll | TileType.CTR | TileType.CTL);
+       //
+       //  a[TPowerReverse(TileType.CBR), (int)Direction.Right] = (int) (TileType.Left |  TileType.Up  |  TileType.Down| TileType.Ll | TileType.CBL | TileType.CTL | TileType.Cross);
+       //
+       //  
+       //  //
+       //  
+       //  a[TPowerReverse(TileType.CTL), (int)Direction.Up] = (int) ( TileType.Up | TileType.Ll | TileType.CBR | TileType.CBL);
+       //
+       //  a[TPowerReverse(TileType.CTL), (int)Direction.Left] = (int) (TileType.Right | TileType.Down | TileType.Up | TileType.Ll | TileType.CTR | TileType.CBR | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.CTL), (int)Direction.Down] = (int) (TileType.Up | TileType.Left | TileType.Right | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.CTL), (int)Direction.Right] = (int) (TileType.Right | TileType.Lup | TileType.CTR | TileType.CBR);
+       //
+       //  //
+       //  
+       //  a[TPowerReverse(TileType.CTR), (int)Direction.Up] = (int) (TileType.Up  | TileType.Ll | TileType.CBR | TileType.CBL);
+       //
+       //  a[TPowerReverse(TileType.CTR), (int)Direction.Left] = (int) (TileType.Left | TileType.Lup | TileType.CTL | TileType.CBL);
+       //
+       //  a[TPowerReverse(TileType.CTR), (int)Direction.Down] = (int) (TileType.Up | TileType.Left | TileType.Right | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.CTR), (int)Direction.Right] = (int) (TileType.Left | TileType.Down | TileType.Up | TileType.Ll | TileType.CTL | TileType.CBL | TileType.Cross);
+       //
+       //  
+       //  //
+       //  a[TPowerReverse(TileType.Cross), (int)Direction.Up] = (int) (TileType.Down | TileType.Left | TileType.Right  | TileType.Lup | TileType.CTR | TileType.CTL | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Cross), (int)Direction.Left] = (int) (TileType.Right | TileType.Down | TileType.Up |TileType.Ll | TileType.Cross | TileType.CBR | TileType.CTR);
+       //
+       //  a[TPowerReverse(TileType.Cross), (int)Direction.Down] = (int) (TileType.Up | TileType.Left | TileType.Right  | TileType.Lup | TileType.CBR | TileType.CBL | TileType.Cross);
+       //
+       //  a[TPowerReverse(TileType.Cross), (int)Direction.Right] = (int) (TileType.Left | TileType.Down | TileType.Up |TileType.Ll | TileType.Cross | TileType.CBL | TileType.CTL | TileType.Cross);
+       //
+       //  
+       //  
         
         
         
@@ -310,7 +430,9 @@ public class WFC : MonoBehaviour
 
         
        // print("HERERERE"+
-           // (int)(TileType.Blank | TileType.Down | TileType.Left | TileType.Right | TileType.Up));
+
+       // (int)(TileType.Blank | TileType.Down | TileType.Left | TileType.Right | TileType.Up));
+       tex = stex;
         Tiles = TTemp;
         MazePart = TMaze;
         rules = initrules();
@@ -475,7 +597,7 @@ public class WFC : MonoBehaviour
           
         } while (((BigInteger)(1<<tt) & MasterTiles[coord.Item1, coord.Item2].possibility) == 0 && count < 100);
 
-        if (count == 100)
+        if (count >= 99)
         {
             
             print("BROOOOOOOOOOKKKKKKKKKKKEEEEEEEEE");
