@@ -45,6 +45,7 @@
      <Compile Include="Assets\MeshCreator.cs" />
      <Compile Include="Assets\MOV.cs" />
      <Compile Include="Assets\PostProcess.cs" />
+     <Compile Include="Assets\ArrayReplace.cs" />
      <None Include="Assets\Textures\Mater\Cube.shader" />
      <None Include="Assets\Chromatic.shader" />
      <Reference Include="UnityEngine">
