@@ -303,6 +303,21 @@
      <Reference Include="Newtonsoft.Json">
      <HintPath>D:\Game projects\untiy_Maze\Maze\Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
      </Reference>
+     <Reference Include="Unity.Burst.Unsafe">
+     <HintPath>D:\Game projects\untiy_Maze\Maze\Library\PackageCache\com.unity.burst@1.6.6\Unity.Burst.Unsafe.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Burst.Cecil.Mdb">
+     <HintPath>D:\Game projects\untiy_Maze\Maze\Library\PackageCache\com.unity.burst@1.6.6\Unity.Burst.CodeGen\Unity.Burst.Cecil.Mdb.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Burst.Cecil.Pdb">
+     <HintPath>D:\Game projects\untiy_Maze\Maze\Library\PackageCache\com.unity.burst@1.6.6\Unity.Burst.CodeGen\Unity.Burst.Cecil.Pdb.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Burst.Cecil">
+     <HintPath>D:\Game projects\untiy_Maze\Maze\Library\PackageCache\com.unity.burst@1.6.6\Unity.Burst.CodeGen\Unity.Burst.Cecil.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Burst.Cecil.Rocks">
+     <HintPath>D:\Game projects\untiy_Maze\Maze\Library\PackageCache\com.unity.burst@1.6.6\Unity.Burst.CodeGen\Unity.Burst.Cecil.Rocks.dll</HintPath>
+     </Reference>
      <Reference Include="netstandard">
      <HintPath>E:\Program Files\Unity\Hub\Editor\2021.3.13f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
      </Reference>
@@ -755,6 +770,18 @@
      </Reference>
      <Reference Include="Unity.Recorder">
      <HintPath>D:\Game projects\untiy_Maze\Maze\Library\ScriptAssemblies\Unity.Recorder.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Mathematics">
+     <HintPath>D:\Game projects\untiy_Maze\Maze\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Burst">
+     <HintPath>D:\Game projects\untiy_Maze\Maze\Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Mathematics.Editor">
+     <HintPath>D:\Game projects\untiy_Maze\Maze\Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+     </Reference>
+     <Reference Include="Unity.Burst.Editor">
+     <HintPath>D:\Game projects\untiy_Maze\Maze\Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
      </Reference>
   </ItemGroup>
   <ItemGroup>
