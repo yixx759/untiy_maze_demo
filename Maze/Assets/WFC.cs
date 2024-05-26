@@ -8,7 +8,9 @@ using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
-
+using Unity.Burst;
+using Unity.Jobs;
+using Unity.Collections;
 
 public class WFC : MonoBehaviour
 {
@@ -18,7 +20,14 @@ public class WFC : MonoBehaviour
     [SerializeField] private  Texture stex;
     [SerializeField] private Texture Tex;
     [SerializeField] private float offset;
-    
+    enum ScrollDir
+    {
+        up,
+        down,
+        left,
+        right
+
+    }
     //keep equal
     [SerializeField] private int totalx = 6;
     [SerializeField] private int totaly = 6;
@@ -436,9 +445,9 @@ public class WFC : MonoBehaviour
         Tiles = TTemp;
         MazePart = TMaze;
         rules = initrules();
-        
-        
 
+
+        totaly = totalx;
 
         MasterTiles = new TileInfo[totalx , totaly];
         
@@ -693,4 +702,281 @@ public class WFC : MonoBehaviour
 
 
     }
+    
+    
+    
+    [BurstCompile]
+    struct ArrMover : IJobParallelFor
+    {
+        //redo for diffrent axis
+        public int fieldsize;
+        [NativeDisableParallelForRestriction] public NativeArray<Vector2> odfield;
+        public ScrollDir d;
+        
+        void move(ScrollDir dir, int index)
+    {
+        switch (dir)
+        {
+            
+            case ScrollDir.up:
+                for (int i = 1; i < fieldsize ; i++)
+                {
+                    
+                      
+                        odfield[index + (i - 1) * fieldsize] = odfield[index + (i) * fieldsize];
+
+                    
+
+
+                }
+
+              
+                 
+                    odfield[index + (fieldsize - 1) * fieldsize] = new Vector2(-1 , -1);
+                
+                
+                break;
+            
+            case ScrollDir.down:
+                for (int i = fieldsize-1; i > 0 ; i--)
+                {
+                   
+                      
+                        odfield[index + (i ) * fieldsize] = odfield[index + (i- 1) * fieldsize];
+
+
+
+                }
+
+              
+              
+                    odfield[index ] = new Vector2(-1 , -1);
+               
+                
+                break;
+            
+            
+            case ScrollDir.left:
+                for (int i = fieldsize-1; i > 0 ; i--)
+                {
+                   
+                    
+                        odfield[index * fieldsize + i] = odfield[index * fieldsize + (i - 1)];
+
+
+                    
+
+
+                }
+
+                
+                 
+                    odfield[ fieldsize * index] = new Vector2(-1 , -1);
+//optimize combine with replace
+               
+
+                
+                break;
+            
+            
+            case ScrollDir.right:
+                for (int i = 1; i < fieldsize ; i++)
+                {
+                   
+                      
+                        odfield[ (fieldsize * index) + i-1] = odfield[ (fieldsize * index) + i] ;
+
+                   
+
+
+                }
+
+           
+                  
+                odfield[(fieldsize * index) + fieldsize - 1] = new Vector2(-1 , -1);
+                
+
+                break;
+            
+                
+            
+            
+            
+            
+            
+            
+        }
+
+        
+        
+
+       
+
+
+
+
+
+
+    }
+    
+     void replace(ScrollDir dir, int index)
+    {
+      
+        Vector2 nustart = Vector2.zero;
+        switch (dir)
+        {
+            case ScrollDir.down:
+               
+                nustart = odfield[ (fieldsize) ]  ;
+        
+               
+                   
+                    odfield[index] = new Vector2(odfield[fieldsize+index].x,odfield[fieldsize+index].y -1 );
+
+
+                
+                break;
+            
+            case ScrollDir.up:
+              //do before threading
+                 nustart = odfield[(fieldsize*(fieldsize-1)-1)]  ;
+               
+              
+                    odfield[index + (fieldsize * (fieldsize - 1))] =new Vector2(odfield[index + (fieldsize * (fieldsize - 2))].x,odfield[index + (fieldsize * (fieldsize - 2))].y +1);
+                 
+
+                
+                
+                break;
+            case ScrollDir.left:
+                //start = field[fieldsize - 2, fieldsize-1]  ;
+        
+               
+                   
+                    odfield[index*fieldsize] = new Vector2(odfield[index*fieldsize+1].x -1,odfield[index*fieldsize+1].y);
+                   // ++start;
+
+                
+                
+                break;
+            case ScrollDir.right:
+                //start = field[fieldsize - 2, fieldsize-1]  ;
+        
+               
+                    odfield[index*fieldsize + fieldsize-1] = new Vector2(odfield[index*fieldsize + fieldsize-2].x + 1,odfield[index*fieldsize + fieldsize-2].y );
+
+               
+                
+                break;
+            
+            
+            
+        }
+        
+        
+        
+        
+        
+        
+        
+    }   
+        public void Execute(int i)
+        {
+            
+            move(d, i);
+            replace(d,i);
+            
+            
+        }
+    
+    
+    
+    
+    }
+    
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ MAYBE LOOK INTO Later
+ 
+ 
+ uint64_t v;          // Input value to find position with rank r.
+  unsigned int r;      // Input: bit's desired rank [1-64].
+  unsigned int s;      // Output: Resulting position of bit with rank r [1-64]
+  uint64_t a, b, c, d; // Intermediate temporaries for bit count.
+  unsigned int t;      // Bit count temporary.
+
+  // Do a normal parallel bit count for a 64-bit integer,                     
+  // but store all intermediate steps.                                        
+  // a = (v & 0x5555...) + ((v >> 1) & 0x5555...);
+  a =  v - ((v >> 1) & ~0UL/3);
+  // b = (a & 0x3333...) + ((a >> 2) & 0x3333...);
+  b = (a & ~0UL/5) + ((a >> 2) & ~0UL/5);
+  // c = (b & 0x0f0f...) + ((b >> 4) & 0x0f0f...);
+  c = (b + (b >> 4)) & ~0UL/0x11;
+  // d = (c & 0x00ff...) + ((c >> 8) & 0x00ff...);
+  d = (c + (c >> 8)) & ~0UL/0x101;
+  t = (d >> 32) + (d >> 48);
+  // Now do branchless select!                                                
+  s  = 64;
+  // if (r > t) {s -= 32; r -= t;}
+  s -= ((t - r) & 256) >> 3; r -= (t & ((t - r) >> 8));
+  t  = (d >> (s - 16)) & 0xff;
+  // if (r > t) {s -= 16; r -= t;}
+  s -= ((t - r) & 256) >> 4; r -= (t & ((t - r) >> 8));
+  t  = (c >> (s - 8)) & 0xf;
+  // if (r > t) {s -= 8; r -= t;}
+  s -= ((t - r) & 256) >> 5; r -= (t & ((t - r) >> 8));
+  t  = (b >> (s - 4)) & 0x7;
+  // if (r > t) {s -= 4; r -= t;}
+  s -= ((t - r) & 256) >> 6; r -= (t & ((t - r) >> 8));
+  t  = (a >> (s - 2)) & 0x3;
+  // if (r > t) {s -= 2; r -= t;}
+  s -= ((t - r) & 256) >> 7; r -= (t & ((t - r) >> 8));
+  t  = (v >> (s - 1)) & 0x1;
+  // if (r > t) s--;
+  s -= ((t - r) & 256) >> 8;
+  s = 65 - s;*/
