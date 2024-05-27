@@ -436,12 +436,9 @@ public class WFC : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+//replace array mover with acessing xy stuct
         
-       // print("HERERERE"+
-
-       // (int)(TileType.Blank | TileType.Down | TileType.Left | TileType.Right | TileType.Up));
-       tex = stex;
+        tex = stex;
         Tiles = TTemp;
         MazePart = TMaze;
         rules = initrules();
