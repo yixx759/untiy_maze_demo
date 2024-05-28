@@ -243,7 +243,7 @@ public class ArrayReplace : MonoBehaviour
             for (int j = 0; j < fieldsize; j++)
             {
                
-                odfield[j + (i * fieldsize)] =  new Vector2(j  ,i);
+                odfield[j + (i * fieldsize)] =  new Vector2(i  ,j);
 
             }
 
@@ -290,6 +290,8 @@ public class ArrayReplace : MonoBehaviour
         double nutim = 0;
        // move(direction);
         //replace(direction);
+        
+        
         if (moved)
         {
             double timTotal = 0;

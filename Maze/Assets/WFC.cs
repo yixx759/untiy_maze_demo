@@ -142,7 +142,7 @@ public class WFC : MonoBehaviour
         public GameObject plane;
 
         private Material mat;
-        private Vector2 xy;
+        public Vector2 xy;
         
         
         //just add tyle type
@@ -151,7 +151,7 @@ public class WFC : MonoBehaviour
         
         //create test tile
 
-        public void Inst( GameObject Plane, Vector2 i_xy)
+        public void Inst( Vector2 i_xy)
         {
             possibility = (long) (TileType.Cross|TileType.Blank | TileType.Down | TileType.Left | TileType.Right | TileType.Up | TileType.Ll | TileType.Lup | TileType.CBL | TileType.CBR | TileType.CTL | TileType.CTR);
            // print( possibility);
@@ -163,6 +163,14 @@ public class WFC : MonoBehaviour
 //            print(mat);
 
         }
+
+        public void assignxy(Vector2 S_XY)
+        {
+
+            xy = S_XY;
+
+        }
+
 
         public void TileTypetoImage(TileType t)
         {
@@ -179,9 +187,19 @@ public class WFC : MonoBehaviour
         
         public void AddNewBlock(int i)
         {
-             GameObject m = Instantiate(MazePart[i] , new UnityEngine.Vector3(xy.x*blockLength.x,0,xy.y*blockLength.y), Quaternion.Euler(new UnityEngine.Vector3(-89.98f,-90,0)) );
-             m.GetComponent<Renderer>().material.mainTexture = tex;
+             plane = Instantiate(MazePart[i] , new UnityEngine.Vector3(xy.x*blockLength.x,0,xy.y*blockLength.y), Quaternion.Euler(new UnityEngine.Vector3(-89.98f,-90,0)) );
+             plane.GetComponent<Renderer>().material.mainTexture = tex;
 //-89.98
+        }
+
+        public void DelObj()
+        {
+            
+            Destroy(plane);
+            plane = null;
+            
+
+
         }
 
 
@@ -462,7 +480,7 @@ public class WFC : MonoBehaviour
             for (int j = 0; j < totaly; j++)
             {
                //Instantiate(Plane, start+((Vector2.right*((bnds.x*i)+offset*i))+ Vector2.up*((bnds.y*j)+offset*j)),Plane.transform.rotation)
-               MasterTiles[i,j].Inst(null, new Vector2(i,j) );
+               MasterTiles[i,j].Inst( new Vector2(i,j) );
                
                 
                 
@@ -639,12 +657,213 @@ public class WFC : MonoBehaviour
         
     }
 
+    
+    
+    
+    
+     void move(ScrollDir dir)
+    {
+        switch (dir)
+        {
+            
+            case ScrollDir.up:
+                for (int i = 1; i < totalx ; i++)
+                {
+                    for (int j = 0; j < totalx; j++)
+                    {
+                     
+                        MasterTiles[ (i - 1),j  ] = MasterTiles[ (i),j ];
+
+                    }
+
+
+                }
+
+                for (int i = 0; i < totalx; i++)
+                {
+                   
+                    MasterTiles[(totalx - 1),i ].xy = new Vector2(-1 , -1);
+                }
+                
+                break;
+            
+            case ScrollDir.down:
+                for (int i = totalx-1; i > 0 ; i--)
+                {
+                    for (int j = 0; j < totalx; j++)
+                    {
+                     
+                        MasterTiles[i,j] = MasterTiles[(i- 1),j ];
+
+                    }
+
+
+                }
+
+                for (int i = 0; i < totalx; i++)
+                {
+                   
+                    MasterTiles[0,i ].xy = new Vector2(-1 , -1);
+                }
+                
+                break;
+            
+            
+            case ScrollDir.left:
+                for (int i = totalx-1; i > 0 ; i--)
+                {
+                    for (int j = 0; j < totalx; j++)
+                    {
+                   
+                        MasterTiles[j,i] = MasterTiles[j, i-1];
+
+
+                    }
+
+
+                }
+
+                for (int i = 0; i < totalx; i++)
+                {
+                  
+                    MasterTiles[ i,0].xy = new Vector2(-1 , -1);
+//optimize combine with replace
+                }
+
+                
+                break;
+            
+            
+            case ScrollDir.right:
+                for (int i = 1; i < totalx ; i++)
+                {
+                    for (int j = 0; j < totalx; j++)
+                    {
+                     
+                        MasterTiles[ (j) , i-1] = MasterTiles[ ( j) , i] ;
+
+                    }
+
+
+                }
+
+                for (int i = 0; i < totalx; i++)
+                {
+                  
+                    MasterTiles[ i , totalx - 1].xy = new Vector2(-1 , -1);
+                }
+
+                break;
+            
+                
+            
+            
+            
+            
+            
+            
+        }
+
+        
+        
+
+       
+
+
+
+
+
+
+    }
+
+    void replace(ScrollDir dir)
+    {
+        
+        //cache the y instead of clal from stored
+        
+        
+        Vector2 start = Vector2.zero;
+        Vector2 nustart = Vector2.zero;
+        switch (dir)
+        {
+            case ScrollDir.down:
+             
+         
+        
+                for (int i = totalx-1; i >= 0; i--)
+                {
+            
+                    MasterTiles[0,i].xy = new Vector2(MasterTiles[1,i].xy.x,MasterTiles[1,i].xy.y -1 );
+
+
+                }
+                
+                break;
+            
+            case ScrollDir.up:
+            
+                 nustart = MasterTiles[(totalx-2),0].xy  ;
+               
+                for (int i = 0; i < totalx; i++)
+                {
+                    
+                    MasterTiles[ ( (totalx - 1)) ,i].xy =new Vector2(MasterTiles[ ( (totalx - 2)),i].xy.x,nustart.y+1);
+                 
+
+                }
+                
+                break;
+            case ScrollDir.left:
+               
+        
+                for (int i = 0; i < totalx; i++)
+                {
+                   
+                    MasterTiles[i,0].xy = new Vector2(MasterTiles[i,1].xy.x -1,MasterTiles[i,1].xy.y);
+               
+
+                }
+                
+                break;
+            case ScrollDir.right:
+             
+        
+                for (int i = 0; i < totalx; i++)
+                {
+                    MasterTiles[i, totalx-1].xy = new Vector2(MasterTiles[i,  totalx-2].xy.x + 1,MasterTiles[i,  totalx-2].xy.y );
+
+                }
+                
+                break;
+            
+            
+            
+        }
+        
+        
+        
+        
+        
+        
+        
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // Update is called once per frame
     void Update()
     {
 
        
-        
+        //do thos in start
+        //while not done
         
         //make new tiles multiple
 
@@ -680,7 +899,7 @@ public class WFC : MonoBehaviour
                 UpdateNeighbour(0, 1, Direction.Up, tind, TT);
                 UpdateNeighbour(0, -1, Direction.Down, tind, TT);
 
-
+                
 
 
                 alltrue = done();
@@ -693,212 +912,276 @@ public class WFC : MonoBehaviour
 
 
          
-
-
-
-
-
-    }
-    
-    
-    
-    [BurstCompile]
-    struct ArrMover : IJobParallelFor
-    {
-        //redo for diffrent axis
-        public int fieldsize;
-        [NativeDisableParallelForRestriction] public NativeArray<Vector2> odfield;
-        public ScrollDir d;
-        
-        void move(ScrollDir dir, int index)
-    {
-        switch (dir)
-        {
+           bool moved = false;
+           ScrollDir direction = ScrollDir.down;
+           if (Input.GetKeyDown(KeyCode.W))
+           {
+               direction = ScrollDir.up;
+               moved = true;
+           }
+           else if (Input.GetKeyDown(KeyCode.S))
+           {
+               moved = true;
+               direction = ScrollDir.down;
+           }
+           else if (Input.GetKeyDown(KeyCode.D))
+           {
+               moved = true;
+               direction = ScrollDir.right;
+           }
+           else if (Input.GetKeyDown(KeyCode.A))
+           {
+               moved = true;
+               direction = ScrollDir.left;
             
-            case ScrollDir.up:
-                for (int i = 1; i < fieldsize ; i++)
-                {
-                    
-                      
-                        odfield[index + (i - 1) * fieldsize] = odfield[index + (i) * fieldsize];
+           }
 
-                    
-
-
-                }
-
-              
-                 
-                    odfield[index + (fieldsize - 1) * fieldsize] = new Vector2(-1 , -1);
-                
-                
-                break;
-            
-            case ScrollDir.down:
-                for (int i = fieldsize-1; i > 0 ; i--)
-                {
-                   
-                      
-                        odfield[index + (i ) * fieldsize] = odfield[index + (i- 1) * fieldsize];
-
-
-
-                }
-
-              
-              
-                    odfield[index ] = new Vector2(-1 , -1);
-               
-                
-                break;
-            
-            
-            case ScrollDir.left:
-                for (int i = fieldsize-1; i > 0 ; i--)
-                {
-                   
-                    
-                        odfield[index * fieldsize + i] = odfield[index * fieldsize + (i - 1)];
-
-
-                    
-
-
-                }
-
-                
-                 
-                    odfield[ fieldsize * index] = new Vector2(-1 , -1);
-//optimize combine with replace
-               
-
-                
-                break;
-            
-            
-            case ScrollDir.right:
-                for (int i = 1; i < fieldsize ; i++)
-                {
-                   
-                      
-                        odfield[ (fieldsize * index) + i-1] = odfield[ (fieldsize * index) + i] ;
-
-                   
-
-
-                }
-
+           double nutim = 0;
+           // move(direction);
+           //replace(direction);
            
-                  
-                odfield[(fieldsize * index) + fieldsize - 1] = new Vector2(-1 , -1);
-                
+           
+//do compute shader
 
-                break;
-            
-                
-            
-            
-            
-            
-            
-            
-        }
-
-        
-        
-
-       
+           if (moved)
+           {
+             
+               move(direction);
+               replace(direction);
 
 
+
+                  // ArrMover mov = new ArrMover() { fieldsize = totaly, odfield = MasterTiles, d = direction };
+                  // JobHandle jb = mov.Schedule(fieldsize, 128);
+                  // jb.Complete();
+
+               
+
+           }
 
 
 
 
     }
     
-     void replace(ScrollDir dir, int index)
-    {
-      
-        Vector2 nustart = Vector2.zero;
-        switch (dir)
-        {
-            case ScrollDir.down:
-               
-                nustart = odfield[ (fieldsize) ]  ;
-        
-               
-                   
-                    odfield[index] = new Vector2(odfield[fieldsize+index].x,odfield[fieldsize+index].y -1 );
-
-
-                
-                break;
-            
-            case ScrollDir.up:
-              //do before threading
-                 nustart = odfield[(fieldsize*(fieldsize-1)-1)]  ;
-               
-              
-                    odfield[index + (fieldsize * (fieldsize - 1))] =new Vector2(odfield[index + (fieldsize * (fieldsize - 2))].x,odfield[index + (fieldsize * (fieldsize - 2))].y +1);
-                 
-
-                
-                
-                break;
-            case ScrollDir.left:
-                //start = field[fieldsize - 2, fieldsize-1]  ;
-        
-               
-                   
-                    odfield[index*fieldsize] = new Vector2(odfield[index*fieldsize+1].x -1,odfield[index*fieldsize+1].y);
-                   // ++start;
-
-                
-                
-                break;
-            case ScrollDir.right:
-                //start = field[fieldsize - 2, fieldsize-1]  ;
-        
-               
-                    odfield[index*fieldsize + fieldsize-1] = new Vector2(odfield[index*fieldsize + fieldsize-2].x + 1,odfield[index*fieldsize + fieldsize-2].y );
-
-               
-                
-                break;
-            
-            
-            
-        }
-        
-        
-        
-        
-        
-        
-        
-    }   
-        public void Execute(int i)
-        {
-            
-            move(d, i);
-            replace(d,i);
-            
-            
-        }
     
-    
-    
-    
-    }
-    
-
-
-    
-    
-    
-    
-    
-    
+//     
+//     [BurstCompile]
+//     struct ArrMover : IJobParallelFor
+//     {
+//         //redo for diffrent axis
+//         public int fieldsize;
+//         [NativeDisableParallelForRestriction] public NativeArray<TileInfo> odfield;
+//         public ScrollDir d;
+//         
+//         void move(ScrollDir dir, int index)
+//     {
+//         TileInfo tmp;
+//         switch (dir)
+//         {
+//                
+//             case ScrollDir.up:
+//                 for (int i = 1; i < fieldsize ; i++)
+//                 {
+//                     
+//                       
+//                         odfield[index + (i - 1) * fieldsize] =  odfield[index + (i) * fieldsize];
+//
+//                     
+//
+//
+//                 }
+//
+//                  tmp = odfield[index + (fieldsize - 1) * fieldsize];
+//                 tmp.xy =new Vector2(-1 , -1);
+//
+//                 odfield[index + (fieldsize - 1) * fieldsize] = tmp;
+//                 
+//                 
+//                 break;
+//             
+//             case ScrollDir.down:
+//                 for (int i = fieldsize-1; i > 0 ; i--)
+//                 {
+//                    
+//                       
+//                         odfield[index + (i ) * fieldsize] = odfield[index + (i- 1) * fieldsize];
+//
+//
+//
+//                 }
+//
+//                 
+//                
+//
+//                 tmp = odfield[index] ;
+//                 tmp.xy =new Vector2(-1 , -1);
+//                 odfield[index ] = tmp;
+//                 
+//           
+//                 
+//                 break;
+//             
+//             
+//             case ScrollDir.left:
+//                 for (int i = fieldsize-1; i > 0 ; i--)
+//                 {
+//                    
+//                     
+//                         odfield[index * fieldsize + i] = odfield[index * fieldsize + (i - 1)];
+//
+//
+//                     
+//
+//
+//                 }
+//
+//                 tmp = odfield[ fieldsize * index] ;
+//                 tmp.xy =new Vector2(-1 , -1);
+//                 odfield[ fieldsize * index ] = tmp;
+//                  
+//                    // odfield[ fieldsize * index] = new Vector2(-1 , -1);
+// //optimize combine with replace
+//                
+//
+//                 
+//                 break;
+//             
+//             
+//             case ScrollDir.right:
+//                 for (int i = 1; i < fieldsize ; i++)
+//                 {
+//                    
+//                       
+//                         odfield[ (fieldsize * index) + i-1] = odfield[ (fieldsize * index) + i] ;
+//
+//                    
+//
+//
+//                 }
+//
+//            
+//                 tmp = odfield[(fieldsize * index) + fieldsize - 1] ;
+//                 tmp.xy =new Vector2(-1 , -1);
+//                 odfield[ (fieldsize * index) + fieldsize - 1 ] = tmp;
+//                     // odfield[(fieldsize * index) + fieldsize - 1] = new Vector2(-1 , -1);
+//                 
+//
+//                 break;
+//             
+//                 
+//             
+//             
+//             
+//             
+//             
+//             
+//         }
+//
+//         
+//         
+//
+//        
+//
+//
+//
+//
+//
+//
+//     }
+//     
+//      void replace(ScrollDir dir, int index)
+//     {
+//         TileInfo tmp;
+//         Vector2 nustart = Vector2.zero;
+//         switch (dir)
+//         {
+//             case ScrollDir.down:
+//                
+//              
+//                 tmp = new TileInfo();
+//                 tmp.Inst(  new  Vector2(odfield[fieldsize+index].xy.x,odfield[fieldsize+index].xy.y -1 ));
+//                // tmp.xy =new  Vector2(odfield[fieldsize+index].xy.x,odfield[fieldsize+index].xy.y -1 );
+//                 odfield[ index ] = tmp;
+//
+//                    
+//                   
+//
+//                 
+//                 break;
+//             
+//             case ScrollDir.up:
+//               //do before threading
+//                
+//               tmp = new TileInfo();
+//               tmp.Inst(  new Vector2(odfield[index + (fieldsize * (fieldsize - 2))].xy.x,odfield[index + (fieldsize * (fieldsize - 2))].xy.y +1));
+//               // tmp.xy =new  Vector2(odfield[fieldsize+index].xy.x,odfield[fieldsize+index].xy.y -1 );
+//               odfield[ index + (fieldsize * (fieldsize - 1)) ] = tmp;
+//               
+//                 
+//                  
+//
+//                 
+//                 
+//                 break;
+//             case ScrollDir.left:
+//                 //start = field[fieldsize - 2, fieldsize-1]  ;
+//         
+//                 tmp = new TileInfo();
+//                 tmp.Inst(  new Vector2(odfield[index*fieldsize+1].xy.x -1,odfield[index*fieldsize+1].xy.y));
+//                 // tmp.xy =new  Vector2(odfield[fieldsize+index].xy.x,odfield[fieldsize+index].xy.y -1 );
+//                 odfield[ index*fieldsize ] = tmp;
+//                    
+//                   
+//                    // ++start;
+//
+//                 
+//                 
+//                 break;
+//             case ScrollDir.right:
+//                 //start = field[fieldsize - 2, fieldsize-1]  ;
+//         
+//                 tmp = new TileInfo();
+//                 tmp.Inst(  new Vector2(odfield[index*fieldsize + fieldsize-2].xy.x + 1,odfield[index*fieldsize + fieldsize-2].xy.y ));
+//                 odfield[index*fieldsize + fieldsize-1 ] = tmp;
+//                    
+//                
+//                 
+//                 break;
+//             
+//             
+//             
+//         }
+//         
+//         
+//         
+//         
+//         
+//         
+//         
+//     }   
+//         public void Execute(int i)
+//         {
+//             
+//             move(d, i);
+//             replace(d,i);
+//             
+//             
+//         }
+//     
+//     
+//     
+//     
+//     }
+//     
+//
+//
+//     
+//     
+//     
+//     
+//     
+//     
     
     
     
