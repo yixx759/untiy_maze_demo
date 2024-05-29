@@ -46,7 +46,7 @@ public class WFC : MonoBehaviour
     private float TempTimer= 2;
     [SerializeField] private int lesschanceofblank = 0;
 
-    private static Vector2 blockLength = new Vector2(17.5f, 17.5f);
+    private static Vector2 blockLength = new Vector2(16.8f, 16.8f);
     //add colluider
     
     const  long m1  = 0x5555555555555555; //binary: 0101...
@@ -188,7 +188,7 @@ public class WFC : MonoBehaviour
         public void AddNewBlock(int i)
         {
              plane = Instantiate(MazePart[i] , new UnityEngine.Vector3(xy.x*blockLength.x,0,xy.y*blockLength.y), Quaternion.Euler(new UnityEngine.Vector3(-89.98f,-90,0)) );
-             plane.GetComponent<Renderer>().material.mainTexture = tex;
+             //plane.GetComponent<Renderer>().material.mainTexture = tex;
 //-89.98
         }
 
@@ -501,7 +501,7 @@ public class WFC : MonoBehaviour
        UpdateNeighbour(-1, 0, Direction.Left, (sx,sy), TT);
        UpdateNeighbour(0, 1, Direction.Up, (sx,sy), TT);
        UpdateNeighbour(0, -1, Direction.Down, (sx,sy), TT);
-       
+       printarray(totalx);
     }
 
 
@@ -667,6 +667,14 @@ public class WFC : MonoBehaviour
         {
             
             case ScrollDir.up:
+                
+                for (int i = 0; i < totalx; i++)
+                {
+                   
+                    MasterTiles[0,i ].DelObj();
+                }
+                
+                
                 for (int i = 1; i < totalx ; i++)
                 {
                     for (int j = 0; j < totalx; j++)
@@ -688,6 +696,15 @@ public class WFC : MonoBehaviour
                 break;
             
             case ScrollDir.down:
+                
+                for (int i = 0; i < totalx; i++)
+                {
+                   
+                    MasterTiles[(totalx - 1),i ].DelObj();
+                }
+                
+                
+                
                 for (int i = totalx-1; i > 0 ; i--)
                 {
                     for (int j = 0; j < totalx; j++)
@@ -710,6 +727,14 @@ public class WFC : MonoBehaviour
             
             
             case ScrollDir.left:
+                
+                for (int i = 0; i < totalx; i++)
+                {
+                  
+                    MasterTiles[ i , totalx - 1].DelObj();
+                }
+                
+                
                 for (int i = totalx-1; i > 0 ; i--)
                 {
                     for (int j = 0; j < totalx; j++)
@@ -735,6 +760,15 @@ public class WFC : MonoBehaviour
             
             
             case ScrollDir.right:
+                
+                for (int i = 0; i < totalx; i++)
+                {
+                  
+                    MasterTiles[ i,0].DelObj();
+//optimize combine with replace
+                }
+                
+                
                 for (int i = 1; i < totalx ; i++)
                 {
                     for (int j = 0; j < totalx; j++)
@@ -792,9 +826,8 @@ public class WFC : MonoBehaviour
         
                 for (int i = totalx-1; i >= 0; i--)
                 {
-            
-                    MasterTiles[0,i].xy = new Vector2(MasterTiles[1,i].xy.x,MasterTiles[1,i].xy.y -1 );
-
+                    MasterTiles[0,i].Inst( new Vector2(MasterTiles[1,i].xy.x-1,MasterTiles[1,i].xy.y  ));
+                   
 
                 }
                 
@@ -802,14 +835,13 @@ public class WFC : MonoBehaviour
             
             case ScrollDir.up:
             
-                 nustart = MasterTiles[(totalx-2),0].xy  ;
+                
                
                 for (int i = 0; i < totalx; i++)
                 {
-                    
-                    MasterTiles[ ( (totalx - 1)) ,i].xy =new Vector2(MasterTiles[ ( (totalx - 2)),i].xy.x,nustart.y+1);
-                 
-
+                    nustart = MasterTiles[(totalx-2),i].xy  ;
+                    MasterTiles[ ( (totalx - 1)) ,i].Inst(new Vector2(MasterTiles[ ( (totalx - 2)),i].xy.x+1,nustart.y));
+                  
                 }
                 
                 break;
@@ -818,9 +850,8 @@ public class WFC : MonoBehaviour
         
                 for (int i = 0; i < totalx; i++)
                 {
-                   
-                    MasterTiles[i,0].xy = new Vector2(MasterTiles[i,1].xy.x -1,MasterTiles[i,1].xy.y);
-               
+                   MasterTiles[i,0].Inst(new Vector2(MasterTiles[i,1].xy.x ,MasterTiles[i,1].xy.y-1));
+                    
 
                 }
                 
@@ -830,16 +861,18 @@ public class WFC : MonoBehaviour
         
                 for (int i = 0; i < totalx; i++)
                 {
-                    MasterTiles[i, totalx-1].xy = new Vector2(MasterTiles[i,  totalx-2].xy.x + 1,MasterTiles[i,  totalx-2].xy.y );
-
-                }
-                
+                    MasterTiles[i, totalx-1].Inst( new Vector2(MasterTiles[i,  totalx-2].xy.x ,MasterTiles[i,  totalx-2].xy.y+1 ));
+                   
+                    
+                    
+                     }
+              
                 break;
             
-            
+               
             
         }
-        
+        printarray(totalx);
         
         
         
@@ -851,7 +884,27 @@ public class WFC : MonoBehaviour
     
     
     
-    
+    void printarray(int fsize)
+    {
+        string a = "";
+        string b = "";
+
+        for(int i =fsize-1; i >= 0 ; i--){
+            for (int j = 0; j < fsize; j++)
+            {
+                
+                b += MasterTiles[i,j].xy.ToString();
+                b += " ";
+
+            }
+                
+            a += "\n";
+            b += "\n";
+        }
+
+        //print(a);
+        print(b);
+    }
     
     
     
@@ -948,14 +1001,14 @@ public class WFC : MonoBehaviour
              
                move(direction);
                replace(direction);
+//                print("Here");
+                alltrue = false;
+
+                // ArrMover mov = new ArrMover() { fieldsize = totaly, odfield = MasterTiles, d = direction };
+                // JobHandle jb = mov.Schedule(fieldsize, 128);
+                // jb.Complete();
 
 
-
-                  // ArrMover mov = new ArrMover() { fieldsize = totaly, odfield = MasterTiles, d = direction };
-                  // JobHandle jb = mov.Schedule(fieldsize, 128);
-                  // jb.Complete();
-
-               
 
            }
 

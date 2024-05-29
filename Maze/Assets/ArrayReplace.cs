@@ -256,7 +256,7 @@ public class ArrayReplace : MonoBehaviour
 
     private void OnDestroy()
     {
-        odfield.Dispose();
+       // odfield.Dispose();
     }
 
     // Update is called once per frame
