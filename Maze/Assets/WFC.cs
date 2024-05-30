@@ -76,7 +76,7 @@ public class WFC : MonoBehaviour
         
 
     }
-
+//this is 12 bit bro fix it
     
     [Flags]
     enum Direction
@@ -133,6 +133,57 @@ public class WFC : MonoBehaviour
 
     }
 
+    
+    
+    private static int TPowerReverseBigInt(BigInteger a)
+    {
+       
+        switch ((int)a)
+        {
+            case 1:
+                return 0;
+            case 2:
+                return 1;
+            case 4:
+                return 2;
+            case 8:
+                return 3;
+            case 16:
+                return 4;
+            case 32:
+                return 5;
+            case 64:
+                return 6;
+            case 128:
+                return 7;
+            case 256:
+                return 8;
+            case 512:
+                return 9;
+            case 1024:
+                return 10;
+            case 2048:
+                return 11;
+            
+            
+            
+            
+            default:
+                print("broke");
+                return 500;
+            
+            
+        }
+
+       
+
+    }
+    
+    
+    
+    
+    
+    
     struct TileInfo
     {
         public BigInteger possibility ;
@@ -637,24 +688,40 @@ public class WFC : MonoBehaviour
         if (coord.Item1 + offx < totalx && coord.Item2 + offy < totaly && coord.Item1 + offx >= 0 &&
             coord.Item2 + offy >= 0 &&   MasterTiles[coord.Item1+ offx,coord.Item2+offy].Entropy != 0 && MasterTiles[coord.Item1+ offx,coord.Item2+offy].Known == false       )
         {
+           
             //fix entroy do count thing
            
+         
+           
             //print("pre pos: " + (MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility + " Ander "+rules[TT,(int)Dir]));
+           
             MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility = (MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility & rules[TT,(int)Diru ]);
+        
+
+            
+            
+            
+            
+            
           
            // print("A i: "+ (coord.Item1+ offx) + " j: "+(coord.Item2+offy) + " Pos: "+MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility);
             MasterTiles[coord.Item1+ offx,coord.Item2+offy].Entropy =  nuentropy(coord.Item1+ offx, coord.Item2+offy);
+//            print("in Range");
+
+        }
+        else
+        {
           
 
         }
 
-     
 
-       
-        
-        
-        
-        
+
+
+
+
+
+
     }
 
     
@@ -822,37 +889,63 @@ public class WFC : MonoBehaviour
         {
             case ScrollDir.down:
              
-         
+              
         
                 for (int i = totalx-1; i >= 0; i--)
                 {
-                    MasterTiles[0,i].Inst( new Vector2(MasterTiles[1,i].xy.x-1,MasterTiles[1,i].xy.y  ));
+                    
                    
-
+                    MasterTiles[0,i].Inst( new Vector2(MasterTiles[1,i].xy.x-1,MasterTiles[1,i].xy.y  ));
+                 
+                  
+                    //please amke tuple vector 2
+                    (int, int) xy = ((int)1, i);
+                    UpdateNeighbour(-1, 0, Direction.Down, xy, TPowerReverseBigInt(MasterTiles[0, i].possibility));
+                    
+                    
+                    
                 }
-                
+             
                 break;
             
             case ScrollDir.up:
             
                 
-               
+                print("big start");
                 for (int i = 0; i < totalx; i++)
                 {
+                   
                     nustart = MasterTiles[(totalx-2),i].xy  ;
                     MasterTiles[ ( (totalx - 1)) ,i].Inst(new Vector2(MasterTiles[ ( (totalx - 2)),i].xy.x+1,nustart.y));
                   
+                    (int, int) xy = ((int) ( (totalx - 2)), (int)i);
+                    print("og");
+                    print(xy);
+                    print((TileType)(int)MasterTiles[(totalx-2),i].possibility);
+                    print(dir);
+                    print("Nu");
+                    print(MasterTiles[(totalx-1),i].possibility);
+                    //fix right thing look at workignthign
+                    
+                   UpdateNeighbour(1, 0, Direction.Right, xy, TPowerReverseBigInt(MasterTiles[( (totalx - 2)),i].possibility));
+                    print((xy.Item1+1)+", "+xy.Item2);
+                    print(MasterTiles[(totalx-1),i].possibility);
                 }
-                
+                print("out a here");
                 break;
             case ScrollDir.left:
                
         
                 for (int i = 0; i < totalx; i++)
                 {
-                   MasterTiles[i,0].Inst(new Vector2(MasterTiles[i,1].xy.x ,MasterTiles[i,1].xy.y-1));
                     
-
+                   MasterTiles[i,0].Inst(new Vector2(MasterTiles[i,1].xy.x ,MasterTiles[i,1].xy.y-1));
+              
+                   
+                   (int, int) xy = ((int)i, 1);
+                   UpdateNeighbour(0, -1, Direction.Left, xy, TPowerReverseBigInt(MasterTiles[i,1].possibility));
+                  
+                
                 }
                 
                 break;
@@ -861,11 +954,14 @@ public class WFC : MonoBehaviour
         
                 for (int i = 0; i < totalx; i++)
                 {
+
                     MasterTiles[i, totalx-1].Inst( new Vector2(MasterTiles[i,  totalx-2].xy.x ,MasterTiles[i,  totalx-2].xy.y+1 ));
                    
                     
-                    
-                     }
+                    (int, int) xy = (i,   totalx-2);
+                    UpdateNeighbour(0, 1, Direction.Right, xy, TPowerReverseBigInt(MasterTiles[i,  totalx-1].possibility));
+                   
+                }
               
                 break;
             
@@ -935,10 +1031,13 @@ public class WFC : MonoBehaviour
             {
                 (int, int) tind = findTarget();
               
+              
+                
 
                 int TT = targetIndex(tind);
 //                print("TTTERRR: " + TT );
-               
+              
+
                 MasterTiles[tind.Item1, tind.Item2].Known = true;
                 MasterTiles[tind.Item1, tind.Item2].Entropy = 1;
                 MasterTiles[tind.Item1, tind.Item2].possibility = 
@@ -950,6 +1049,8 @@ public class WFC : MonoBehaviour
                 UpdateNeighbour(1, 0, Direction.Right, tind, TT);
                 UpdateNeighbour(-1, 0, Direction.Left, tind, TT);
                 UpdateNeighbour(0, 1, Direction.Up, tind, TT);
+               
+                
                 UpdateNeighbour(0, -1, Direction.Down, tind, TT);
 
                 
@@ -1001,7 +1102,7 @@ public class WFC : MonoBehaviour
              
                move(direction);
                replace(direction);
-//                print("Here");
+                print("Were Here");
                 alltrue = false;
 
                 // ArrMover mov = new ArrMover() { fieldsize = totaly, odfield = MasterTiles, d = direction };
