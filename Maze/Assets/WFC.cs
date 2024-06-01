@@ -914,11 +914,14 @@ public class WFC : MonoBehaviour
             
             case ScrollDir.right:
             
-                
+                print("right");
                // print("big start");
                 for (int i = 0; i < totalx; i++)
-                {
-                   
+                { if (i == totalx - 1)
+                    {
+                        print((MasterTiles[((totalx - 2)), i].possibility));
+                    }
+                    
                     nustart = MasterTiles[(totalx-2),i].xy  ;
                     MasterTiles[ ( (totalx - 1)) ,i].Inst(new Vector2(MasterTiles[ ( (totalx - 2)),i].xy.x+1,nustart.y));
                   
@@ -949,11 +952,16 @@ public class WFC : MonoBehaviour
                 
                 break;
             case ScrollDir.up:
-             
-        
+             print("up");
+               
                 for (int i = 0; i < totalx; i++)
                 {
+                    if (i == totalx - 1)
+                    {
+                        print(MasterTiles[i,  totalx-2].possibility);
+                    }
 
+                   
                     MasterTiles[i, totalx-1].Inst( new Vector2(MasterTiles[i,  totalx-2].xy.x ,MasterTiles[i,  totalx-2].xy.y+1 ));
                    
                     

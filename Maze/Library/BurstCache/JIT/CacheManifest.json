@@ -23,7 +23,7 @@
     },
     {
       "FullName": "Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "LastWriteTime": "2024-05-31T17:06:41.4955268Z"
+      "LastWriteTime": "2024-06-01T16:25:55.5836889Z"
     }
   ],
   "Functions": [
@@ -58,6 +58,7 @@
       "AssemblyDependencyIndices": [
         4,
         5,
+        3,
         2,
         1
       ]
