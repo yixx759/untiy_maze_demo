@@ -36,7 +36,7 @@ public class WFC : MonoBehaviour
     private const int totalTiles = 12; 
     private TileInfo[,] MasterTiles;
 
-    private BigInteger[,] rules;
+    private int[,] rules;
     private int[,] rulenum;
     private bool alltrue = false;
     [SerializeField] static private Texture[] Tiles;
@@ -56,8 +56,7 @@ public class WFC : MonoBehaviour
     const  long m8  = 0x00ff00ff00ff00ff; //binary:  8 zeros,  8 ones ...
     const  long m16 = 0x0000ffff0000ffff; //binary: 16 zeros, 16 ones ...
     const  long m32 = 0x00000000ffffffff; //binary: 32 zeros, 32 ones
-    const long h01 = 0x0101010101010101; //the sum of 256 to the power of 0,1,2,3...
-
+   
     [Flags]
     enum TileType
     {
@@ -187,7 +186,7 @@ public class WFC : MonoBehaviour
     
     struct TileInfo
     {
-        public BigInteger possibility ;
+        public int possibility ;
         public int Entropy;
         public bool Known;
 
@@ -205,7 +204,7 @@ public class WFC : MonoBehaviour
 
         public void Inst( Vector2 i_xy)
         {
-            possibility = (long) (TileType.Cross|TileType.Blank | TileType.Down | TileType.Left | TileType.Right | TileType.Up | TileType.Ll | TileType.Lup | TileType.CBL | TileType.CBR | TileType.CTL | TileType.CTR);
+            possibility = (int)(TileType.Cross|TileType.Blank | TileType.Down | TileType.Left | TileType.Right | TileType.Up | TileType.Ll | TileType.Lup | TileType.CBL | TileType.CBR | TileType.CTL | TileType.CTR);
            // print( possibility);
            xy = i_xy;
             Entropy = totalTiles;
@@ -253,9 +252,9 @@ public class WFC : MonoBehaviour
     }
 
 
-    BigInteger[,] initrules()
+    int[,] initrules()
     {
-        BigInteger[,] a = new  BigInteger[totalTiles,4];
+        int[,] a = new  int[totalTiles,4];
        //remove blank
        //add blank
 
@@ -578,35 +577,49 @@ public class WFC : MonoBehaviour
     //do better
     int nuentropy(int x, int y)
     {
-        int count = 0;
-        BigInteger num = MasterTiles[x, y].possibility;
-        //automate this
-        for (int i = 0; i < totalTiles; i++)
-        {
-            if ((num & 1) == 1)
-            {
-                count++;
+       
         
-            }
-            num = num >> 1;
+   
         
-        }
         
-        return count;
-        //  BigInteger xi = MasterTiles[x, y].possibility;
-        //
-        //
-        //
-        // // https://en.wikipedia.org/wiki/Hamming_weight#:~:text=The%20Hamming%20weight%20of%20a,string%20of%20the%20same%20length.
-        //
-        //     xi = (xi & m1 ) + ((xi >>  1) & m1 ); //put count of each  2 bits into those  2 bits 
-        //     xi = (xi & m2 ) + ((xi >>  2) & m2 ); //put count of each  4 bits into those  4 bits 
-        //     xi = (xi & m4 ) + ((xi >>  4) & m4 ); //put count of each  8 bits into those  8 bits 
-        //     xi = (xi & m8 ) + ((xi >>  8) & m8 ); //put count of each 16 bits into those 16 bits 
-        //     xi = (xi & m16) + ((xi >> 16) & m16); //put count of each 32 bits into those 32 bits 
-        //     xi = (xi & m32) + ((xi >> 32) & m32); //put count of each 64 bits into those 64 bits 
-        //     return (int)xi;
+        print("NuWorked:");
+        long xi = (long)MasterTiles[x, y].possibility;
         
+        
+        
+           xi = (xi & m1 ) + ((xi >>  1) & m1 ); //put count of each  2 bits into those  2 bits 
+           xi = (xi & m2 ) + ((xi >>  2) & m2 ); //put count of each  4 bits into those  4 bits 
+           xi = (xi & m4 ) + ((xi >>  4) & m4 ); //put count of each  8 bits into those  8 bits 
+           xi = (xi & m8 ) + ((xi >>  8) & m8 ); //put count of each 16 bits into those 16 bits 
+           xi = (xi & m16) + ((xi >> 16) & m16); //put count of each 32 bits into those 32 bits 
+           xi = (xi & m32) + ((xi >> 32) & m32); //put count of each 64 bits into those 64 bits 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        return (int)xi;
+  
+        // int count = 0;
+        // int num = MasterTiles[x, y].possibility;
+        // //automate this
+        // for (int i = 0; i < totalTiles; i++)
+        // {
+        //     if ((num & 1) == 1)
+        //     {
+        //         count++;
+        //
+        //     }
+        //     num = num >> 1;
+        //
+        // }
         
         
         
@@ -669,7 +682,7 @@ public class WFC : MonoBehaviour
            // print("pos"+MasterTiles[coord.Item1, coord.Item2].possibility);
          
           
-        } while (((BigInteger)(1<<tt) & MasterTiles[coord.Item1, coord.Item2].possibility) == 0 && count < 100);
+        } while (((1<<tt) & MasterTiles[coord.Item1, coord.Item2].possibility) == 0 && count < 100);
 
         if (count >= 99)
         {
@@ -1118,8 +1131,8 @@ alltrue = done();
 
            if (moved)
            {
-               print("Moved : ");
-             print(direction);
+               //print("Moved : ");
+            // print(direction);
                move(direction);
                replace(direction);
 //                print("Were Here");
@@ -1128,7 +1141,7 @@ alltrue = done();
                 // ArrMover mov = new ArrMover() { fieldsize = totaly, odfield = MasterTiles, d = direction };
                 // JobHandle jb = mov.Schedule(fieldsize, 128);
                 // jb.Complete();
-                print(moveTracker);
+//                print(moveTracker);
                 moveTracker++;
 
            }
