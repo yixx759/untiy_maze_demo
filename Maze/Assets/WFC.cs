@@ -56,6 +56,14 @@ public class WFC : MonoBehaviour
     const  long m8  = 0x00ff00ff00ff00ff; //binary:  8 zeros,  8 ones ...
     const  long m16 = 0x0000ffff0000ffff; //binary: 16 zeros, 16 ones ...
     const  long m32 = 0x00000000ffffffff; //binary: 32 zeros, 32 ones
+    
+    
+    const  uint i1  = 0x55555555; //binary: 0101...
+    const  uint i2  = 0x33333333; //binary: 00110011..
+    const  uint i4  = 0x0f0f0f0f; //binary:  4 zeros,  4 ones ...
+    const  uint i8  = 0x00ff00ff; //binary:  8 zeros,  8 ones ...
+    const  uint i16 = 0x0000ffff; //binary: 16 zeros, 16 ones ...
+    //const  int i32 = 0x00000000ffffffff; 
    
     [Flags]
     enum TileType
@@ -169,7 +177,7 @@ public class WFC : MonoBehaviour
             
             
             default:
-                print("broke");
+               // print("broke");
                 return 500;
             
             
@@ -178,12 +186,64 @@ public class WFC : MonoBehaviour
        
 
     }
-    
-    
-    
-    
-    
-    
+
+
+    private uint selectbit(int rank)
+    {
+        
+        uint v;          // Input value to find position with rank r.
+      
+         v = 47265;
+         //r = (uint)rank;
+      
+         
+         uint a = (v & i1 ) + ((v >>  1) & i1 ); //put count of each  2 bits into those  2 bits 
+         uint b = (a & i2 ) + ((a >>  2) & i2 ); //put count of each  4 bits into those  4 bits 
+         uint c = (b & i4 ) + ((b >>  4) & i4 ); //put count of each  8 bits into those  8 bits 
+         uint t = (c & i8 ) + ((c >>  8) & i8 ); //put count of each 16 bits into those 16 bits 
+       
+
+
+
+     ///    ulong t = ((d >> 32) + (d >> 48));
+       //  int   n = (int)((d * (~(ulong)0 / 255)) >> (64 - 1) * 8);
+         ulong r = (uint) 2;
+         ulong s = 32;
+       //print("T: "+System.Convert.ToString(t,2));
+     
+ //      s  = 32;
+     
+       // if (r > t) {s -= 16; r -= t; }
+       
+      
+       
+     
+       s -= ((t - r) & 256) >> 4;
+       r -= (t & ((t - r) >> 8));
+       t = (c >> (int)(s - 8)) & 0xf;
+       s -= ((t - r) & 256) >> 5;
+       r -= (t & ((t - r) >> 8));
+       t = (b >> (int)(s - 4)) & 0x7;
+       s -= ((t - r) & 256) >> 6;
+       r -= (t & ((t - r) >> 8));
+       t = (a >> (int)(s - 2)) & 0x3;
+       s -= ((t - r) & 256) >> 7;
+       r -= (t & ((t - r) >> 8));
+       t = (v >> (int)(s - 1)) & 0x1;
+       s -= ((t - r) & 256) >> 8;
+
+       return (uint)(s-1);
+
+       
+      
+       
+       
+       
+       
+       // return s;
+    }
+
+
     struct TileInfo
     {
         public int possibility ;
@@ -502,6 +562,15 @@ public class WFC : MonoBehaviour
     {
 //replace array mover with acessing xy stuct
         
+
+
+   print(System.Convert.ToString(47265,2));
+    print(selectbit(20));
+
+
+
+
+
         tex = stex;
         Tiles = TTemp;
         MazePart = TMaze;
@@ -517,7 +586,7 @@ public class WFC : MonoBehaviour
         mat.mainTexture = Tex;
 
         Vector2 start = (Vector2) transform.position + (Vector2.left*bnds.x+ Vector2.down*bnds.y) ;
-        print(bnds);
+        //print(bnds);
         
       // Vector2 start = transform.position -  new Vector2(2, 0,0) ;
 
@@ -541,8 +610,8 @@ public class WFC : MonoBehaviour
         MasterTiles[sx, sy].Entropy = 1;
         MasterTiles[sx, sy].possibility = (MasterTiles[sx, sy].possibility & (int)1<<TT);
         
-        print("StartBlock is" +(TileType)(int) MasterTiles[sx, sy].possibility );
-        print((sx,sy));
+       // print("StartBlock is" +(TileType)(int) MasterTiles[sx, sy].possibility );
+       // print((sx,sy));
         //MasterTiles[sx,sy].IntetoImage(TT);
         MasterTiles[sx,sy].AddNewBlock(TT);
        
@@ -582,7 +651,7 @@ public class WFC : MonoBehaviour
    
         
         
-        print("NuWorked:");
+//        print("NuWorked:");
         long xi = (long)MasterTiles[x, y].possibility;
         
         
@@ -680,16 +749,128 @@ public class WFC : MonoBehaviour
            // print("t"+tt);
             //print("binar"+ (1 << tt));
            // print("pos"+MasterTiles[coord.Item1, coord.Item2].possibility);
+           
+           
+           
+           
+           
+           
+           
+           
+           
          
           
         } while (((1<<tt) & MasterTiles[coord.Item1, coord.Item2].possibility) == 0 && count < 100);
 
+        
+        
+        
+        ulong v  = (ulong)MasterTiles[coord.Item1, coord.Item2].possibility;
+                 // Input value to find position with rank r.
+        ulong r = (ulong)Random.Range(1,MasterTiles[coord.Item1, coord.Item2].Entropy+1 ) ;      // Input: bit's desired rank [1-64].
+        ulong s;      // Output: Resulting position of bit with rank r [1-64]
+        ulong a, b, c, d; // Intermediate temporaries for bit count.
+        ulong t;      // Bit count temporary.
+        
+        // Do a normal parallel bit count for a 64-bit integer,                     
+        // but store all intermediate steps.                                        
+         //a = (v & m1) + ((v >> 1) & m1);
+         a =  (v - ((v >> 1) & (~0UL/3)));
+        // print("a: " + a);
+        
+         //b = (a & m2) + ((a >> 2) & m2);
+         b = (a & ~0UL/5) + ((a >> 2) & ~0UL/5);
+       //  print("b: " + b);
+        //b = (a & ~0/5) + ((a >> 2) & ~0/5);
+         //c = (b & m4) + ((b >> 4) & m4);
+         c = (b + (b >> 4)) & ~0UL/0x11;
+        // print("c: " + c);
+        //c = (b + (b >> 4)) & ~0/0x11;
+       // t = (c & m8) + ((c >> 8) & m8);
+       d = (c + (c >> 8)) & ~0UL/0x101;
+       t = (d >> 32) + (d >> 48);
+        
+        
+       //  a = (v & m1 ) + ((v >>  1) & m1 ); //put count of each  2 bits into those  2 bits 
+       //  b = (a & m2 ) + ((a >>  2) & m2 ); //put count of each  4 bits into those  4 bits 
+       //  c = (b & m4 ) + ((b >>  4) & m4 ); //put count of each  8 bits into those  8 bits 
+       //  t = (c & m8 ) + ((c >>  8) & m8 ); //put count of each 16 bits into those 16 bits 
+       // // t = (d >> 32) + (d >> 48);
+        
+        // xi = (xi & m16) + ((xi >> 16) & m16); //put count of each 32 bits into those 32 bits 
+        // xi = (xi & m32) + ((xi >> 32) & m32); //put count of each 64 bits into those 64 bits 
+        //
+       // print(t);
+        Int64 supercount = (Int64)t;
+
+
+
+
+
+       
+        
+        
+        
+        
+        // Now do branchless select!                                                 
+        s  = 64;
+        
+        
+         // s -= ((t - r) & 256) >> 3; r -= (t & ((t - r) >> 8));
+         // t  = (d >> (int)(s - 16)) & 0xff;
+         if (r > t) {s -= 32; r -= t;}
+      //  if (r > t) {s -= 32; r -= t;}
+         if (r > t) {s -= 16; r -= t;}
+        //s -= ((t - r) & 256) >> 4; r -= (t & ((t - r) >> 8));
+        //t  = (c >> ((int)s - 8)) & 0xf;
+         if (r > t) {s -= 8; r -= t;}
+       // s -= ((t - r) & 256) >> 5; r -= (t & ((t - r) >> 8));
+       // t  = (b >> ((int)s - 4)) & 0x7;
+         if (r > t) {s -= 4; r -= t;}
+        //s -= ((t - r) & 256) >> 6; r -= (t & ((t - r) >> 8));
+        //t  = (a >> ((int)s - 2)) & 0x3;
+         if (r > t) {s -= 2; r -= t;}
+       // s -= ((t - r) & 256) >> 7; r -= (t & ((t - r) >> 8));
+       // t  = (v >> ((int)s - 1)) & 0x1;
+        if (r > t) s--;
+        //s -= ((t - r) & 256) >> 8;
+        s = 65 - s;
+        
+        
+         // // if (r > t) {s -= 32; r -= t;}
+        // s -= ((t - r) & 256) >> 3; r -= (t & ((t - r) >> 8));
+        // t  = (d >> (s - 16)) & 0xff;
+        
+        
         if (count >= 99)
         {
             
-            print("BROOOOOOOOOOKKKKKKKKKKKEEEEEEEEE");
+            //print("BROOOOOOOOOOKKKKKKKKKKKEEEEEEEEE");
             // print(count);
         }
+        
+        // print("TTT");
+        // print(tt);
+        // print("SS");
+        // print(supercount);
+        // print(MasterTiles[coord.Item1, coord.Item2].Entropy);
+        // print(r);
+        // print(s);
+        // print(System.Convert.ToString(MasterTiles[coord.Item1, coord.Item2].possibility,2));
+        // print((MasterTiles[coord.Item1, coord.Item2].possibility));
+        // if (( (1<<tt) & MasterTiles[coord.Item1, coord.Item2].possibility) == 0 )
+        // {
+        //     print("Works? "+ "Yes" );
+        // }
+        // else
+        // {
+        //     
+        //     print("Works? "+ "NO" );
+        //     
+        // }
+
+
+
         return tt;
 
 
@@ -927,12 +1108,12 @@ public class WFC : MonoBehaviour
             
             case ScrollDir.right:
             
-                print("right");
+                //print("right");
                // print("big start");
                 for (int i = 0; i < totalx; i++)
                 { if (i == totalx - 1)
                     {
-                        print((MasterTiles[((totalx - 2)), i].possibility));
+                       // print((MasterTiles[((totalx - 2)), i].possibility));
                     }
                     
                     nustart = MasterTiles[(totalx-2),i].xy  ;
@@ -965,13 +1146,13 @@ public class WFC : MonoBehaviour
                 
                 break;
             case ScrollDir.up:
-             print("up");
+             //print("up");
                
                 for (int i = 0; i < totalx; i++)
                 {
                     if (i == totalx - 1)
                     {
-                        print(MasterTiles[i,  totalx-2].possibility);
+                        //print(MasterTiles[i,  totalx-2].possibility);
                     }
 
                    
