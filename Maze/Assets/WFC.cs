@@ -188,7 +188,7 @@ public class WFC : MonoBehaviour
     }
 
     
-    private uint selectbitNoBranch(uint v)
+    private uint selectbitNoBranch(uint v, uint range )
     {
         
       // Input value to find position with rank r.
@@ -196,7 +196,7 @@ public class WFC : MonoBehaviour
        //  v = 5024 ;
          //r = (uint)rank;
     
-       // print(System.Convert.ToString((7&(0-7)),2));
+//       print(System.Convert.ToString(v,2));
       
          
          uint a = (v & i1 ) + ((v >>  1) & i1 ); //put count of each  2 bits into those  2 bits 
@@ -207,26 +207,20 @@ public class WFC : MonoBehaviour
          t = (t >> 16) & 0xffff;
         
 
-     ///    ulong t = ((d >> 32) + (d >> 48));
-       //  int   n = (int)((d * (~(ulong)0 / 255)) >> (64 - 1) * 8);
-         ulong r = (uint) 3;
-         ulong s = 32;
-       //print("T: "+System.Convert.ToString(t,2));
-     
- //      s  = 32;
-     
-       // if (r > t) {s -= 16; r -= t; }
-
-
+  
+         uint r = (uint) Random.Range(1,range+1);
+         print("R: "+r);
+         uint s = 32;
+  
        int ia = 1;
      
        s  = 32;
       
        
-       
-        if (r > t) {s -= 16; r -= t;}
-       //s -= ((t - r) & 256) >> 4;
-       //r -= (t & ((t - r) >> 8));
+       //
+       // if (r > t) {s -= 16; r -= t;}
+       s -= ((t - r) & 256) >> 4;
+       r -= (t & ((t - r) >> 8));
       
        //if (r > t) {s -= 8; r -= t;}
         
@@ -262,74 +256,74 @@ public class WFC : MonoBehaviour
        // return s;
     }
 
-    private uint selectbit(uint v)
-    {
-        
-                 // Input value to find position with rank r.
-      
-      //   v = 5024 ;
-         //r = (uint)rank;
-     
-         
-         uint a = (v & i1 ) + ((v >>  1) & i1 ); //put count of each  2 bits into those  2 bits 
-         uint b = (a & i2 ) + ((a >>  2) & i2 ); //put count of each  4 bits into those  4 bits 
-         uint c = (b & i4 ) + ((b >>  4) & i4 ); //put count of each  8 bits into those  8 bits 
-         uint t = (c & i8 ) + ((c >>  8) & i8 ); //put count of each 16 bits into those 16 bits 
-
-         t = (t >> 16) & 0xffff;
-
-
-     ///    ulong t = ((d >> 32) + (d >> 48));
-       //  int   n = (int)((d * (~(ulong)0 / 255)) >> (64 - 1) * 8);
-         ulong r = (uint) 3;
-         ulong s = 32;
-       //print("T: "+System.Convert.ToString(t,2));
-     
- //      s  = 32;
-     
-       // if (r > t) {s -= 16; r -= t; }
-
-
-       int ia = 1;
-     
-       s  = 32;
-      
-       
-       
-        if (r > t) {s -= 16; r -= t;}
-       //s -= ((t - r) & 256) >> 4; r -= (t & ((t - r) >> 8));
-     
-       //if (r > t) {s -= 8; r -= t;}
-        
-   ;
-       t  = (c >> (int)(s - 8)) & 0xf;
-     
-        if (r > t) {s -= 8; r -= t;}
-       //s -= ((t - r) & 256) >> 5; r -= (t & ((t - r) >> 8));
-       t  = (b >> (int)(s - 4)) & 0x7;
-      
-        if (r > t) {s -= 4; r -= t;}
-       //s -= ((t - r) & 256) >> 6; r -= (t & ((t - r) >> 8));
-       t  = (a >> (int)(s - 2)) & 0x3;
-       
-        if (r > t) {s -= 2; r -= t;}
-       //s -= ((t - r) & 256) >> 7; r -= (t & ((t - r) >> 8));
-       t  = (v >> (int)(s - 1)) & 0x1;
-       
-        if (r > t) s--;
-       //s -= ((t - r) & 256) >> 8;
-
-       return (uint)s;
-
-
-
-
-
-
-
-       // return s;
-    }
-
+   // private uint selectbit(uint v)
+ //    {
+ //        
+ //                 // Input value to find position with rank r.
+ //      
+ //      //   v = 5024 ;
+ //         //r = (uint)rank;
+ //     
+ //         
+ //         uint a = (v & i1 ) + ((v >>  1) & i1 ); //put count of each  2 bits into those  2 bits 
+ //         uint b = (a & i2 ) + ((a >>  2) & i2 ); //put count of each  4 bits into those  4 bits 
+ //         uint c = (b & i4 ) + ((b >>  4) & i4 ); //put count of each  8 bits into those  8 bits 
+ //         uint t = (c & i8 ) + ((c >>  8) & i8 ); //put count of each 16 bits into those 16 bits 
+ //
+ //         t = (t >> 16) & 0xffff;
+ //
+ //
+ //     ///    ulong t = ((d >> 32) + (d >> 48));
+ //       //  int   n = (int)((d * (~(ulong)0 / 255)) >> (64 - 1) * 8);
+ //         ulong r = (uint) 3;
+ //         ulong s = 32;
+ //       //print("T: "+System.Convert.ToString(t,2));
+ //     
+ // //      s  = 32;
+ //     
+ //       // if (r > t) {s -= 16; r -= t; }
+ //
+ //
+ //       int ia = 1;
+ //     
+ //       s  = 32;
+ //      
+ //       
+ //       
+ //        if (r > t) {s -= 16; r -= t;}
+ //       //s -= ((t - r) & 256) >> 4; r -= (t & ((t - r) >> 8));
+ //     
+ //       //if (r > t) {s -= 8; r -= t;}
+ //        
+ //   ;
+ //       t  = (c >> (int)(s - 8)) & 0xf;
+ //     
+ //        if (r > t) {s -= 8; r -= t;}
+ //       //s -= ((t - r) & 256) >> 5; r -= (t & ((t - r) >> 8));
+ //       t  = (b >> (int)(s - 4)) & 0x7;
+ //      
+ //        if (r > t) {s -= 4; r -= t;}
+ //       //s -= ((t - r) & 256) >> 6; r -= (t & ((t - r) >> 8));
+ //       t  = (a >> (int)(s - 2)) & 0x3;
+ //       
+ //        if (r > t) {s -= 2; r -= t;}
+ //       //s -= ((t - r) & 256) >> 7; r -= (t & ((t - r) >> 8));
+ //       t  = (v >> (int)(s - 1)) & 0x1;
+ //       
+ //        if (r > t) s--;
+ //       //s -= ((t - r) & 256) >> 8;
+ //
+ //       return (uint)s;
+ //
+ //
+ //
+ //
+ //
+ //
+ //
+ //       // return s;
+ //    }
+ //
 
     struct TileInfo
     {
@@ -647,39 +641,9 @@ public class WFC : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-//replace array mover with acessing xy stuct
 
-        double Totaler = 0;
+       // print(selectbitNoBranch(7598,54));
         
-
-        for (int i = 0; i < 10000; i++)
-        {
-            double t = Time.realtimeSinceStartupAsDouble;
-            uint rand = (uint)Random.Range(1, ~0u);
-            
-            selectbit(rand) ;
-            Totaler += (Time.realtimeSinceStartupAsDouble - t);
-        }
-
-        Totaler /= 100;
-
-        double nuTotaler = 0;
-        for (int i = 0; i < 10000; i++)
-        {
-            double t = Time.realtimeSinceStartupAsDouble;
-            uint rand = (uint)Random.Range(1, ~0u);
-            
-            selectbitNoBranch(rand) ;
-            nuTotaler += (Time.realtimeSinceStartupAsDouble - t);
-        }
-
-        nuTotaler /= 100;
-        print("branch: "+Totaler);
-        print("no branch: "+nuTotaler);
-        
-        print("Which is faster: " + (Totaler < nuTotaler ? "Branch" : "NoBrnach"));
-        //no branch is faster
-
 
         tex = stex;
         Tiles = TTemp;
@@ -833,155 +797,23 @@ public class WFC : MonoBehaviour
     //
     int targetIndex((int,int) coord)
     {
-        int tt ;
-        int count = 0;
         
-        //fix loop
-        
-        do
+
+
+        int g = Random.Range(0,lesschanceofblank+1);
+        uint num = (uint)MasterTiles[coord.Item1, coord.Item2].possibility;
+        uint ent = (uint)MasterTiles[coord.Item1, coord.Item2].Entropy;
+        if (g % (lesschanceofblank + 1) != 0)
         {
-            ++count;
-            tt = Random.Range(0, totalTiles);
-            int g = Random.Range(0, lesschanceofblank);
-            if (g != 0)
-            {
-                //simple imp improve later
-                if (tt == 0)
-                {
-                    tt = (tt+ g)%totalTiles; 
-                    
-                }
-                   
-                
-            }
+            num = num ^ (1);
+            ent--;
 
-            // print("Heeeeeee");
-           // print("t"+tt);
-            //print("binar"+ (1 << tt));
-           // print("pos"+MasterTiles[coord.Item1, coord.Item2].possibility);
-           
-           
-           
-           
-           
-           
-           
-           
-           
-         
-          
-        } while (((1<<tt) & MasterTiles[coord.Item1, coord.Item2].possibility) == 0 && count < 100);
-
-        
-        
-        
-        ulong v  = (ulong)MasterTiles[coord.Item1, coord.Item2].possibility;
-                 // Input value to find position with rank r.
-        ulong r = (ulong)Random.Range(1,MasterTiles[coord.Item1, coord.Item2].Entropy+1 ) ;      // Input: bit's desired rank [1-64].
-        ulong s;      // Output: Resulting position of bit with rank r [1-64]
-        ulong a, b, c, d; // Intermediate temporaries for bit count.
-        ulong t;      // Bit count temporary.
-        
-        // Do a normal parallel bit count for a 64-bit integer,                     
-        // but store all intermediate steps.                                        
-         //a = (v & m1) + ((v >> 1) & m1);
-         a =  (v - ((v >> 1) & (~0UL/3)));
-        // print("a: " + a);
-        
-         //b = (a & m2) + ((a >> 2) & m2);
-         b = (a & ~0UL/5) + ((a >> 2) & ~0UL/5);
-       //  print("b: " + b);
-        //b = (a & ~0/5) + ((a >> 2) & ~0/5);
-         //c = (b & m4) + ((b >> 4) & m4);
-         c = (b + (b >> 4)) & ~0UL/0x11;
-        // print("c: " + c);
-        //c = (b + (b >> 4)) & ~0/0x11;
-       // t = (c & m8) + ((c >> 8) & m8);
-       d = (c + (c >> 8)) & ~0UL/0x101;
-       t = (d >> 32) + (d >> 48);
-        
-        
-       //  a = (v & m1 ) + ((v >>  1) & m1 ); //put count of each  2 bits into those  2 bits 
-       //  b = (a & m2 ) + ((a >>  2) & m2 ); //put count of each  4 bits into those  4 bits 
-       //  c = (b & m4 ) + ((b >>  4) & m4 ); //put count of each  8 bits into those  8 bits 
-       //  t = (c & m8 ) + ((c >>  8) & m8 ); //put count of each 16 bits into those 16 bits 
-       // // t = (d >> 32) + (d >> 48);
-        
-        // xi = (xi & m16) + ((xi >> 16) & m16); //put count of each 32 bits into those 32 bits 
-        // xi = (xi & m32) + ((xi >> 32) & m32); //put count of each 64 bits into those 64 bits 
-        //
-       // print(t);
-        Int64 supercount = (Int64)t;
-
-
-
-
-
-       
-        
-        
-        
-        
-        // Now do branchless select!                                                 
-        s  = 64;
-        
-        
-         // s -= ((t - r) & 256) >> 3; r -= (t & ((t - r) >> 8));
-         // t  = (d >> (int)(s - 16)) & 0xff;
-         if (r > t) {s -= 32; r -= t;}
-      //  if (r > t) {s -= 32; r -= t;}
-         if (r > t) {s -= 16; r -= t;}
-        //s -= ((t - r) & 256) >> 4; r -= (t & ((t - r) >> 8));
-        //t  = (c >> ((int)s - 8)) & 0xf;
-         if (r > t) {s -= 8; r -= t;}
-       // s -= ((t - r) & 256) >> 5; r -= (t & ((t - r) >> 8));
-       // t  = (b >> ((int)s - 4)) & 0x7;
-         if (r > t) {s -= 4; r -= t;}
-        //s -= ((t - r) & 256) >> 6; r -= (t & ((t - r) >> 8));
-        //t  = (a >> ((int)s - 2)) & 0x3;
-         if (r > t) {s -= 2; r -= t;}
-       // s -= ((t - r) & 256) >> 7; r -= (t & ((t - r) >> 8));
-       // t  = (v >> ((int)s - 1)) & 0x1;
-        if (r > t) s--;
-        //s -= ((t - r) & 256) >> 8;
-        s = 65 - s;
-        
-        
-         // // if (r > t) {s -= 32; r -= t;}
-        // s -= ((t - r) & 256) >> 3; r -= (t & ((t - r) >> 8));
-        // t  = (d >> (s - 16)) & 0xff;
-        
-        
-        if (count >= 99)
-        {
-            
-            //print("BROOOOOOOOOOKKKKKKKKKKKEEEEEEEEE");
-            // print(count);
         }
-        
-        // print("TTT");
-        // print(tt);
-        // print("SS");
-        // print(supercount);
-        // print(MasterTiles[coord.Item1, coord.Item2].Entropy);
-        // print(r);
-        // print(s);
-        // print(System.Convert.ToString(MasterTiles[coord.Item1, coord.Item2].possibility,2));
-        // print((MasterTiles[coord.Item1, coord.Item2].possibility));
-        // if (( (1<<tt) & MasterTiles[coord.Item1, coord.Item2].possibility) == 0 )
-        // {
-        //     print("Works? "+ "Yes" );
-        // }
-        // else
-        // {
-        //     
-        //     print("Works? "+ "NO" );
-        //     
-        // }
 
 
 
-        return tt;
+        return (int)selectbitNoBranch(num,ent )-1;
+       // return tt;
 
 
     }
@@ -993,15 +825,7 @@ public class WFC : MonoBehaviour
         if (coord.Item1 + offx < totalx && coord.Item2 + offy < totaly && coord.Item1 + offx >= 0 &&
             coord.Item2 + offy >= 0 &&   MasterTiles[coord.Item1+ offx,coord.Item2+offy].Entropy != 0 && MasterTiles[coord.Item1+ offx,coord.Item2+offy].Known == false       )
         {
-//            print((TileType)(int)MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility);
-            //fix entroy do count thing
-           
-           
-            //print("pre pos: " + (MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility + " Ander "+rules[TT,(int)Dir]));
-           
-           // MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility = (MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility & rules[TT,(int)Diru ]);
-          
-          // print(TT);
+//           
             MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility = (MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility & rules[TT,(int)Diru ]);
         
 
@@ -1011,17 +835,11 @@ public class WFC : MonoBehaviour
             
             
           
-           // print("A i: x+ (coord.Item1+ offx) + " j: "+(coord.Item2+offy) + " Pos: "+MasterTiles[coord.Item1+ offx,coord.Item2+offy].possibility);
             MasterTiles[coord.Item1+ offx,coord.Item2+offy].Entropy =  nuentropy(coord.Item1+ offx, coord.Item2+offy);
            
 
         }
-        else
-        {
-            
-
-           
-        }
+       
                    
 
 
