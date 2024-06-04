@@ -187,52 +187,71 @@ public class WFC : MonoBehaviour
 
     }
 
-
-    private uint selectbit(int rank)
+    
+    private uint selectbitNoBranch(uint v)
     {
         
-        uint v;          // Input value to find position with rank r.
+      // Input value to find position with rank r.
       
-         v = 47265;
+       //  v = 5024 ;
          //r = (uint)rank;
+    
+       // print(System.Convert.ToString((7&(0-7)),2));
       
          
          uint a = (v & i1 ) + ((v >>  1) & i1 ); //put count of each  2 bits into those  2 bits 
          uint b = (a & i2 ) + ((a >>  2) & i2 ); //put count of each  4 bits into those  4 bits 
          uint c = (b & i4 ) + ((b >>  4) & i4 ); //put count of each  8 bits into those  8 bits 
          uint t = (c & i8 ) + ((c >>  8) & i8 ); //put count of each 16 bits into those 16 bits 
-       
 
-
+         t = (t >> 16) & 0xffff;
+        
 
      ///    ulong t = ((d >> 32) + (d >> 48));
        //  int   n = (int)((d * (~(ulong)0 / 255)) >> (64 - 1) * 8);
-         ulong r = (uint) 2;
+         ulong r = (uint) 3;
          ulong s = 32;
        //print("T: "+System.Convert.ToString(t,2));
      
  //      s  = 32;
      
        // if (r > t) {s -= 16; r -= t; }
-       
+
+
+       int ia = 1;
+     
+       s  = 32;
       
        
-     
-       s -= ((t - r) & 256) >> 4;
-       r -= (t & ((t - r) >> 8));
-       t = (c >> (int)(s - 8)) & 0xf;
+       
+        if (r > t) {s -= 16; r -= t;}
+       //s -= ((t - r) & 256) >> 4;
+       //r -= (t & ((t - r) >> 8));
+      
+       //if (r > t) {s -= 8; r -= t;}
+        
+   
+       t  = (c >> (int)(s - 8)) & 0xf;
+    
+       // if (r > t) {s -= 8; r -= t;}
        s -= ((t - r) & 256) >> 5;
        r -= (t & ((t - r) >> 8));
-       t = (b >> (int)(s - 4)) & 0x7;
+       t  = (b >> (int)(s - 4)) & 0x7;
+     
+        //if (r > t) {s -= 4; r -= t;}
        s -= ((t - r) & 256) >> 6;
        r -= (t & ((t - r) >> 8));
-       t = (a >> (int)(s - 2)) & 0x3;
+       t  = (a >> (int)(s - 2)) & 0x3;
+      
+       // if (r > t) {s -= 2; r -= t;}
        s -= ((t - r) & 256) >> 7;
        r -= (t & ((t - r) >> 8));
-       t = (v >> (int)(s - 1)) & 0x1;
+       t  = (v >> (int)(s - 1)) & 0x1;
+       
+        //if (r > t) s--;
        s -= ((t - r) & 256) >> 8;
-
-       return (uint)(s-1);
+      
+       return (uint)s;
 
        
       
@@ -240,6 +259,74 @@ public class WFC : MonoBehaviour
        
        
        
+       // return s;
+    }
+
+    private uint selectbit(uint v)
+    {
+        
+                 // Input value to find position with rank r.
+      
+      //   v = 5024 ;
+         //r = (uint)rank;
+     
+         
+         uint a = (v & i1 ) + ((v >>  1) & i1 ); //put count of each  2 bits into those  2 bits 
+         uint b = (a & i2 ) + ((a >>  2) & i2 ); //put count of each  4 bits into those  4 bits 
+         uint c = (b & i4 ) + ((b >>  4) & i4 ); //put count of each  8 bits into those  8 bits 
+         uint t = (c & i8 ) + ((c >>  8) & i8 ); //put count of each 16 bits into those 16 bits 
+
+         t = (t >> 16) & 0xffff;
+
+
+     ///    ulong t = ((d >> 32) + (d >> 48));
+       //  int   n = (int)((d * (~(ulong)0 / 255)) >> (64 - 1) * 8);
+         ulong r = (uint) 3;
+         ulong s = 32;
+       //print("T: "+System.Convert.ToString(t,2));
+     
+ //      s  = 32;
+     
+       // if (r > t) {s -= 16; r -= t; }
+
+
+       int ia = 1;
+     
+       s  = 32;
+      
+       
+       
+        if (r > t) {s -= 16; r -= t;}
+       //s -= ((t - r) & 256) >> 4; r -= (t & ((t - r) >> 8));
+     
+       //if (r > t) {s -= 8; r -= t;}
+        
+   ;
+       t  = (c >> (int)(s - 8)) & 0xf;
+     
+        if (r > t) {s -= 8; r -= t;}
+       //s -= ((t - r) & 256) >> 5; r -= (t & ((t - r) >> 8));
+       t  = (b >> (int)(s - 4)) & 0x7;
+      
+        if (r > t) {s -= 4; r -= t;}
+       //s -= ((t - r) & 256) >> 6; r -= (t & ((t - r) >> 8));
+       t  = (a >> (int)(s - 2)) & 0x3;
+       
+        if (r > t) {s -= 2; r -= t;}
+       //s -= ((t - r) & 256) >> 7; r -= (t & ((t - r) >> 8));
+       t  = (v >> (int)(s - 1)) & 0x1;
+       
+        if (r > t) s--;
+       //s -= ((t - r) & 256) >> 8;
+
+       return (uint)s;
+
+
+
+
+
+
+
        // return s;
     }
 
@@ -561,14 +648,37 @@ public class WFC : MonoBehaviour
     void Start()
     {
 //replace array mover with acessing xy stuct
+
+        double Totaler = 0;
         
 
+        for (int i = 0; i < 10000; i++)
+        {
+            double t = Time.realtimeSinceStartupAsDouble;
+            uint rand = (uint)Random.Range(1, ~0u);
+            
+            selectbit(rand) ;
+            Totaler += (Time.realtimeSinceStartupAsDouble - t);
+        }
 
-   print(System.Convert.ToString(47265,2));
-    print(selectbit(20));
+        Totaler /= 100;
 
+        double nuTotaler = 0;
+        for (int i = 0; i < 10000; i++)
+        {
+            double t = Time.realtimeSinceStartupAsDouble;
+            uint rand = (uint)Random.Range(1, ~0u);
+            
+            selectbitNoBranch(rand) ;
+            nuTotaler += (Time.realtimeSinceStartupAsDouble - t);
+        }
 
-
+        nuTotaler /= 100;
+        print("branch: "+Totaler);
+        print("no branch: "+nuTotaler);
+        
+        print("Which is faster: " + (Totaler < nuTotaler ? "Branch" : "NoBrnach"));
+        //no branch is faster
 
 
         tex = stex;
