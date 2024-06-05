@@ -188,7 +188,7 @@ public class WFC : MonoBehaviour
     }
 
     
-    private uint selectbitNoBranch(uint v, uint range )
+    private uint selectbitNoBranch(uint v, int range )
     {
         
       // Input value to find position with rank r.
@@ -245,7 +245,7 @@ public class WFC : MonoBehaviour
         //if (r > t) s--;
        s -= ((t - r) & 256) >> 8;
       
-       return (uint)s;
+       return s;
 
        
       
@@ -350,10 +350,7 @@ public class WFC : MonoBehaviour
            xy = i_xy;
             Entropy = totalTiles;
             Known = false;
-           // plane = Plane;
-          //  mat = plane.GetComponent<Renderer>().material;
-//            print(mat);
-
+    
         }
 
         
@@ -642,7 +639,7 @@ public class WFC : MonoBehaviour
     void Start()
     {
 
-       // print(selectbitNoBranch(7598,54));
+     
         
 
         tex = stex;
@@ -660,15 +657,11 @@ public class WFC : MonoBehaviour
         mat.mainTexture = Tex;
 
         Vector2 start = (Vector2) transform.position + (Vector2.left*bnds.x+ Vector2.down*bnds.y) ;
-        //print(bnds);
-        
-      // Vector2 start = transform.position -  new Vector2(2, 0,0) ;
-
+   
         for (int i = 0; i < totalx; i++)
         {
             for (int j = 0; j < totaly; j++)
             {
-               //Instantiate(Plane, start+((Vector2.right*((bnds.x*i)+offset*i))+ Vector2.up*((bnds.y*j)+offset*j)),Plane.transform.rotation)
                MasterTiles[i,j].Inst( new Vector2(i,j) );
                
                 
@@ -684,9 +677,6 @@ public class WFC : MonoBehaviour
         MasterTiles[sx, sy].Entropy = 1;
         MasterTiles[sx, sy].possibility = (MasterTiles[sx, sy].possibility & (int)1<<TT);
         
-       // print("StartBlock is" +(TileType)(int) MasterTiles[sx, sy].possibility );
-       // print((sx,sy));
-        //MasterTiles[sx,sy].IntetoImage(TT);
         MasterTiles[sx,sy].AddNewBlock(TT);
        
        UpdateNeighbour(1, 0, Direction.Right, (sx,sy), TT);
@@ -802,7 +792,7 @@ public class WFC : MonoBehaviour
 
         int g = Random.Range(0,lesschanceofblank+1);
         uint num = (uint)MasterTiles[coord.Item1, coord.Item2].possibility;
-        uint ent = (uint)MasterTiles[coord.Item1, coord.Item2].Entropy;
+        int ent = MasterTiles[coord.Item1, coord.Item2].Entropy;
         if (g % (lesschanceofblank + 1) != 0)
         {
             num = num ^ (1);
