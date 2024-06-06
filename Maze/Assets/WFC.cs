@@ -21,6 +21,8 @@ public class WFC : MonoBehaviour
     [SerializeField] private Texture Tex;
     [SerializeField] private float offset;
     private int moveTracker = 0;
+    
+    //think abvout using async load 
     enum ScrollDir
     {
         up,

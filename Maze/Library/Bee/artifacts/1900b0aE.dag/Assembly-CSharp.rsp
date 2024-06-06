@@ -369,6 +369,7 @@
 "Assets/MeshCreator.cs"
 "Assets/MOV.cs"
 "Assets/PostProcess.cs"
+"Assets/Store.cs"
 "Assets/WFC.cs"
 -langversion:9.0
 
