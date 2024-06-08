@@ -20,7 +20,9 @@ public class Store : MonoBehaviour
                 
             }
 
+            binaryWriter.BaseStream.Seek(4, SeekOrigin.Begin);
             
+            binaryWriter.Write(1902);
             
             print("Wrotten");
             
@@ -32,6 +34,7 @@ public class Store : MonoBehaviour
 
     int[] readFromFile(int loc)
     {
+        
         int[] rturn = new int[loc];
         using (BinaryReader binaryReader = new BinaryReader(File.Open(fileLoc, FileMode.OpenOrCreate)))
         {
@@ -53,8 +56,8 @@ public class Store : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        AddtoFile(23);
-        int[] a = (readFromFile(23));
+        AddtoFile(5);
+        int[] a = (readFromFile(5));
 
 
         foreach (var VARIABLE in a)
