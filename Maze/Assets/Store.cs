@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -20,9 +21,7 @@ public class Store : MonoBehaviour
                 
             }
 
-            binaryWriter.BaseStream.Seek(4, SeekOrigin.Begin);
             
-            binaryWriter.Write(1902);
             
             print("Wrotten");
             
@@ -30,8 +29,47 @@ public class Store : MonoBehaviour
 
 
     }
+//parraeleize test please
+    void AppendtoFile(int loc)
+    {
+        int[] rturn = new int[loc];
+        using (BinaryReader binaryReader = new BinaryReader(File.Open(fileLoc, FileMode.OpenOrCreate)))
+        {
+            for (int i = 0; i < loc; i++)
+            {
+
+                rturn[i] = binaryReader.ReadInt32();
+            }
+
+            print("readen");
+            
+        }
+
+        
+        using (BinaryWriter binaryWriter = new BinaryWriter(File.Open(fileLoc, FileMode.OpenOrCreate)))
+        {
+            
+            binaryWriter.Write(1920);
+          //  Span<byte> bytes = MemoryMarshal.Cast<int, byte>(nurturn.AsSpan());
+          for (int i = 0; i < loc; i++)
+          {
+              binaryWriter.Write(rturn[i]);    
+          }
+            
+                    
+            
+           
+
+            
+            
+            print("Wrotten");
+            
+        }
+        
+        
 
 
+    }
     int[] readFromFile(int loc)
     {
         
@@ -64,7 +102,14 @@ public class Store : MonoBehaviour
         {
             print(VARIABLE);
         }
-        
+      AppendtoFile(5);
+         a = (readFromFile(6));
+
+
+        foreach (var VARIABLE in a)
+        {
+            print(VARIABLE);
+        }
     }
 
     // Update is called once per frame
