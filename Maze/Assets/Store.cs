@@ -10,6 +10,8 @@ public class Store : MonoBehaviour
 {
     private const string fileLoc = "D:/Game projects/untiy_Maze/Maze/Assets/SaveFile/yaya.bin";
 //have xy then jump to next of same sighn eg 3,1 4 the next 4,1 will be in 4 jumps, over write when writing next pos or neg
+// 2 files one with data and an index file that points to where it is in real file
+//have index be able to skip like from 1 pos to next. or skip halfway if val is buig enough
     void AddtoFile(int loc)
     {
         using (BinaryWriter binaryWriter = new BinaryWriter(File.Open(fileLoc, FileMode.OpenOrCreate)))
