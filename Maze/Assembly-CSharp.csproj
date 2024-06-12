@@ -47,6 +47,7 @@
      <Compile Include="Assets\MOV.cs" />
      <Compile Include="Assets\PostProcess.cs" />
      <Compile Include="Assets\Store.cs" />
+     <Compile Include="Assets\PRNG.cs" />
      <None Include="Assets\Textures\Mater\Cube.shader" />
      <None Include="Assets\Chromatic.shader" />
      <Reference Include="UnityEngine">
