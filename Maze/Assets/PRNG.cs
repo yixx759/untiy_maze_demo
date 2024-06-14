@@ -5,23 +5,31 @@ using UnityEngine;
 
 public class PRNG : MonoBehaviour
 {
-    static private long seed = 3;
+    static private long seed = 37653;
+    static private long seed1 = 642362;
+    static private long seed2 = 2266742;
+    static private long seed3 = 1843711;
   
-    // private const int n = 624;
-    // private const ulong f = 1812433253UL;
-    // private const int w = 32;
-    // private const ulong a= 0x9908b0dfUL;
-    // private const ulong b =0x9d2c5680UL;
-    // private const ulong c =0xefc60000UL;
-    //
-    // private const int m = 397;
-    // private const int u = 11;
-    //
-    // private const int r = 31;
-    //
-    // private const ulong LMASK = (0xffffffffUL >> (w - r));
-    // private const ulong UMASK =(0xffffffffUL << r);
     
+
+
+    struct TwistConst
+    {
+        public const int n = 624;
+        public const ulong f = 1812433253UL;
+        public const int w = 32;
+        public const ulong a= 0x9908b0dfUL;
+        public const ulong b =0x9d2c5680UL;
+        public const ulong c =0xefc60000UL;
+    
+        public const int m = 397;
+        public const int u = 11;
+    
+        public const int r = 31;
+    
+        public const ulong LMASK = (0xffffffffUL >> (w - r));
+        public const  ulong UMASK =(0xffffffffUL << r);
+    }
     
     
     struct StateTracker
@@ -32,67 +40,68 @@ public class PRNG : MonoBehaviour
 
     }
 
-
-
-    // void initilize_State(ref StateTracker s)
-    // {
-    //     s.states = new uint[n];
-    //     uint useed = (uint)seed;
-    //     s.states[0] = useed ;
-    //
-    //     for (int i = 1; i < n; i++)
-    //     {
-    //         useed = (uint)(f * (useed ^ (useed >> (w - 2))));
-    //         
-    //         s.states[i] = useed;
-    //
-    //
-    //     }
-    //
-    //     s.curstate = 0;
-    //
-    //
-    // }
-    //
-    // uint MTwist(ref StateTracker s)
-    // {
-    //     int k = s.curstate;
-    //
-    //     int j = k - (n - 1);
-    //     if (j < 0) {j += n;}
-    //
-    //     uint x = (uint)((s.states[k] & UMASK) | (s.states[j] & LMASK));
-    //     uint xA = x >> 1;
-    //
-    //     if ((x & 1) == 1)
-    //     {
-    //         xA= (uint)(xA^a);
-    //
-    //     }
-    //
-    //     j = k - (n - m);
-    //     if (j < 0){ j += n;}
-    //
-    //
-    //     x = s.states[j] ^ xA;
-    //
-    //     s.states[k++] = x;
-    //     if (k >= n)
-    //     {
-    //         k = 0;
-    //     }
-    //
-    //     s.curstate = k;
-    //
-    //     uint y = x ^ (x >> u);
-    //
-    //     y = (uint)((y ^ ((y << 7) & b)));
-    //     y = (uint)((y ^ ((y << 15) & c)));
-    //     uint z = y ^ (y >> 1);
-    //
-    //     return z;
-    //
-    // }
+    
+    
+    void initilize_State(ref StateTracker s)
+    {
+       
+        s.states = new uint[TwistConst.n];
+        uint useed = (uint)(seed*DateTime.Now.Millisecond);
+        s.states[0] = useed ;
+    
+        for (int i = 1; i < TwistConst.n; i++)
+        {
+            useed = (uint)(TwistConst.f * (useed ^ (useed >> (TwistConst.w - 2))));
+            
+            s.states[i] = useed;
+    
+    
+        }
+    
+        s.curstate = 0;
+    
+    
+    }
+    
+    uint MTwist(ref StateTracker s)
+    {
+        int k = s.curstate;
+    
+        int j = k - (TwistConst.n - 1);
+        if (j < 0) {j += TwistConst.n;}
+    
+        uint x = (uint)((s.states[k] & TwistConst.UMASK) | (s.states[j] & TwistConst.LMASK));
+        uint xA = x >> 1;
+    
+        if ((x & 1) == 1)
+        {
+            xA= (uint)(xA^TwistConst.a);
+    
+        }
+    
+        j = k - (TwistConst.n - TwistConst.m);
+        if (j < 0){ j += TwistConst.n;}
+    
+    
+        x = s.states[j] ^ xA;
+    
+        s.states[k++] = x;
+        if (k >= TwistConst.n)
+        {
+            k = 0;
+        }
+    
+        s.curstate = k;
+    
+        uint y = x ^ (x >> TwistConst.u);
+    
+        y = (uint)((y ^ ((y << 7) & TwistConst.b)));
+        y = (uint)((y ^ ((y << 15) & TwistConst.c)));
+        uint z = y ^ (y >> 1);
+    
+        return z;
+    
+    }
 
 
 
@@ -107,7 +116,17 @@ public class PRNG : MonoBehaviour
 
 
     }
+    private long nuLCG( long mod, long a, long c)
+    {
+        long tmp = (seed * a + c) % mod;
+        
+        return tmp;
+      
 
+       
+
+
+    }
     long Middle_Square(int n)
     {
         seed *= seed;
@@ -193,15 +212,16 @@ public class PRNG : MonoBehaviour
     void Start()
     {
 
-       // StateTracker nus = new StateTracker();
-        //initilize_State(ref nus);
+//        print(DateTime.Now.Millisecond);
+        StateTracker nus = new StateTracker();
+        initilize_State(ref nus);
 
         // uint[] states = new uint[4];
         //
         // states[0]  = (uint)seed;
-        // states[1] = (uint)seed;
-        // states[2] = (uint)seed;
-        // states[3] = (uint)seed;
+        // states[1] = (uint)seed1;
+        // states[2] = (uint)seed2;
+        // states[3] = (uint)seed3;
 
         
         // ulong[] states = new ulong[4];
@@ -213,21 +233,40 @@ public class PRNG : MonoBehaviour
         
         
       //  uint nuseed = (uint)seed;
-        ulong nuseed = (ulong)seed;
+      //  ulong nuseed = (ulong)seed;
+
+      seed = MTwist(ref nus);
+      long seeda = MTwist(ref nus);
+      long seedc = MTwist(ref nus);
+      
+      
       
 
-        for (int i = 0; i < 500; i++)
+      for (int x = 0; x < 50; x++)
         {
             
            // print((LCG(500,63,23)));
           //  print(Middle_Square(8));
-          //  print(MTwist(ref nus));
+          // print(MTwist(ref nus));
           //nuseed = xorshift32(nuseed);
          // print(nuseed);
          //print(xorshift128(ref states));
          // print(xoshiro64p(ref states));
-         nuseed = xorshift64star(nuseed);
-         print(nuseed);
+         //nuseed = xorshift64star(nuseed);
+        // print(nuseed);
+
+
+        for (int y = 0; y < 50; y++)
+        {
+            print("x: "+x+" y: "+y+": "+ nuLCG(32,seeda*x,seedc*y));
+            
+            
+            
+            
+        }
+
+
+
         }
 
 
