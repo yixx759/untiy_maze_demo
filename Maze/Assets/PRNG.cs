@@ -104,23 +104,27 @@ public class PRNG : MonoBehaviour
     }
 
 
-
-    private long LCG( long mod, long a, long c)
+    //
+    // private long LCG( long mod, long a, long c)
+    // {
+    //
+    //         seed = (seed * a + c) % mod;
+    //         return seed;
+    //   
+    //
+    //    
+    //
+    //
+    // }
+    private ulong nuLCG( ulong mod, ulong a, ulong c)
     {
-
-            seed = (seed * a + c) % mod;
-            return seed;
-      
-
-       
-
-
-    }
-    private long nuLCG( long mod, long a, long c)
-    {
-        long tmp = (seed * a + c) % mod;
+        unchecked
+        {
+            ulong tmp = ((ulong)seed * a + c) % mod;
+            return tmp;
+        }
         
-        return tmp;
+       
       
 
        
@@ -236,13 +240,12 @@ public class PRNG : MonoBehaviour
       //  ulong nuseed = (ulong)seed;
 
       seed = MTwist(ref nus);
-      long seeda = MTwist(ref nus);
-      long seedc = MTwist(ref nus);
-      
-      
+      ulong seeda = MTwist(ref nus);
+      ulong seedc = MTwist(ref nus);
+     
       
 
-      for (int x = 0; x < 50; x++)
+      for (ulong x = 0; x < 10; x++)
         {
             
            // print((LCG(500,63,23)));
@@ -256,9 +259,10 @@ public class PRNG : MonoBehaviour
         // print(nuseed);
 
 
-        for (int y = 0; y < 50; y++)
+        for (ulong y = 0; y < 10; y++)
         {
-            print("x: "+x+" y: "+y+": "+ nuLCG(32,seeda*x,seedc*y));
+           
+          print("x: "+x+" y: "+y+": "+ (nuLCG(31,seeda*x,seedc*y)+1));
             
             
             
