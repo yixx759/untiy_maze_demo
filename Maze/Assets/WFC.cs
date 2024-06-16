@@ -115,8 +115,9 @@ public class WFC : MonoBehaviour
     {
         unchecked
         {
-            ulong tmp = (seed * a + c) % mod;
-            return tmp;
+            ulong tmp = (seed * a + c) ;
+            print("Whole Num: "+tmp);
+            return tmp % mod;
         }
         
        
@@ -974,7 +975,8 @@ public class WFC : MonoBehaviour
 
         }
 
-
+        print("ENT: "+MasterTiles[coord.Item1, coord.Item2].Entropy);
+        print("POS: "+MasterTiles[coord.Item1, coord.Item2].possibility);
 
         return (int)selectbitNoBranch(num, ent,coord) - 1;
         // return tt;
