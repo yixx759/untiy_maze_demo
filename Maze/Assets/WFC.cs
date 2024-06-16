@@ -337,12 +337,15 @@ public class WFC : MonoBehaviour
 
         
         //account for neg numbers
-        
+
+
+        Vector2 xy = MasterTiles[coord.Item1, coord.Item2].xy;
+        print("XY: "+ xy );
        // uint r = (uint)Random.Range(1, range + 1);
        uint r = 1;
        if (range != 1)
        {
-           r = (uint) nuLCG((ulong)range-1 , (seeda * (uint)coord.Item1), (seedb * (uint)coord.Item2)) + 1;
+           r = (uint) nuLCG((ulong)range-1 , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
 
            
        }
@@ -974,9 +977,9 @@ public class WFC : MonoBehaviour
             ent--;
 
         }
-
+        print("x: "+coord.Item1+" Y: "+coord.Item2);
         print("ENT: "+MasterTiles[coord.Item1, coord.Item2].Entropy);
-        print("POS: "+MasterTiles[coord.Item1, coord.Item2].possibility);
+        print("POS: "+System.Convert.ToString(MasterTiles[coord.Item1, coord.Item2].possibility,2));
 
         return (int)selectbitNoBranch(num, ent,coord) - 1;
         // return tt;
