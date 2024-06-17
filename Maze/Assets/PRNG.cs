@@ -242,7 +242,10 @@ public class PRNG : MonoBehaviour
       seed = MTwist(ref nus);
       ulong seeda = MTwist(ref nus);
       ulong seedc = MTwist(ref nus);
-     
+
+
+      double totalerlcg = 0;
+      double totalerxoro = 0;
       
 
       for (ulong x = 0; x < 10; x++)
@@ -262,16 +265,28 @@ public class PRNG : MonoBehaviour
         for (ulong y = 0; y < 10; y++)
         {
            
-          print("x: "+x+" y: "+y+": "+ (nuLCG(31,seeda*x,seedc*y)+1));
-            
-            
-            
-            
+         // print("x: "+x+" y: "+y+": "+ (nuLCG(31,seeda*x,seedc*y)+1));
+         print("x: "+x+" y: "+y);
+          double d = Time.realtimeSinceStartupAsDouble;
+
+          print((nuLCG(31, seeda * x, seedc * y) + 1));
+          totalerlcg = Time.realtimeSinceStartupAsDouble - d;
+
+          double d1 = Time.realtimeSinceStartupAsDouble;
+          print((xorshift64star(x) - xorshift64star(y)));
+          totalerxoro = Time.realtimeSinceStartupAsDouble - d1;
+
         }
 
+;
+
+       
 
 
         }
+      
+      print("LCG: "+ totalerlcg/100);
+      print("xoro: "+ totalerxoro/100);
 
 
     }
