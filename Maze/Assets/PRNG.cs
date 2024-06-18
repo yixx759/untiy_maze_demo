@@ -270,11 +270,11 @@ public class PRNG : MonoBehaviour
           double d = Time.realtimeSinceStartupAsDouble;
 
           print((nuLCG(31, seeda * x, seedc * y) + 1));
-          totalerlcg = Time.realtimeSinceStartupAsDouble - d;
+          totalerlcg += Time.realtimeSinceStartupAsDouble - d;
 
           double d1 = Time.realtimeSinceStartupAsDouble;
-          print((xorshift64star(x) - xorshift64star(y)));
-          totalerxoro = Time.realtimeSinceStartupAsDouble - d1;
+          print((xorshift64star(x+seeda*y) )%31);
+          totalerxoro += Time.realtimeSinceStartupAsDouble - d1;
 
         }
 

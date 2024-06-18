@@ -15,6 +15,9 @@ using Unity.Collections;
 public class WFC : MonoBehaviour
 {
     
+    //WHY NO BLANK  
+    
+    
     
      private ulong seed = 37653;
      private ulong seeda = 642362;
@@ -345,12 +348,12 @@ public class WFC : MonoBehaviour
        uint r = 1;
        if (range != 1)
        {
-           r = (uint) nuLCG((ulong)range-1 , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
+           r = (uint) nuLCG((ulong)range , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
 
            
        }
-      
-
+      print(range);
+        print(System.Convert.ToString( v,2));
       
         
         
@@ -978,8 +981,8 @@ public class WFC : MonoBehaviour
 
         }
         print("x: "+coord.Item1+" Y: "+coord.Item2);
-        print("ENT: "+MasterTiles[coord.Item1, coord.Item2].Entropy);
-        print("POS: "+System.Convert.ToString(MasterTiles[coord.Item1, coord.Item2].possibility,2));
+        print("ENT: "+ent);
+        print("POS: "+System.Convert.ToString(num,2));
 
         return (int)selectbitNoBranch(num, ent,coord) - 1;
         // return tt;
