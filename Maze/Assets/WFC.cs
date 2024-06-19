@@ -345,13 +345,11 @@ public class WFC : MonoBehaviour
         Vector2 xy = MasterTiles[coord.Item1, coord.Item2].xy;
         print("XY: "+ xy );
        // uint r = (uint)Random.Range(1, range + 1);
-       uint r = 1;
-       if (range != 1)
-       {
-           r = (uint) nuLCG((ulong)range , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
+       
+        uint   r = (uint) nuLCG((ulong)range , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
 
            
-       }
+       
       print(range);
         print(System.Convert.ToString( v,2));
       
