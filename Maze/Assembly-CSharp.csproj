@@ -49,7 +49,9 @@
      <Compile Include="Assets\PostProcess.cs" />
      <Compile Include="Assets\Store.cs" />
      <None Include="Assets\Textures\Mater\Cube.shader" />
+     <None Include="Assets\Decal.shader" />
      <None Include="Assets\Chromatic.shader" />
+     <None Include="Assets\Decal 1.shader" />
      <Reference Include="UnityEngine">
      <HintPath>E:\Program Files\Unity\Hub\Editor\2021.3.13f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
      </Reference>
