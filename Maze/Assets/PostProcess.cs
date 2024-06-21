@@ -15,6 +15,14 @@ public class PostProcess : MonoBehaviour
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-        Graphics.Blit(source, destination, Post);
+        if (Post != null)
+        {
+            Graphics.Blit(source, destination, Post);
+        }
+        else
+        {
+            Graphics.Blit(source, destination);
+        }
+
     }
 }
