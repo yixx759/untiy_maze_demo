@@ -68,7 +68,7 @@ Shader "Unlit/Decal"
                float3 obj = mul(unity_WorldToObject, float4(wrld,1)).xyz;
                 clip(0.5-abs(obj));
               // return float4(obj ,1);
-               return tex2D(_MainTex,obj.zy+=0.5);
+               return tex2D(_MainTex,obj.xy+=0.5);
                // return float4(d,0,0,1);
             }
             ENDCG

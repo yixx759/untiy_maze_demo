@@ -52,6 +52,7 @@ public class WFC : MonoBehaviour
 
     
     
+    
     void initilize_State(ref StateTracker s)
     {
        
@@ -130,16 +131,24 @@ public class WFC : MonoBehaviour
 
 
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+    void CreateMessage(int x, int y)
+    {
+        
+        //choose random for now and spawn decal and rotate based on 
+        //what tile type.
+        //array of diff stories
+        
+        
+    }
+
+
+
+
     private Material mat;
     [SerializeField] private GameObject Plane;
     [SerializeField] private static Texture tex;
