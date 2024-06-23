@@ -11,6 +11,8 @@ using Vector2 = UnityEngine.Vector2;
 using Unity.Burst;
 using Unity.Jobs;
 using Unity.Collections;
+using Unity.Mathematics;
+using Vector3 = UnityEngine.Vector3;
 
 public class WFC : MonoBehaviour
 {
@@ -142,14 +144,23 @@ public class WFC : MonoBehaviour
         //choose random for now and spawn decal and rotate based on 
         //what tile type.
         //array of diff stories
-        
-        
+
+        UnityEngine.Vector3 pos = MasterTiles[x, y].plane.transform.position + MessagePos[TPowerReverseBigInt(MasterTiles[x, y].possibility)];
+
+        Instantiate(Message, pos, quaternion.identity);
+
+
+
+
+
     }
 
 
 
 
     private Material mat;
+    [SerializeField] private Vector3[] MessagePos;
+    [SerializeField] private GameObject Message;
     [SerializeField] private GameObject Plane;
     [SerializeField] private static Texture tex;
     [SerializeField] private Texture stex;
@@ -1444,7 +1455,11 @@ public class WFC : MonoBehaviour
 
         }
 
-
+        if (alltrue && Input.GetKeyDown(KeyCode.Space))
+        {
+            CreateMessage(Random.Range(0,totalx),Random.Range(0,totaly));
+            //check for blank
+        }
 
 
     }
