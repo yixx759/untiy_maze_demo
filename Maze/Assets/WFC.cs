@@ -122,7 +122,7 @@ public class WFC : MonoBehaviour
         unchecked
         {
             ulong tmp = (seed * a + c) ;
-            print("Whole Num: "+tmp);
+          //  print("Whole Num: "+tmp);
             return tmp % mod;
         }
         
@@ -144,12 +144,25 @@ public class WFC : MonoBehaviour
         //choose random for now and spawn decal and rotate based on 
         //what tile type.
         //array of diff stories
+       Vector2 nulocation = location + new Vector2(Dir.x * Random.Range(1, 6),Dir.y * Random.Range(1, 6));
+       nulocation = new Vector2(Mathf.Floor(nulocation.x), Mathf.Floor(nulocation.y));
+        x = (int)nulocation.x;
+        y = (int)nulocation.y;
+        if (x >= totalx || y >= totaly || y < 0  || x < 0)
+        {
+           
+            print("Wrong loser");
+            print(location);
+            return;
+        }
 
+        location = nulocation;
         UnityEngine.Vector3 pos = MasterTiles[x, y].plane.transform.position + MessagePos[TPowerReverseBigInt(MasterTiles[x, y].possibility)];
-
-        Instantiate(Message, pos, quaternion.identity);
-
-
+        quaternion rot = Quaternion.Euler(MessageRot[TPowerReverseBigInt(MasterTiles[x, y].possibility)]);
+        Instantiate(Message, pos, rot);
+        print("Nuloc: ");
+        print(location);
+        print(Dir);
 
 
 
@@ -159,7 +172,10 @@ public class WFC : MonoBehaviour
 
 
     private Material mat;
+    [SerializeField] private Vector2 Dir;
+    [SerializeField] private Vector2 location;
     [SerializeField] private Vector3[] MessagePos;
+    [SerializeField] private Vector3[] MessageRot;
     [SerializeField] private GameObject Message;
     [SerializeField] private GameObject Plane;
     [SerializeField] private static Texture tex;
@@ -363,20 +379,20 @@ public class WFC : MonoBehaviour
 
 
         Vector2 xy = MasterTiles[coord.Item1, coord.Item2].xy;
-        print("XY: "+ xy );
+       // print("XY: "+ xy );
        // uint r = (uint)Random.Range(1, range + 1);
        
         uint   r = (uint) nuLCG((ulong)range , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
 
            
-       
-      print(range);
-        print(System.Convert.ToString( v,2));
+      //  
+      // print(range);
+      //   print(System.Convert.ToString( v,2));
       
         
         
         //test with entropy
-        print("R: " + r);
+    //    print("R: " + r);
         uint s = 32;
 
         int ia = 1;
@@ -998,9 +1014,7 @@ public class WFC : MonoBehaviour
             ent--;
 
         }
-        print("x: "+coord.Item1+" Y: "+coord.Item2);
-        print("ENT: "+ent);
-        print("POS: "+System.Convert.ToString(num,2));
+     
 
         return (int)selectbitNoBranch(num, ent,coord) - 1;
         // return tt;
@@ -1229,8 +1243,7 @@ public class WFC : MonoBehaviour
 
             case ScrollDir.right:
 
-                //print("right");
-                // print("big start");
+              
                 for (int i = 0; i < totalx; i++)
                 {
                     if (i == totalx - 1)
@@ -1407,25 +1420,21 @@ public class WFC : MonoBehaviour
         ScrollDir direction = ScrollDir.down;
         if (Input.GetKeyDown(KeyCode.W))
         {
-            print(ScrollDir.up);
             direction = ScrollDir.up;
             moved = true;
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
-            print(ScrollDir.down);
             moved = true;
             direction = ScrollDir.down;
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            print(ScrollDir.right);
             moved = true;
             direction = ScrollDir.right;
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
-            print(ScrollDir.left);
             moved = true;
             direction = ScrollDir.left;
 

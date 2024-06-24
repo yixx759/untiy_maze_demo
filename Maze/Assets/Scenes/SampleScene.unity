@@ -546,6 +546,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5663184519315a449bee98dc404b38d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Dir: {x: 1, y: 1}
+  location: {x: 7, y: 7}
   MessagePos:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 4, z: 3}
@@ -559,6 +561,19 @@ MonoBehaviour:
   - {x: 0, y: 4, z: -3}
   - {x: 0, y: 4, z: -3}
   - {x: 0, y: 0, z: 0}
+  MessageRot:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 90, z: 0}
+  - {x: 0, y: 90, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 90, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 90, y: 0, z: 0}
   Message: {fileID: 2783775906953853618, guid: 81539a25186bdd442bd2cefa2e81ab97, type: 3}
   Plane: {fileID: 2533142966657687953, guid: ec8d57d2064db684aa90c44d921ed3cf, type: 3}
   stex: {fileID: 2800000, guid: 6e27dea4e23a13b4197a57cf28249735, type: 3}
