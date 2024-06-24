@@ -608,7 +608,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: b7e811be75f62d449a4c0998dc7b4201, type: 3}
   - {fileID: 2800000, guid: 50e82656bbfdf1447912e74e1054b417, type: 3}
   Timer: 0
-  lesschanceofblank: 1
+  lesschanceofblank: 4
 --- !u!4 &1705347352
 Transform:
   m_ObjectHideFlags: 0

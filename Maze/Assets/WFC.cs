@@ -492,6 +492,9 @@ public class WFC : MonoBehaviour
         {
             plane = Instantiate(MazePart[i], new UnityEngine.Vector3(xy.x * blockLength.x, 0, xy.y * blockLength.y),
                 Quaternion.Euler(new UnityEngine.Vector3(-89.98f, -90, 0)));
+
+            plane.AddComponent(typeof(MeshCollider));
+
             //plane.GetComponent<Renderer>().material.mainTexture = tex;
 //-89.98
         }
@@ -849,6 +852,9 @@ public class WFC : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+     blockLength = new Vector2(TMaze[0].GetComponent<Renderer>().bounds.size.x, TMaze[0].GetComponent<Renderer>().bounds.size.z);
+        
         StateTracker nus = new StateTracker();
         initilize_State(ref nus);
         seed = MTwist(ref nus);
