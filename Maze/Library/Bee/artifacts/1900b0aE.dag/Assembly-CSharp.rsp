@@ -368,6 +368,7 @@
 "Assets/ArrayReplace.cs"
 "Assets/MeshCreator.cs"
 "Assets/MOV.cs"
+"Assets/Movement.cs"
 "Assets/PostProcess.cs"
 "Assets/PRNG.cs"
 "Assets/Store.cs"

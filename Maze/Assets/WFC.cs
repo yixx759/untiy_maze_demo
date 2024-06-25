@@ -204,7 +204,11 @@ public class WFC : MonoBehaviour
 
     private int[,] rules;
     private int[,] rulenum;
-    private bool alltrue = false;
+    
+    //make cleaner
+    public static bool alltrue = false;
+    
+    
     [SerializeField] static private Texture[] Tiles;
     [SerializeField] static private GameObject[] MazePart;
     [SerializeField] private GameObject[] TMaze;
@@ -1424,27 +1428,27 @@ public class WFC : MonoBehaviour
 
         bool moved = false;
         ScrollDir direction = ScrollDir.down;
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            direction = ScrollDir.up;
-            moved = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            moved = true;
-            direction = ScrollDir.down;
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            moved = true;
-            direction = ScrollDir.right;
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            moved = true;
-            direction = ScrollDir.left;
-
-        }
+        // if (Input.GetKeyDown(KeyCode.W))
+        // {
+        //     direction = ScrollDir.up;
+        //     moved = true;
+        // }
+        // else if (Input.GetKeyDown(KeyCode.S))
+        // {
+        //     moved = true;
+        //     direction = ScrollDir.down;
+        // }
+        // else if (Input.GetKeyDown(KeyCode.D))
+        // {
+        //     moved = true;
+        //     direction = ScrollDir.right;
+        // }
+        // else if (Input.GetKeyDown(KeyCode.A))
+        // {
+        //     moved = true;
+        //     direction = ScrollDir.left;
+        //
+        // }
 
         double nutim = 0;
         // move(direction);
