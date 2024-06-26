@@ -41,14 +41,15 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets\Message_SPW.cs" />
      <Compile Include="Assets\WFC.cs" />
      <Compile Include="Assets\ArrayReplace.cs" />
      <Compile Include="Assets\PRNG.cs" />
      <Compile Include="Assets\MeshCreator.cs" />
      <Compile Include="Assets\MOV.cs" />
      <Compile Include="Assets\PostProcess.cs" />
-     <Compile Include="Assets\Store.cs" />
      <Compile Include="Assets\Movement.cs" />
+     <Compile Include="Assets\Store.cs" />
      <None Include="Assets\Textures\Mater\Cube.shader" />
      <None Include="Assets\Decal.shader" />
      <None Include="Assets\Chromatic.shader" />

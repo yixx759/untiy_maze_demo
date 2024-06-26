@@ -9,7 +9,7 @@ public class Movement : MonoBehaviour
    [SerializeField] private float RateofChange;
    [SerializeField] private float speed;
 
-   private Transform t;
+   public static Transform t;
    private Rigidbody r;
    private Vector3 inputDir;
    private Vector3 vel ;

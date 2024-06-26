@@ -138,45 +138,15 @@ public class WFC : MonoBehaviour
 
 
 
-    void CreateMessage(int x, int y)
-    {
-        
-        //choose random for now and spawn decal and rotate based on 
-        //what tile type.
-        //array of diff stories
-       Vector2 nulocation = location + new Vector2(Dir.x * Random.Range(1, 6),Dir.y * Random.Range(1, 6));
-       nulocation = new Vector2(Mathf.Floor(nulocation.x), Mathf.Floor(nulocation.y));
-        x = (int)nulocation.x;
-        y = (int)nulocation.y;
-        if (x >= totalx || y >= totaly || y < 0  || x < 0)
-        {
-           
-            print("Wrong loser");
-            print(location);
-            return;
-        }
-
-        location = nulocation;
-        UnityEngine.Vector3 pos = MasterTiles[x, y].plane.transform.position + MessagePos[TPowerReverseBigInt(MasterTiles[x, y].possibility)];
-        quaternion rot = Quaternion.Euler(MessageRot[TPowerReverseBigInt(MasterTiles[x, y].possibility)]);
-        Instantiate(Message, pos, rot);
-        print("Nuloc: ");
-        print(location);
-        print(Dir);
-
-
-
-    }
+    
 
 
 
 
     private Material mat;
-    [SerializeField] private Vector2 Dir;
-    [SerializeField] private Vector2 location;
-    [SerializeField] private Vector3[] MessagePos;
-    [SerializeField] private Vector3[] MessageRot;
-    [SerializeField] private GameObject Message;
+   
+   
+    
     [SerializeField] private GameObject Plane;
     [SerializeField] private static Texture tex;
     [SerializeField] private Texture stex;
@@ -196,11 +166,16 @@ public class WFC : MonoBehaviour
     }
 
     //keep equal
-    [SerializeField] private int totalx = 6;
-    [SerializeField] private int totaly = 6;
+    [SerializeField] public int totalx = 6;
+    [SerializeField] public int totaly = 6;
+    public Vector2 MazeStart ;
+    public Vector2 MazeEnd ;
+    
+    
+    
 
     private const int totalTiles = 12;
-    private TileInfo[,] MasterTiles;
+    public TileInfo[,] MasterTiles;
 
     private int[,] rules;
     private int[,] rulenum;
@@ -217,7 +192,7 @@ public class WFC : MonoBehaviour
     private float TempTimer = 2;
     [SerializeField] private int lesschanceofblank = 0;
 
-    private static Vector2 blockLength = new Vector2(16.8f, 16.8f);
+    public static Vector2 blockLength = new Vector2(16.8f, 16.8f);
     //add colluider
 //put in struct
     const long m1 = 0x5555555555555555; //binary: 0101...
@@ -237,7 +212,7 @@ public class WFC : MonoBehaviour
     //const  int i32 = 0x00000000ffffffff; 
 
     [Flags]
-    enum TileType
+    public enum TileType
     {
         Blank = 1,
         Down = 2,
@@ -445,7 +420,7 @@ public class WFC : MonoBehaviour
 
     
 
-    struct TileInfo
+    public struct TileInfo
     {
         public int possibility;
         public int Entropy;
@@ -857,6 +832,9 @@ public class WFC : MonoBehaviour
     void Start()
     {
 
+        MazeStart = new Vector2(0, 0);
+        MazeEnd = new Vector2(totalx, totaly);
+        
      blockLength = new Vector2(TMaze[0].GetComponent<Renderer>().bounds.size.x, TMaze[0].GetComponent<Renderer>().bounds.size.z);
         
         StateTracker nus = new StateTracker();
@@ -1233,7 +1211,8 @@ public class WFC : MonoBehaviour
             case ScrollDir.left:
 
 
-
+                MazeStart.x--;
+                MazeEnd.x--;
                 for (int i = totalx - 1; i >= 0; i--)
                 {
 
@@ -1252,7 +1231,9 @@ public class WFC : MonoBehaviour
                 break;
 
             case ScrollDir.right:
-
+                
+                MazeStart.x++;
+                MazeEnd.x++;
               
                 for (int i = 0; i < totalx; i++)
                 {
@@ -1278,7 +1259,8 @@ public class WFC : MonoBehaviour
                 // print("out a here");
                 break;
             case ScrollDir.down:
-
+                MazeStart.y--;
+                MazeEnd.y--;
 
                 for (int i = 0; i < totalx; i++)
                 {
@@ -1296,6 +1278,9 @@ public class WFC : MonoBehaviour
             case ScrollDir.up:
                 //print("up");
 
+                MazeStart.y++;
+                MazeEnd.y++;
+                
                 for (int i = 0; i < totalx; i++)
                 {
                     if (i == totalx - 1)
@@ -1369,6 +1354,8 @@ public class WFC : MonoBehaviour
         //make new tiles multiple
 
 
+        
+        
 
 
 
@@ -1428,27 +1415,27 @@ public class WFC : MonoBehaviour
 
         bool moved = false;
         ScrollDir direction = ScrollDir.down;
-        // if (Input.GetKeyDown(KeyCode.W))
-        // {
-        //     direction = ScrollDir.up;
-        //     moved = true;
-        // }
-        // else if (Input.GetKeyDown(KeyCode.S))
-        // {
-        //     moved = true;
-        //     direction = ScrollDir.down;
-        // }
-        // else if (Input.GetKeyDown(KeyCode.D))
-        // {
-        //     moved = true;
-        //     direction = ScrollDir.right;
-        // }
-        // else if (Input.GetKeyDown(KeyCode.A))
-        // {
-        //     moved = true;
-        //     direction = ScrollDir.left;
-        //
-        // }
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            direction = ScrollDir.up;
+            moved = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            moved = true;
+            direction = ScrollDir.down;
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            moved = true;
+            direction = ScrollDir.right;
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            moved = true;
+            direction = ScrollDir.left;
+        
+        }
 
         double nutim = 0;
         // move(direction);
@@ -1476,7 +1463,7 @@ public class WFC : MonoBehaviour
 
         if (alltrue && Input.GetKeyDown(KeyCode.Space))
         {
-            CreateMessage(Random.Range(0,totalx),Random.Range(0,totaly));
+            //CreateMessage(Random.Range(0,totalx),Random.Range(0,totaly));
             //check for blank
         }
 

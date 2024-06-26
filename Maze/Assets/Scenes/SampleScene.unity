@@ -509,7 +509,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920562159}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 96.000015, y: 26.09, z: 95.99999}
+  m_LocalPosition: {x: 96.000015, y: 245.4, z: 95.99999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -656,6 +656,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1705347352}
   - component: {fileID: 1705347351}
+  - component: {fileID: 1705347356}
   - component: {fileID: 1705347353}
   - component: {fileID: 1705347354}
   - component: {fileID: 1705347355}
@@ -678,35 +679,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5663184519315a449bee98dc404b38d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Dir: {x: 1, y: 1}
-  location: {x: 7, y: 7}
-  MessagePos:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 4, z: 3}
-  - {x: 4, y: 4, z: 0}
-  - {x: -4, y: 4, z: 0}
-  - {x: 0, y: 4, z: -4}
-  - {x: 3, y: 4, z: 0}
-  - {x: 0, y: 4, z: 3}
-  - {x: 0, y: 4, z: 2}
-  - {x: 0, y: 4, z: 2}
-  - {x: 0, y: 4, z: -3}
-  - {x: 0, y: 4, z: -3}
-  - {x: 0, y: 0, z: 0}
-  MessageRot:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 90, z: 0}
-  - {x: 0, y: 90, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 90, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 90, y: 0, z: 0}
-  Message: {fileID: 2783775906953853618, guid: 81539a25186bdd442bd2cefa2e81ab97, type: 3}
   Plane: {fileID: 2533142966657687953, guid: ec8d57d2064db684aa90c44d921ed3cf, type: 3}
   stex: {fileID: 2800000, guid: 6e27dea4e23a13b4197a57cf28249735, type: 3}
   Tex: {fileID: 2800000, guid: 8e7641dbcc8ada34f96998b268b535e6, type: 3}
@@ -749,7 +721,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1705347350}
   m_LocalRotation: {x: -0, y: -0.7071068, z: 0.7071068, w: 0}
-  m_LocalPosition: {x: 0, y: 6.66, z: -1.3599997}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -793,6 +765,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5189e7a0c6f4584fbe766b7bc7f664c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1705347356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705347350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca79394c6d1ab7741b47c06ef15f530e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Message: {fileID: 2783775906953853618, guid: 81539a25186bdd442bd2cefa2e81ab97, type: 3}
+  location: {x: 7, y: 7}
+  Dir: {x: 1, y: 1}
+  wfcObjectInstance: {fileID: 1705347350}
+  MessagePos:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 4, z: 3}
+  - {x: 4, y: 4, z: 0}
+  - {x: -4, y: 4, z: 0}
+  - {x: 0, y: 4, z: -4}
+  - {x: 3, y: 4, z: 0}
+  - {x: 0, y: 4, z: 3}
+  - {x: 0, y: 4, z: 2}
+  - {x: 0, y: 4, z: 2}
+  - {x: 0, y: 4, z: -3}
+  - {x: 0, y: 4, z: -3}
+  - {x: 0, y: 0, z: 0}
+  MessageRot:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 90, z: 0}
+  - {x: 0, y: 90, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 90, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 90, y: 0, z: 0}
 --- !u!1 &1843116781
 GameObject:
   m_ObjectHideFlags: 0
