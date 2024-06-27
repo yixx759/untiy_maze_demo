@@ -12,10 +12,17 @@ public class Message_SPW : MonoBehaviour
      private WFC wfcInstance;
     [SerializeField] private Vector3[] MessagePos;
     [SerializeField] private Vector3[] MessageRot;
+    [SerializeField] private float DirectionDefine;
+    [SerializeField] private Vector3[] posarray;
+
+    private Vector3 startloc;
     // Start is called before the first frame update
     void Start()
     {
         wfcInstance = wfcObjectInstance.GetComponent<WFC>();
+        startloc = Movement.t.position;
+        startloc.y = 0;
+
     }
 
     // Update is called once per frame

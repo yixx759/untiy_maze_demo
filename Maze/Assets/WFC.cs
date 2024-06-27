@@ -121,9 +121,11 @@ public class WFC : MonoBehaviour
     {
         unchecked
         {
+           // ulong tmp = (seed * a + c) ;
             ulong tmp = (seed * a + c) ;
           //  print("Whole Num: "+tmp);
             return tmp % mod;
+           // return tmp % mod;
         }
         
        
@@ -134,8 +136,39 @@ public class WFC : MonoBehaviour
 
     }
 
+    private ulong othernuLCG( ulong mod, ulong a, ulong c)
+    {
+        unchecked
+        {
+            // ulong tmp = (seed * a + c) ;
+            seed = (seed * a + c) ;
+            //  print("Whole Num: "+tmp);
+            return seed % mod;
+            // return tmp % mod;
+        }
+        
+       
+      
+
+       
 
 
+    }
+
+    ulong xorshift64star(ulong x)
+    {
+
+        seed ^= seed >> 12;
+        seed ^= seed << 25;
+        seed ^= seed >> 27;
+        
+        return seed *  0x2545F4914F6CDD1DUL;
+
+
+
+
+
+    }
 
 
     
@@ -359,10 +392,12 @@ public class WFC : MonoBehaviour
 
         Vector2 xy = MasterTiles[coord.Item1, coord.Item2].xy;
        // print("XY: "+ xy );
-       // uint r = (uint)Random.Range(1, range + 1);
+        //uint r = (uint)Random.Range(1, range + 1);
        
-        uint   r = (uint) nuLCG((ulong)range , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
-
+       // uint   r = (uint) nuLCG((ulong)range , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
+       //uint   r = (uint) nuLCG((ulong)range , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
+      uint   r = (uint) ((xorshift64star((ulong)((xy.x+seeda)*(xy.y+seedb))) % (uint)range + 1));
+     // uint   r = (uint) othernuLCG((ulong)range , (seeda ), (seedb )) + 1;
            
       //  
       // print(range);
@@ -626,7 +661,8 @@ public class WFC : MonoBehaviour
 
         a[TPowerReverse(TileType.CBL), (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Down |
                                                                     TileType.Up | TileType.Ll | TileType.CTR |
-                                                                    TileType.CBR | TileType.Cross);
+                                                                     TileType.Cross);
+        //TileType.CBR |
 
         a[TPowerReverse(TileType.CBL), (int)Direction.Down] =
             (int)(TileType.Blank | TileType.Down | TileType.Ll | TileType.CTR | TileType.CTL);
@@ -648,9 +684,9 @@ public class WFC : MonoBehaviour
             (int)(TileType.Blank | TileType.Down | TileType.Ll | TileType.CTR | TileType.CTL);
 
         a[TPowerReverse(TileType.CBR), (int)Direction.Right] = (int)(TileType.Blank | TileType.Left | TileType.Up |
-                                                                     TileType.Down | TileType.Ll | TileType.CBL |
+                                                                     TileType.Down | TileType.Ll | 
                                                                      TileType.CTL | TileType.Cross);
-
+//TileType.CBL |
 
         //
 
