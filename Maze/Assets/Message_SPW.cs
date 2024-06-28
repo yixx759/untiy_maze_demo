@@ -16,19 +16,38 @@ public class Message_SPW : MonoBehaviour
     [SerializeField] private Vector3[] posarray;
 
     private Vector3 startloc;
+    private bool dirSet = false;
+
+    private float definedirvalue => DirectionDefine * DirectionDefine;
+    private Vector3 curpos => new Vector3(tt.position.x,0 ,tt.position.z);
+    
+
+    private Transform tt;
     // Start is called before the first frame update
     void Start()
     {
+        tt = Movement.t;
         wfcInstance = wfcObjectInstance.GetComponent<WFC>();
-        startloc = Movement.t.position;
+        startloc = tt.position;
         startloc.y = 0;
 
+        //once dir make message adn save to approach and regenerate
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        if ((startloc - curpos).sqrMagnitude > definedirvalue && !dirSet)
+        {
+            dirSet = true;
+            print("Here");
+            Dir = new Vector2((curpos - startloc).normalized.x,(curpos - startloc).normalized.z) ;
+            print(curpos - startloc);
+            print(Dir);
 
+
+        }
 
 
         if (WFC.alltrue && Input.GetKeyDown(KeyCode.Space))
