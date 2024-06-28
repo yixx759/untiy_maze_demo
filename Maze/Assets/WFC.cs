@@ -203,8 +203,8 @@ public class WFC : MonoBehaviour
     [SerializeField] public int totaly = 6;
     public Vector2 MazeStart ;
     public Vector2 MazeEnd ;
-    
-    
+
+    public bool hasmoved = false;
     
 
     private const int totalTiles = 12;
