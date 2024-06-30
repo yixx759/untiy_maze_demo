@@ -15,6 +15,8 @@ public class Message_SPW : MonoBehaviour
     [SerializeField] private float DirectionDefine;
     [SerializeField] private Vector2[] posarray;
     [SerializeField] private GameObject[] Messages;
+    [SerializeField] private bool[] inOut;
+    private bool changed= false;
 
     private const int msgnum = 12;
     
@@ -34,6 +36,7 @@ public class Message_SPW : MonoBehaviour
     {
         posarray = new Vector2[msgnum];
         Messages = new GameObject[msgnum];
+        inOut = new bool[msgnum];
         tt = Movement.t;
         wfcInstance = wfcObjectInstance.GetComponent<WFC>();
         startloc = tt.position;
@@ -55,7 +58,7 @@ public class Message_SPW : MonoBehaviour
             for (int i = 0; i < msgnum; i++)
             {
                
-                nulocation +=  Dir * Random.Range(6, 12);
+                nulocation +=  Dir * Random.Range(3, 12);
                 //add to array
                 nulocation = new Vector2(Mathf.Floor(nulocation.x), Mathf.Floor(nulocation.y));
                 posarray[indexMes++] = nulocation; 
@@ -67,37 +70,65 @@ public class Message_SPW : MonoBehaviour
             
             print(curpos - startloc);
             print(Dir);
+            foreach (var VARIABLE in posarray)
+            {
+                print(VARIABLE);
+            }
+          
 
 
         }
 
         if (dirSet && wfcInstance.hasmoved)
         {
+            //for each
             for (int i = 0; i < msgnum; i++)
             {
-                if (posarray[i].x >= wfcInstance.MazeEnd.x || posarray[i].y >= wfcInstance.MazeEnd.y || posarray[i].y < wfcInstance.MazeStart.y ||
-                    posarray[i].x < wfcInstance.MazeStart.x)
+
+                if (!(posarray[i].x >= wfcInstance.MazeEnd.x || posarray[i].y >= wfcInstance.MazeEnd.y ||
+                    posarray[i].y < wfcInstance.MazeStart.y ||
+                    posarray[i].x < wfcInstance.MazeStart.x))
                 {
-
-                    if (System.Object.ReferenceEquals(Messages[i],null))
+                    if (inOut[i] == false)
                     {
-                        CreateMessage((int)posarray[i].x,(int)posarray[i].y );
+                        if (System.Object.ReferenceEquals(Messages[i],null))
+                        {
+                            CreateMessage((int)posarray[i].x,(int)posarray[i].y );
+                        }
+                        else
+                        {
+                            ReRotate(i);
+                        
+                        
+                        
+                        }
+                   
+                        inOut[i] = true;
+
                     }
-                    else
+
+
+
+
+                }
+                else
+                {
+                    if (inOut[i] == true)
                     {
-                        ReRotate(i);
-
-
+                  
+                        inOut[i] = false;
 
                     }
 
                 }
+
+                wfcInstance.hasmoved = false;
+
             }
 
-            wfcInstance.hasmoved = false;
-
+          
         }
-      
+
         if (WFC.alltrue && Input.GetKeyDown(KeyCode.Space))
         {
             
@@ -107,6 +138,10 @@ public class Message_SPW : MonoBehaviour
             
         }
 
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            wfcInstance.hasmoved = true;
+        }
 
 
     }
@@ -120,7 +155,8 @@ public class Message_SPW : MonoBehaviour
         //choose random for now and spawn decal and rotate based on 
         //what tile type.
         //array of diff stories
-       
+        print("x: "+x);
+        print("y: "+x);
         if (x >= wfcInstance.MazeEnd.x || y >= wfcInstance.MazeEnd.y || y < wfcInstance.MazeStart.y  || x < wfcInstance.MazeStart.x)
         {
            
