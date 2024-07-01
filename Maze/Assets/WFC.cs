@@ -155,6 +155,11 @@ public class WFC : MonoBehaviour
 
     }
 
+    
+    //block tracker if mag above threshold find what dir and move to that new blcok
+    //largest element above a threshold
+    //cache block lentgh
+    
     ulong xorshift64star(ulong x)
     {
 
@@ -203,6 +208,8 @@ public class WFC : MonoBehaviour
     [SerializeField] public int totaly = 6;
     public Vector2 MazeStart ;
     public Vector2 MazeEnd ;
+    public Vector2 CurTile = new Vector2(7,7);
+    public Vector3 CurTilePos ;
 
     public bool hasmoved = false;
     
@@ -868,6 +875,7 @@ public class WFC : MonoBehaviour
     void Start()
     {
 
+        CurTile = new Vector2(7, 7);
         MazeStart = new Vector2(0, 0);
         MazeEnd = new Vector2(totalx, totaly);
         
@@ -922,6 +930,13 @@ public class WFC : MonoBehaviour
         UpdateNeighbour(0, 1, Direction.Up, (sx, sy), TT);
         UpdateNeighbour(0, -1, Direction.Down, (sx, sy), TT);
         //printarray(totalx);
+
+
+
+
+
+        
+
     }
 
 
@@ -1390,8 +1405,12 @@ public class WFC : MonoBehaviour
         //make new tiles multiple
 
 
-        
-        
+
+        if (alltrue)
+        {
+            CurTilePos = MasterTiles[(int)CurTile.x, (int)CurTile.y].plane.transform.position;
+            CurTilePos.y = 0;
+        }
 
 
 
@@ -1447,10 +1466,67 @@ public class WFC : MonoBehaviour
 
         TempTimer -= Time.deltaTime;
 
-
-
         bool moved = false;
+           
         ScrollDir direction = ScrollDir.down;
+        Vector3 p = Movement.t.position;
+        p.y = 0;
+        if (alltrue)
+        {
+            
+            
+            
+            if (Mathf.Abs(p.x - CurTilePos.x) > blockLength.x)
+            {
+            
+                if (Mathf.Sign((p.x - CurTilePos.x)) >= 0)
+                {
+                    direction = ScrollDir.right;
+                    CurTile.x++;
+                }
+                else
+                {
+                    direction = ScrollDir.left;
+                    CurTile.x--;
+                }
+                CurTilePos = MasterTiles[(int)(CurTile.x-MazeStart.x),  (int)(CurTile.y-MazeStart.y)].plane.transform.position;
+                CurTilePos.y = 0;
+                moved = true;
+                print(p - CurTilePos);
+                print(CurTilePos);
+                print(CurTile);
+
+            }
+            else if (Mathf.Abs(p.z - CurTilePos.z) > blockLength.y)
+            {
+                if (Mathf.Sign((p.z - CurTilePos.z)) >= 0)
+                {
+                    direction = ScrollDir.up;
+                    CurTile.y++;
+                }
+                else
+                {
+                    direction = ScrollDir.down;
+                    CurTile.y--;
+                }
+                CurTilePos = MasterTiles[(int)(CurTile.x-MazeStart.x), (int)(CurTile.y-MazeStart.y)].plane.transform.position;
+                CurTilePos.y = 0;
+                moved = true;
+                print(p - CurTilePos);
+                print(CurTilePos);
+                print(CurTile);
+            }
+
+        
+            
+            
+            
+            
+            
+        }
+
+       
+    
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             direction = ScrollDir.up;

@@ -509,7 +509,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920562159}
   m_LocalRotation: {x: 0.6889873, y: 0, z: 0, w: 0.7247734}
-  m_LocalPosition: {x: 96.000015, y: 245.4, z: 95.99999}
+  m_LocalPosition: {x: 112, y: 245.4, z: 112}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -687,6 +687,9 @@ MonoBehaviour:
   totaly: 14
   MazeStart: {x: 0, y: 0}
   MazeEnd: {x: 0, y: 0}
+  CurTile: {x: 0, y: 0}
+  CurTilePos: {x: 0, y: 0, z: 0}
+  hasmoved: 0
   TMaze:
   - {fileID: 919132149155446097, guid: 7e050aee2e966c649af32b51170bc24a, type: 3}
   - {fileID: 919132149155446097, guid: a2be7cf143955ba4abdf4070d59e31ad, type: 3}
@@ -811,6 +814,8 @@ MonoBehaviour:
   - {x: 90, y: 0, z: 0}
   DirectionDefine: 44.47
   posarray: []
+  Messages: []
+  inOut: 
 --- !u!1 &1843116781
 GameObject:
   m_ObjectHideFlags: 0
