@@ -5,6 +5,8 @@ using UnityEngine;
 public class Message_SPW : MonoBehaviour
 {
 
+    //avoid spawning on blank
+    
     [SerializeField] private GameObject Message;
     [SerializeField] private Vector2 location;
     [SerializeField] private Vector2 Dir;
@@ -79,7 +81,7 @@ public class Message_SPW : MonoBehaviour
 
         }
 
-        if (dirSet && wfcInstance.hasmoved)
+        if (dirSet && wfcInstance.hasmoved && WFC.alltrue)
         {
             //for each
             for (int i = 0; i < msgnum; i++)
@@ -186,10 +188,18 @@ public class Message_SPW : MonoBehaviour
     }
 
 
-    void ReRotate(   int i)
+    void ReRotate(int i)
 
     {
+        //subtract xy
         Vector2 xy = posarray[i];
+        print("REROTATE");
+        print("x: "+(int)xy.x+ " Y: "+(int)xy.y);
+        xy.x -=  (int)wfcInstance.MazeStart.x;
+        xy.y -= (int)wfcInstance.MazeStart.y;
+        print("x: "+(int)xy.x+ " Y: "+(int)xy.y);
+        print(wfcInstance.MasterTiles[(int)xy.x, (int)xy.y].possibility);
+        print(TPowerReverseInt(wfcInstance.MasterTiles[(int)xy.x, (int)xy.y].possibility));
         Messages[i].transform.position = wfcInstance.MasterTiles[(int)xy.x, (int)xy.y].plane.transform.position + MessagePos[TPowerReverseInt(wfcInstance.MasterTiles[(int)xy.x, (int)xy.y].possibility)];
         Messages[i].transform.rotation = Quaternion.Euler(MessageRot[TPowerReverseInt(wfcInstance.MasterTiles[(int)xy.x, (int)xy.y].possibility)]);
     }
