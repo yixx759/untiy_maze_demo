@@ -212,7 +212,7 @@ public class WFC : MonoBehaviour
     public Vector3 CurTilePos ;
 
     public bool hasmoved = false;
-    
+    private bool set = false;
 
     private const int totalTiles = 12;
     public TileInfo[,] MasterTiles;
@@ -233,6 +233,7 @@ public class WFC : MonoBehaviour
     [SerializeField] private int lesschanceofblank = 0;
 
     public static Vector2 blockLength = new Vector2(16.8f, 16.8f);
+    public static Vector2 blockLengthH = new Vector2(16.8f, 16.8f);
     //add colluider
 //put in struct
     const long m1 = 0x5555555555555555; //binary: 0101...
@@ -875,11 +876,12 @@ public class WFC : MonoBehaviour
     void Start()
     {
 
-        CurTile = new Vector2(7, 7);
+        CurTile = new Vector2(6, 6);
         MazeStart = new Vector2(0, 0);
         MazeEnd = new Vector2(totalx, totaly);
         
      blockLength = new Vector2(TMaze[0].GetComponent<Renderer>().bounds.size.x, TMaze[0].GetComponent<Renderer>().bounds.size.z);
+     blockLengthH = blockLength/2;
         
         StateTracker nus = new StateTracker();
         initilize_State(ref nus);
@@ -1406,12 +1408,7 @@ public class WFC : MonoBehaviour
 
 
 
-        if (alltrue)
-        {
-            CurTilePos = MasterTiles[(int)CurTile.x, (int)CurTile.y].plane.transform.position;
-            CurTilePos.y = 0;
-        }
-
+        
 
 
 //optimze when finhsed generation
@@ -1420,9 +1417,9 @@ public class WFC : MonoBehaviour
 //for large scale maze do parralel on opposite ends then once magnitude between points
 //low enough treat as one.
 
-
-        if (!alltrue && TempTimer <= 0)
+        while (!alltrue)
         {
+            //if (!alltrue && TempTimer <= 0)
             (int, int) tind = findTarget();
 
 
@@ -1463,6 +1460,15 @@ public class WFC : MonoBehaviour
 
 
         }
+        if (alltrue && !set)
+        {
+            
+          //  print("The inital Tile");
+            CurTilePos = MasterTiles[(int)CurTile.x, (int)CurTile.y].plane.transform.position;
+            CurTilePos.y = 0;
+           // print(CurTilePos);
+            set = true;
+        }
 
         TempTimer -= Time.deltaTime;
 
@@ -1471,12 +1477,13 @@ public class WFC : MonoBehaviour
         ScrollDir direction = ScrollDir.down;
         Vector3 p = Movement.t.position;
         p.y = 0;
+        
         if (alltrue)
         {
             
             
             
-            if (Mathf.Abs(p.x - CurTilePos.x) > blockLength.x)
+            if (Mathf.Abs(p.x - CurTilePos.x) > blockLengthH.x)
             {
             
                 if (Mathf.Sign((p.x - CurTilePos.x)) >= 0)
@@ -1492,12 +1499,13 @@ public class WFC : MonoBehaviour
                 CurTilePos = MasterTiles[(int)(CurTile.x-MazeStart.x),  (int)(CurTile.y-MazeStart.y)].plane.transform.position;
                 CurTilePos.y = 0;
                 moved = true;
-                print(p - CurTilePos);
-                print(CurTilePos);
-                print(CurTile);
+                // print(p - CurTilePos);
+                // print(CurTilePos);
+                // print(CurTile);
+                alltrue = false;
 
             }
-            else if (Mathf.Abs(p.z - CurTilePos.z) > blockLength.y)
+            else if (Mathf.Abs(p.z - CurTilePos.z) > blockLengthH.y)
             {
                 if (Mathf.Sign((p.z - CurTilePos.z)) >= 0)
                 {
@@ -1512,15 +1520,18 @@ public class WFC : MonoBehaviour
                 CurTilePos = MasterTiles[(int)(CurTile.x-MazeStart.x), (int)(CurTile.y-MazeStart.y)].plane.transform.position;
                 CurTilePos.y = 0;
                 moved = true;
-                print(p - CurTilePos);
-                print(CurTilePos);
-                print(CurTile);
+                // print(p - CurTilePos);
+                // print(CurTilePos);
+                // print(CurTile);
+                alltrue = false;
             }
 
         
+        
             
             
-            
+           // print(p - CurTilePos);
+            Debug.DrawLine(p , CurTilePos+ Vector3.up*2, Color.red);
             
             
         }
@@ -1564,7 +1575,7 @@ public class WFC : MonoBehaviour
             replace(direction);
 //                print("Were Here");
             alltrue = false;
-
+            hasmoved = true;
             // ArrMover mov = new ArrMover() { fieldsize = totaly, odfield = MasterTiles, d = direction };
             // JobHandle jb = mov.Schedule(fieldsize, 128);
             // jb.Complete();

@@ -23,7 +23,7 @@
     },
     {
       "FullName": "Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-      "LastWriteTime": "2024-07-01T16:51:05.3205211Z"
+      "LastWriteTime": "2024-07-02T19:46:53.3387969Z"
     }
   ],
   "Functions": [
@@ -53,12 +53,11 @@
     {
       "FullName": "Unity.Jobs.IJobParallelForExtensions+ParallelForJobStruct`1[[ArrayReplace+ArrMover, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(ArrayReplace+ArrMover&, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)",
       "ModuleOptionsHash": 15221144590354301703,
-      "ModuleHash": "0cc72683dfd95f1317137b6bad148646",
+      "ModuleHash": "e5ee00bb165b538f250744d13c72588e",
       "LinkName": "4014D11B425CDD32",
       "AssemblyDependencyIndices": [
         4,
         5,
-        3,
         2,
         1
       ]

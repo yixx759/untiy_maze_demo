@@ -58,7 +58,7 @@ public class Message_SPW : MonoBehaviour
             for (int i = 0; i < msgnum; i++)
             {
                
-                nulocation +=  Dir * Random.Range(3, 12);
+                nulocation +=  Dir * Random.Range(6, 12);
                 //add to array
                 nulocation = new Vector2(Mathf.Floor(nulocation.x), Mathf.Floor(nulocation.y));
                 posarray[indexMes++] = nulocation; 
@@ -129,19 +129,19 @@ public class Message_SPW : MonoBehaviour
           
         }
 
-        if (WFC.alltrue && Input.GetKeyDown(KeyCode.Space))
-        {
-            
-            CreateMessage(Random.Range(0,wfcInstance.totalx),Random.Range(0,wfcInstance.totaly));
+        // if (WFC.alltrue && Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     
+        //     CreateMessage(Random.Range(0,wfcInstance.totalx),Random.Range(0,wfcInstance.totaly));
+        //
+        //     
+        //     
+        // }
 
-            
-            
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            wfcInstance.hasmoved = true;
-        }
+        // if (Input.GetKeyDown(KeyCode.LeftControl))
+        // {
+        //     wfcInstance.hasmoved = true;
+        // }
 
 
     }
@@ -172,7 +172,8 @@ public class Message_SPW : MonoBehaviour
         print("startx: "+wfcInstance.MazeStart.x);
         print("x: "+x);
         print("y: "+x);
-      
+        print(wfcInstance.MasterTiles[13, 13].possibility);
+        print(TPowerReverseInt(wfcInstance.MasterTiles[x, y].possibility));
         UnityEngine.Vector3 pos = wfcInstance.MasterTiles[x, y].plane.transform.position + MessagePos[TPowerReverseInt(wfcInstance.MasterTiles[x, y].possibility)];
         Quaternion rot = Quaternion.Euler(MessageRot[TPowerReverseInt(wfcInstance.MasterTiles[x, y].possibility)]);
         Messages[indexMes++] = Instantiate(Message, pos, rot);
