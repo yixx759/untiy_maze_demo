@@ -35,6 +35,7 @@ Shader "Unlit/Curve"
             float4 _MainTex_ST;
             float _curve;
             float _vignette;
+            float _lookDir;
            
 
             v2f vert (appdata v)
@@ -46,9 +47,17 @@ Shader "Unlit/Curve"
                 return o;
             }
 
-            
+            float Unity_InverseLerp(float A, float B, float T)
+            {
+                return saturate((T - A)/(B - A));
+            }
             fixed4 frag (v2f i) : SV_Target
             {
+                float t = Unity_InverseLerp(0.8, 1,_lookDir) ;
+
+                _curve = lerp(40, _curve,t );
+                _vignette = lerp(0, _vignette,t );
+                
                 // sample the texture
                 i.uv = i.uv *2 -1;
 

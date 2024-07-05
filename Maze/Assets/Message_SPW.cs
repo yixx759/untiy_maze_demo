@@ -16,16 +16,16 @@ public class Message_SPW : MonoBehaviour
     [SerializeField] private Vector3[] MessageRot;
     [SerializeField] private float DirectionDefine;
     [SerializeField] private Vector2[] posarray;
-    [SerializeField] private GameObject[] Messages;
+    [SerializeField] public GameObject[] Messages;
     [SerializeField] private bool[] inOut;
     private bool changed= false;
 
     private const int msgnum = 12;
     
     
-    private int indexMes = 0;
+    public int indexMes = 0;
     private Vector3 startloc;
-    private bool dirSet = false;
+    public bool dirSet = false;
 
     private float definedirvalue => DirectionDefine * DirectionDefine;
     private Vector3 curpos => new Vector3(tt.position.x,0 ,tt.position.z);
@@ -68,7 +68,7 @@ public class Message_SPW : MonoBehaviour
                 
             }
 
-            indexMes = 0;
+            indexMes = -1;
             
             print(curpos - startloc);
             print(Dir);
@@ -176,9 +176,11 @@ public class Message_SPW : MonoBehaviour
         print("y: "+x);
         print(wfcInstance.MasterTiles[13, 13].possibility);
         print(TPowerReverseInt(wfcInstance.MasterTiles[x, y].possibility));
+        print(MessagePos[TPowerReverseInt(wfcInstance.MasterTiles[x, y].possibility)]);
         UnityEngine.Vector3 pos = wfcInstance.MasterTiles[x, y].plane.transform.position + MessagePos[TPowerReverseInt(wfcInstance.MasterTiles[x, y].possibility)];
         Quaternion rot = Quaternion.Euler(MessageRot[TPowerReverseInt(wfcInstance.MasterTiles[x, y].possibility)]);
-        Messages[indexMes++] = Instantiate(Message, pos, rot);
+        Messages[++indexMes] = Instantiate(Message, pos, rot);
+        //swap to ++ pre incremnt
         print("Nuloc: ");
         print(location);
         print(Dir);
