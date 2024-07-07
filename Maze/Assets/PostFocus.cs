@@ -8,6 +8,7 @@ public class PostFocus : MonoBehaviour
     [SerializeField] private Material Foci;
     [SerializeField] private float focus;
     [SerializeField] private float _vignette;
+    [SerializeField, Range(0,1)] private float _zoom;
     
     [SerializeField] private GameObject MSGObjectInstance;
     private Message_SPW MsgInstance;
@@ -24,6 +25,7 @@ public class PostFocus : MonoBehaviour
     {
         Foci.SetFloat("_curve", focus);
         Foci.SetFloat("_vignette", _vignette);
+        Foci.SetFloat("_zoom", _zoom);
 
 
         if (MsgInstance.dirSet && MsgInstance.indexMes >-1 )

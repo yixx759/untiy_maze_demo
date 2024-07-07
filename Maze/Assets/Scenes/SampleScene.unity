@@ -660,8 +660,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Foci: {fileID: 2100000, guid: b4d38f0813cd8fc4598c2caab792b7bd, type: 2}
-  focus: 4
-  _vignette: 77.85
+  focus: 2.4
+  _vignette: 183.36
+  _zoom: 0.935
   MSGObjectInstance: {fileID: 1705347350}
 --- !u!1 &1705347350
 GameObject:

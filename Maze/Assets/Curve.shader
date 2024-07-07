@@ -35,7 +35,7 @@ Shader "Unlit/Curve"
             float4 _MainTex_ST;
             float _curve;
             float _vignette;
-            float _lookDir;
+            float _lookDir, _zoom;
            
 
             v2f vert (appdata v)
@@ -57,8 +57,11 @@ Shader "Unlit/Curve"
 
                 _curve = lerp(40, _curve,t );
                 _vignette = lerp(0, _vignette,t );
+                _zoom = lerp(1, _zoom,t );
                 
                 // sample the texture
+                i.uv *= _zoom;
+                i.uv += float2(0.5, 0.5) * (1 - _zoom);
                 i.uv = i.uv *2 -1;
 
                 float2 offset = (i.uv.yx) / _curve;
