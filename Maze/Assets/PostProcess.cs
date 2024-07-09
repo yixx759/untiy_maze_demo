@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PostProcess : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class PostProcess : MonoBehaviour
     {
         if (Post != null)
         {
+            Post.SetFloat("seed", Random.value);
             Graphics.Blit(source, destination, Post);
         }
         else

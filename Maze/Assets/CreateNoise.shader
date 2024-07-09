@@ -34,6 +34,7 @@ Shader "Unlit/CreateNoise"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float seed;
 
             v2f vert (appdata v)
             {
