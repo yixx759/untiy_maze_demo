@@ -745,7 +745,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Post: {fileID: 2100000, guid: 559aeeb073ba14b4a9d27046a2db8cbf, type: 2}
   a: 0
-  b: 0.06
+  b: 0
+  test: 0
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0

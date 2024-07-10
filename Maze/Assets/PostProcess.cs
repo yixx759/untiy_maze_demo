@@ -12,6 +12,7 @@ public class PostProcess : MonoBehaviour
     [SerializeField] Material Post;
     [SerializeField] float a;
     [SerializeField] float b;
+    [SerializeField, Range(0,1)] float test;
         
     //https://www.alanzucconi.com/2015/09/16/how-to-sample-from-a-gaussian-distribution/
     //https://en.wikipedia.org/wiki/Poisson_distribution#Generating_Poisson-distributed_random_variables
@@ -75,7 +76,7 @@ public class PostProcess : MonoBehaviour
         float ng = getGaussian(0,b*b,max,min);
         print(ng);
    
-        return np / a + ng;
+        return np / (a+ 0.00000000001f) + ng;
 
 
     }
@@ -89,7 +90,7 @@ public class PostProcess : MonoBehaviour
        //
        // print(possionInvertedSearch(11f*0.5f));
        
-       print(CreateNoise(0.5f,11,0.01f,1,-1));
+     
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
@@ -99,6 +100,7 @@ public class PostProcess : MonoBehaviour
             Post.SetFloat("seed", Random.value);
             Post.SetFloat("a", a);
             Post.SetFloat("b", b);
+            print(CreateNoise(test,a,b,1,-1));
           //  Graphics.Blit(source, destination, Post);
             Graphics.Blit(source, destination);
         }

@@ -46,7 +46,7 @@ Shader "Unlit/CreateNoise"
                 
                
                // return sin(sin(gradient* 46728.5453)) ;
-                return sin(sin(gradient* 43758.5453+seed)) ;
+                return abs(sin(sin(gradient* 43758.5453+seed))) ;
             }
 
 
@@ -110,7 +110,7 @@ Shader "Unlit/CreateNoise"
         float ng = getGaussian(0,b*b,max,min,uv);
   
    
-        return np / a + ng;
+        return np / (a+ 0.00000000001f) + ng;
 
 
     }
@@ -138,8 +138,8 @@ Shader "Unlit/CreateNoise"
                 
                 float noise = CreateNoise( dot(col.xyz,float3( 0.2125, 0.7154, 0.0721)),a,b,1,-1,i.uv);
 
-                
-                return col *noise;
+                //
+                return col+ noise ;
             }
             ENDCG
         }
