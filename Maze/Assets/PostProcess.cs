@@ -1,17 +1,95 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
+
 
 public class PostProcess : MonoBehaviour
 {
     
     [SerializeField] Material Post;
+    [SerializeField] float a;
+    [SerializeField] float b;
+        
+    //https://www.alanzucconi.com/2015/09/16/how-to-sample-from-a-gaussian-distribution/
+    //https://en.wikipedia.org/wiki/Poisson_distribution#Generating_Poisson-distributed_random_variables
+
+
+    public static float possionInvertedSearch(float lambda)
+    {
+
+        float x = 0;
+        float p = (MathF.Exp( -lambda));
+        float s = p;
+        float u = Random.Range(0.0f, 1.0f);
+       // print(u);
+        while (u > s)
+        {
+            x += 1;
+            p = p * lambda / x;
+            s += p;
+        }
+
+        return x;
+
+    }
+
+    public static float getGaussianNum()
+    {
+        float v1, v2, s;
+
+        do
+        {
+            v1 = 2 *  Random.Range(0.0f, 1.0f) - 1.0f;
+            v2 = 2 *  Random.Range(0.0f, 1.0f) - 1.0f;
+            s = v1 * v1 + v2 * v2;
+        } while (s >= 1.0f || s == 0);
+
+        s = Mathf.Sqrt((-2.0f * Mathf.Log(s)) / s);
+        return v1 * s;
+        
+
+    }
+
+    public static float getGaussian(float mean, float sd, float max, float min)
+    {
+        float x;
+
+       do
+       {
+            x = mean + getGaussianNum() * sd;
+        } while (x < min || x > max);
+
+        return x;
+
+
+    }
+
+    public static float CreateNoise(float lum,float a, float b, float max, float min)
+    {
+   
+        float np = possionInvertedSearch(a*lum);
+        print(np);
+        float ng = getGaussian(0,b*b,max,min);
+        print(ng);
+   
+        return np / a + ng;
+
+
+    }
 
     private void Start()
     {
         this.GetComponent<Camera>().depthTextureMode = DepthTextureMode.Depth;
+       //  float np =possionInvertedSearch(11f*0.5f);
+       // print(np);
+       // float ng = getGaussian(0,0.01f*0.01f,1,-1);
+       //
+       // print(possionInvertedSearch(11f*0.5f));
+       
+       print(CreateNoise(0.5f,11,0.01f,1,-1));
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
@@ -19,7 +97,10 @@ public class PostProcess : MonoBehaviour
         if (Post != null)
         {
             Post.SetFloat("seed", Random.value);
-            Graphics.Blit(source, destination, Post);
+            Post.SetFloat("a", a);
+            Post.SetFloat("b", b);
+          //  Graphics.Blit(source, destination, Post);
+            Graphics.Blit(source, destination);
         }
         else
         {
