@@ -24,7 +24,7 @@ public class PostProcess : MonoBehaviour
         float x = 0;
         float p = (MathF.Exp( -lambda));
         float s = p;
-        float u = Random.Range(0.0f, 1.0f);
+        float u = Random.Range(-1f, 1.0f);
        // print(u);
         while (u > s)
         {
@@ -43,8 +43,8 @@ public class PostProcess : MonoBehaviour
 
         do
         {
-            v1 = 2 *  Random.Range(0.0f, 1.0f) - 1.0f;
-            v2 = 2 *  Random.Range(0.0f, 1.0f) - 1.0f;
+            v1 = 2 *  Random.Range(-1f, 1.0f) - 1.0f;
+            v2 = 2 *  Random.Range(-1f, 1.0f) - 1.0f;
             s = v1 * v1 + v2 * v2;
         } while (s >= 1.0f || s == 0);
 
@@ -71,11 +71,11 @@ public class PostProcess : MonoBehaviour
     public static float CreateNoise(float lum,float a, float b, float max, float min)
     {
    
-        float np = possionInvertedSearch(a*lum);
+        float np =  getGaussian(lum,lum*a,max,min);
         print(np);
         float ng = getGaussian(0,b*b,max,min);
         print(ng);
-   
+       
         return np / (a+ 0.00000000001f) + ng;
 
 
@@ -97,12 +97,14 @@ public class PostProcess : MonoBehaviour
     {
         if (Post != null)
         {
-            Post.SetFloat("seed", Random.value);
+            Post.SetFloat("offsetx", Random.value);
+            Post.SetFloat("offsety", Random.value);
             Post.SetFloat("a", a);
             Post.SetFloat("b", b);
             print(CreateNoise(test,a,b,1,-1));
-          //  Graphics.Blit(source, destination, Post);
-            Graphics.Blit(source, destination);
+       
+          Graphics.Blit(source, destination, Post);
+           // Graphics.Blit(source, destination);
         }
         else
         {

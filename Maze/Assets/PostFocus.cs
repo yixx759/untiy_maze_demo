@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Vector2 = System.Numerics.Vector2;
 
 public class PostFocus : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class PostFocus : MonoBehaviour
     [SerializeField] private GameObject MSGObjectInstance;
     private Message_SPW MsgInstance;
     
-    
+ 
     // Start is called before the first frame update
     void Start()
     {
