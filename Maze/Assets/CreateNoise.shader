@@ -46,7 +46,8 @@ Shader "Unlit/CreateNoise"
                 
                
                // return sin(sin(gradient* 46728.5453)) ;
-                return (sin(sin(gradient* 43758.5453+seed*frac(_Time.y)))) ;
+               // return (sin(sin(gradient* 43758.5453+seed*frac(_Time.y)))) ;
+                return (sin(sin(gradient* 43758.5453+seed))) ;
             }
             float2 random2 (float2 uv )
             {
@@ -70,7 +71,7 @@ Shader "Unlit/CreateNoise"
           // http://stackoverflow.com/questions/4200224/random-noise-functions-for-glsl
           // I can't find any explanation for it, but experimentally it does seem to
           // produce approximately uniformly distributed values in the interval [0,1].
-          float r = frac(sin(dot(co.xy, float2(12.9898,78.233))) * 43758.5453);
+          float r = frac(sin(dot(co.xy, float2(12.2345,64.22343))) * 32546.222);
 
           // Make sure that we don't return 0.0
           if(r == 0.0)
@@ -180,7 +181,9 @@ float4 gaussrand(float mean, float sd,float2 co)
               
       
    //return ng;
-                float finalc = np / (a+ 0.00000000001f) + ng;
+               // float finalc = np  + ng;
+        
+                float finalc = (np-a*lum)  + ng;
             
         return finalc;
 
@@ -203,25 +206,46 @@ float4 gaussrand(float mean, float sd,float2 co)
                     // apply fog
                 float4 final = 1;
               
-                   
-                     float4 noise = CreateNoise( (1-dot(col.xyz,float3( 0.2125, 0.7154, 0.0721)))*0.2,a,b,1,-1,i.uv);
+                   float lum = dot(col.xyz,float3( 0.2125, 0.7154, 0.0721));
+                     //float4 noise = CreateNoise( lum,a,b,1,-1,i.uv);
 
-                    float4 filter = float4(1,0,0,1);
-                float num = (gaussrand(123,1532, i.uv).x);
-                    if(num % 3 == 0)
-                    {
-                        filter = float4(0,1,0,1);
-                        
-                    }
-                    else if(num % 3 == 1)
-                    {
-                        filter = float4(0,0,1,1);
-                    }
-
-             
-             
+              //  float num = (i.uv.x);
+             //float2 uver = ((int)(i.uv*a))/a ;
               
-                return  col + noise*filter;
+             float2 uver = float2(i.uv.y,i.uv.y ) ;
+            
+              //  uver = ((int)(uver*a))/a ;
+            //    float2 uver = (((i.uv))) ;
+           
+              //float num = (gaussrand(0,100,uver));
+              float num = (random(uver));
+                return num;
+               // num *= 100;
+                int numer= num;
+                // if(num > 50)
+                // {
+                //  return float4(0,(int)(num%2),0,1);
+                //     
+                // }
+               
+                if((numer % 3) == 0)
+                {
+                  return float4(0.89,0.2,0.2,1);
+                    
+                }
+                else if ((numer % 3) == 1)
+                {
+                    return float4(0.2,0.89,0.2,1);
+                    
+                }
+                else  
+                {
+                     return float4(0.2,0.2,0.89,1);
+                    
+                }
+            
+              
+               // return col+ (noise-lum);
             }
             ENDCG
         }

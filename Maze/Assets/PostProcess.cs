@@ -89,21 +89,36 @@ public class PostProcess : MonoBehaviour
        // float ng = getGaussian(0,0.01f*0.01f,1,-1);
        //
        // print(possionInvertedSearch(11f*0.5f));
-       
-     
+   
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
         if (Post != null)
         {
-            Post.SetFloat("offsetx", Random.value);
-            Post.SetFloat("offsety", Random.value);
+            print(test);
+            // float aa = (float)(Mathf.Sin(Vector2.Dot(new Vector2(0.5f, 0.5f), new Vector2(12.2345f, 64.22343f))) * 32546.222);
+            float aa = (float)(Mathf.Sin(Vector2.Dot(new Vector2((float)test, test), new Vector2(12.2345f, 64.22343f))) * 32546.222);
+            aa -= (float)Math.Truncate(aa);
+            if(aa < 0.5)
+                aa = Mathf.Sqrt((float)(-2.0 * Mathf.Log((float)aa))) * Mathf.Sin((float)(2.0 * Mathf.PI * aa));
+            else
+                aa = Mathf.Sqrt((float)(-2.0 * Mathf.Log((float)aa))) * Mathf.Cos((float)(2.0 * Mathf.PI * aa));
+            
+            print(2435 + aa *2354 );
+           // Post.SetFloat("offsety", Random.value);
+            Post.SetFloat("offsety",0);
+           // Post.SetFloat("offsetx", Random.value);
+            Post.SetFloat("offsetx",0);
+            
+           // Post.SetFloat("seed", Random.Range(0,8324765f));
+            Post.SetFloat("seed2", Random.Range(0,8324765f));
             Post.SetFloat("a", a);
             Post.SetFloat("b", b);
-            print(CreateNoise(test,a,b,1,-1));
+            //add shorhsift 64 star to shader
+           // print(CreateNoise(test,a,b,1,-1));
        
-          Graphics.Blit(source, destination, Post);
+          Graphics.Blit(source, destination);
            // Graphics.Blit(source, destination);
         }
         else
