@@ -12,7 +12,7 @@ public class PostProcess : MonoBehaviour
     [SerializeField] Material Post;
     [SerializeField] float a;
     [SerializeField] float b;
-    [SerializeField, Range(0,1)] float test;
+    [SerializeField] int test;
         
     //https://www.alanzucconi.com/2015/09/16/how-to-sample-from-a-gaussian-distribution/
     //https://en.wikipedia.org/wiki/Poisson_distribution#Generating_Poisson-distributed_random_variables
@@ -106,14 +106,18 @@ public class PostProcess : MonoBehaviour
                 aa = Mathf.Sqrt((float)(-2.0 * Mathf.Log((float)aa))) * Mathf.Cos((float)(2.0 * Mathf.PI * aa));
             
             print(2435 + aa *2354 );
-           // Post.SetFloat("offsety", Random.value);
-            Post.SetFloat("offsety",0);
-           // Post.SetFloat("offsetx", Random.value);
-            Post.SetFloat("offsetx",0);
+         
+       //   Post.SetFloat("offsety", 0);
+       // Post.SetFloat("offsetx",0);
+          Post.SetFloat("offsetx", Random.value);
+          Post.SetFloat("offsety", Random.value);
+          
+           
             
-           // Post.SetFloat("seed", Random.Range(0,8324765f));
+           Post.SetFloat("seed", Random.Range(0,8324765f));
             Post.SetFloat("seed2", Random.Range(0,8324765f));
             Post.SetFloat("a", a);
+            Post.SetFloat("test", test);
             Post.SetFloat("b", b);
             //add shorhsift 64 star to shader
            // print(CreateNoise(test,a,b,1,-1));
