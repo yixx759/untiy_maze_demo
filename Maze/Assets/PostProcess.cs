@@ -13,6 +13,8 @@ public class PostProcess : MonoBehaviour
     [SerializeField] float a;
     [SerializeField] float b;
     [SerializeField] int test;
+    [SerializeField] int detailp = 100;
+    [SerializeField] int blurp = 100;
         
     //https://www.alanzucconi.com/2015/09/16/how-to-sample-from-a-gaussian-distribution/
     //https://en.wikipedia.org/wiki/Poisson_distribution#Generating_Poisson-distributed_random_variables
@@ -111,6 +113,8 @@ public class PostProcess : MonoBehaviour
        // Post.SetFloat("offsetx",0);
           Post.SetFloat("offsetx", Random.value);
           Post.SetFloat("offsety", Random.value);
+          Post.SetFloat("blur", blurp);
+          Post.SetInt("detailp", detailp);
           
            
             

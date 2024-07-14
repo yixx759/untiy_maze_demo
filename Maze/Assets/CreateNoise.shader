@@ -35,7 +35,7 @@ Shader "Unlit/CreateNoise"
             sampler2D _MainTex;
             float4 _MainTex_TexelSize;
             float4 _MainTex_ST;
-            float seed, a, b,seed2, test;
+            float seed, a, b,seed2, test, blur;
             float2 random (float2 uv )
             {
                             
@@ -110,6 +110,7 @@ Shader "Unlit/CreateNoise"
 
 
 float offsetx, offsety;
+            int detailp;
 
                 
     float4 gaussrand(float mean, float sd,float2 co)
@@ -217,7 +218,7 @@ float offsetx, offsety;
 
 
 
-                float2 space = float2(_MainTex_TexelSize.x,_MainTex_TexelSize.y)*2;
+                float2 space = float2(_MainTex_TexelSize.x,_MainTex_TexelSize.y)*blur;
 
                 
              float2 uver = float2(i.uv.x,i.uv.y ) +float2(0,0) ;
@@ -230,7 +231,7 @@ float offsetx, offsety;
              float2 uvertr = float2(i.uv.x,i.uv.y )+float2(space.x,space.y)  ;
              float2 uvert = float2(i.uv.x,i.uv.y )+float2(0,space.y)  ;
 
-                int detail =100;
+                int detail =detailp;
                 
             uver = ((trunc((uver*detail)))) ;
             uvertl = ((trunc((uvertl*detail)))) ;
@@ -288,7 +289,7 @@ float offsetx, offsety;
                 }
 
                 total /= 9;
-                return noise;
+           
                 
                 // if(num > 50)
                 // {
@@ -297,9 +298,9 @@ float offsetx, offsety;
                 // }
                
               
-            
+            return (noise-lum)*total;
               
-               // return col+ (noise-lum);
+               return col+ (noise-lum)*total;
             }
             ENDCG
         }
