@@ -14,7 +14,9 @@ public class PostProcess : MonoBehaviour
     [SerializeField] float b;
     [SerializeField] int test;
     [SerializeField] int detailp = 100;
-    [SerializeField] int blurp = 100;
+    [SerializeField] int detailp2 = 100;
+    [SerializeField] float blurp = 2;
+    [SerializeField] float blurp2 = 2;
         
     //https://www.alanzucconi.com/2015/09/16/how-to-sample-from-a-gaussian-distribution/
     //https://en.wikipedia.org/wiki/Poisson_distribution#Generating_Poisson-distributed_random_variables
@@ -94,11 +96,12 @@ public class PostProcess : MonoBehaviour
    
     }
 
+   
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
         if (Post != null)
         {
-            print(test);
+//            print(test);
             // float aa = (float)(Mathf.Sin(Vector2.Dot(new Vector2(0.5f, 0.5f), new Vector2(12.2345f, 64.22343f))) * 32546.222);
             float aa = (float)(Mathf.Sin(Vector2.Dot(new Vector2((float)test, test), new Vector2(12.2345f, 64.22343f))) * 32546.222);
             aa -= (float)Math.Truncate(aa);
@@ -107,14 +110,16 @@ public class PostProcess : MonoBehaviour
             else
                 aa = Mathf.Sqrt((float)(-2.0 * Mathf.Log((float)aa))) * Mathf.Cos((float)(2.0 * Mathf.PI * aa));
             
-            print(2435 + aa *2354 );
+          //  print(2435 + aa *2354 );
          
        //   Post.SetFloat("offsety", 0);
        // Post.SetFloat("offsetx",0);
           Post.SetFloat("offsetx", Random.value);
           Post.SetFloat("offsety", Random.value);
           Post.SetFloat("blur", blurp);
+          Post.SetFloat("blur2", blurp2);
           Post.SetInt("detailp", detailp);
+          Post.SetInt("detailp2", detailp2);
           
            
             
@@ -126,7 +131,7 @@ public class PostProcess : MonoBehaviour
             //add shorhsift 64 star to shader
            // print(CreateNoise(test,a,b,1,-1));
        
-          Graphics.Blit(source, destination);
+          Graphics.Blit(source, destination,Post);
            // Graphics.Blit(source, destination);
         }
         else
