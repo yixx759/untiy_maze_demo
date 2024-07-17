@@ -1042,6 +1042,11 @@ MonoBehaviour:
   detailp2: 156
   blurp: 0
   blurp2: 0.09
+  nn:
+  - {fileID: 2800000, guid: 936c7758035ce884f9902825d3eb06ef, type: 3}
+  - {fileID: 2800000, guid: a7700b5922f91524b8b8bee3a16cc585, type: 3}
+  - {fileID: 2800000, guid: ed14b4b224be6ba4a8d901b0afc6fcc9, type: 3}
+  - {fileID: 2800000, guid: e51b499992df6e94180afafe18126326, type: 3}
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0

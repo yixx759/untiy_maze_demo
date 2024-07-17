@@ -3,6 +3,7 @@ Shader "Unlit/NewUnlitShader"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _Col ("Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -15,7 +16,7 @@ Shader "Unlit/NewUnlitShader"
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
-            #pragma multi_compile_fog
+        
 
             #include "UnityCG.cginc"
    
@@ -33,7 +34,7 @@ Shader "Unlit/NewUnlitShader"
                 float4 vertex : SV_POSITION;
             };
 
-            sampler2D _MainTex;
+            sampler2D _MainTex, _Col;
             float4 _MainTex_ST;
              float4 _MainTex_TexelSize;
 
@@ -132,127 +133,25 @@ float4 CreateNoise(float lum,float a, float b, float max, float min, float2 uv)
                 float4 final = 1;
         
         
-                int detail =detailp;
-                int detail2 =detailp2;
-        
                  
                 float lum = dot(col.xyz,float3( 0.2125, 0.7154, 0.0721));
-               // float4 noise = CreateNoise( lum,a,b,1,-1,i.uv);
-                float4 tnoise =0;
-                float4 noise[9];
-                int it2 = 0;
+                float4 noise = CreateNoise( lum,a,b,1,-1,i.uv);
+              
 
           
         
-                 
-                 float2 space = float2(_MainTex_TexelSize.x,_MainTex_TexelSize.y)*blur;
-                 float2 space2 = float2(_MainTex_TexelSize.x,_MainTex_TexelSize.y)*blur2;
-        
-                 
-              float2 uver = float2(i.uv.x,i.uv.y ) +float2(0,0) ;
-              float2 uvertl = float2(i.uv.x,i.uv.y ) +float2(-space.x,space.y) ;
-              float2 uverl = float2(i.uv.x,i.uv.y ) +float2(-space.x,0) ;
-              float2 uverbl = float2(i.uv.x,i.uv.y ) +float2(-space.x,-space.y) ;
-              float2 uverb = float2(i.uv.x,i.uv.y ) +float2(0,-space.y) ;
-              float2 uverbr = float2(i.uv.x,i.uv.y )+float2(space.x,-space.y)  ;
-              float2 uverr = float2(i.uv.x,i.uv.y ) +float2(space.x,0) ;
-              float2 uvertr = float2(i.uv.x,i.uv.y )+float2(space.x,space.y)  ;
-              float2 uvert = float2(i.uv.x,i.uv.y )+float2(0,space.y)  ;
-        
-
-
-               float2 uverp =  float2(i.uv.x,i.uv.y ) +float2(0,0) ;
-              float2      uvertlp =float2(i.uv.x,i.uv.y ) +float2(-space2.x,space2.y)  ;
-         float2 uverlp = float2(i.uv.x,i.uv.y ) +float2(-space2.x,0)   ;
-         float2  uverblp = float2(i.uv.x,i.uv.y ) +float2(-space2.x,-space2.y)  ;
-          float2 uverbp= float2(i.uv.x,i.uv.y ) +float2(0,-space2.y)  ;
-         float2   uverbrp=float2(i.uv.x,i.uv.y )+float2(space2.x,-space2.y)  ;
-         float2 uverrp = float2(i.uv.x,i.uv.y ) +float2(space2.x,0)   ;
-          float2 uvertrp =float2(i.uv.x,i.uv.y )+float2(space2.x,space2.y)  ;
-          float2 uvertp= float2(i.uv.x,i.uv.y )+float2(0,space2.y)  ;
-
-
-                 uverp = ((trunc((uverp*detail2)))) ;
-             uvertlp = ((trunc((uvertlp*detail2)))) ;
-             uverlp = ((trunc((uverlp*detail2)))) ;
-             uverblp = ((trunc((uverblp*detail2)))) ;
-             uverbp = ((trunc((uverbp*detail2)))) ;
-             uverbrp = ((trunc((uverbrp*detail2)))) ;
-             uverrp = ((trunc((uverrp*detail2)))) ;
-             uvertrp = ((trunc((uvertrp*detail2)))) ;
-             uvertp = ((trunc((uvertp*detail2)))) ;
-                 
-             uver = ((trunc((uver*detail)))) ;
-             uvertl = ((trunc((uvertl*detail)))) ;
-             uverl = ((trunc((uverl*detail)))) ;
-             uverbl = ((trunc((uverbl*detail)))) ;
-             uverb = ((trunc((uverb*detail)))) ;
-             uverbr = ((trunc((uverbr*detail)))) ;
-             uverr = ((trunc((uverr*detail)))) ;
-             uvertr = ((trunc((uvertr*detail)))) ;
-             uvert = ((trunc((uvert*detail)))) ;
-
-                
-            noise[it2++] = (CreateNoise( lum,a,b,1,-1,uverp));
+                 fixed4 chroma = tex2D(_Col, i.uv);
              
-             noise[it2++] = (CreateNoise( lum,a,b,1,-1,uvertlp));
-             noise[it2++] = (CreateNoise( lum,a,b,1,-1,uverlp));
-             noise[it2++] = (CreateNoise( lum,a,b,1,-1,uverblp));
-             noise[it2++] = (CreateNoise( lum,a,b,1,-1,uverbp));
-             noise[it2++] = (CreateNoise( lum,a,b,1,-1,uverbrp));
-             noise[it2++] = (CreateNoise( lum,a,b,1,-1,uverrp));
-             noise[it2++] = (CreateNoise( lum,a,b,1,-1,uvertrp));
-             noise[it2++] = (CreateNoise( lum,a,b,1,-1,uvertp));
-        
-        float num[9];
-                 int it= 0;
-             num[it++] = (gaussrand(3456,1346,uver));
-             num[it++] = (gaussrand(3456,1346,uvertl));
-             num[it++] = (gaussrand(3456,1346,uverl));
-             num[it++] = (gaussrand(3456,1346,uverbl));
-             num[it++] = (gaussrand(3456,1346,uverb));
-             num[it++] = (gaussrand(3456,1346,uverbr));
-             num[it++] = (gaussrand(3456,1346,uverr));
-             num[it++] = (gaussrand(3456,1346,uvertr));
-             num[it++] = (gaussrand(3456,1346,uvert));
-           
-
-            float4 total =0;
-             
+   
               
         
                 
-                 for(int i=0; i <9;i++)
-                 {
-                   tnoise += noise[i];
-                  if(((int)num[i] % 3) == 0)
-                 {
-                 total += float4(0.89,0.1,0.1,1);
-                     
-                 }
-                 else if (((int)num[i] % 3) == 1)
-                 {
-                      total += float4(0.1,0.89,0.1,1);
-                     
-                 }
-                 else  
-                 {
-                       total += float4(0.1,0.1,0.89,1);
-                     
-                 }
-        
-        
-                     
-                 }
-                
-                 total /= 9;
+                 
 
-                tnoise /=9;
-
-            return total;
+          //  return noise;
             // return total;
-           //   return (((tnoise-lum)))*total;
-            return col+ (((tnoise-lum)))*total;
+            return col+(((noise-lum)*chroma));
+   
               return col;
             }
             ENDCG

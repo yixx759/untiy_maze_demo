@@ -17,7 +17,9 @@ public class PostProcess : MonoBehaviour
     [SerializeField] int detailp2 = 100;
     [SerializeField] float blurp = 2;
     [SerializeField] float blurp2 = 2;
-        
+
+    [SerializeField] private Texture[] nn;
+    private int noise = 0;
     //https://www.alanzucconi.com/2015/09/16/how-to-sample-from-a-gaussian-distribution/
     //https://en.wikipedia.org/wiki/Poisson_distribution#Generating_Poisson-distributed_random_variables
 
@@ -120,8 +122,8 @@ public class PostProcess : MonoBehaviour
           Post.SetFloat("blur2", blurp2);
           Post.SetInt("detailp", detailp);
           Post.SetInt("detailp2", detailp2);
-          
-           
+
+          Post.SetTexture("_Col", nn[(noise++)%nn.Length]);
             
            Post.SetFloat("seed", Random.Range(0,8324765f));
             Post.SetFloat("seed2", Random.Range(0,8324765f));
