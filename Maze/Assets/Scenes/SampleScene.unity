@@ -272,7 +272,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b9de0c8775c14f446bfcd516fb4187b6, type: 2}
+  - {fileID: 2100000, guid: 6a24f391d8cc5b54ca17fecc00a56aad, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -657,7 +657,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 81d64fb07441030419227170c5649d1b, type: 2}
+  - {fileID: 2100000, guid: 12d0680f0589bd54c960c9c876633c98, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -695,7 +695,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 762646051}
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: 73.7, y: 79.1, z: -54.6}
+  m_LocalPosition: {x: 42.9, y: 79.1, z: -54.6}
   m_LocalScale: {x: 23.87, y: 23.87, z: 23.87}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -897,7 +897,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920562159}
   m_LocalRotation: {x: 0.6889873, y: 0, z: 0, w: 0.7247734}
-  m_LocalPosition: {x: 96, y: -85.4, z: -120.83}
+  m_LocalPosition: {x: 60.5, y: -72.5, z: -120.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1015,7 +1015,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: -0.70090926, y: 0, z: 0, w: 0.7132505}
-  m_LocalPosition: {x: 0.2, y: 3.65, z: -168.99}
+  m_LocalPosition: {x: -36.6, y: 19.6, z: -163.1}
   m_LocalScale: {x: 1, y: 1, z: -9.49}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1034,19 +1034,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15627a244dc86f2438a9a793a2f58bb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Post: {fileID: 2100000, guid: 50ec92577fca23742b41b5fd3101cf30, type: 2}
-  a: 0.09
-  b: 0.01
-  test: 0
-  detailp: 163
-  detailp2: 156
-  blurp: 0
-  blurp2: 0.09
-  nn:
-  - {fileID: 2800000, guid: 936c7758035ce884f9902825d3eb06ef, type: 3}
-  - {fileID: 2800000, guid: a7700b5922f91524b8b8bee3a16cc585, type: 3}
-  - {fileID: 2800000, guid: ed14b4b224be6ba4a8d901b0afc6fcc9, type: 3}
-  - {fileID: 2800000, guid: e51b499992df6e94180afafe18126326, type: 3}
+  Post: {fileID: 2100000, guid: 0d9dbcac257af644581c7643a796b1b0, type: 2}
+  start: 0
+  end: 1
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
