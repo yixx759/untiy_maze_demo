@@ -34,7 +34,9 @@ Shader "Unlit/DefRange"
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
+            float4 _MainTex_TexelSize;
             float start , end;
+            float sharpness;
 
             v2f vert (appdata v)
             {
@@ -48,9 +50,15 @@ Shader "Unlit/DefRange"
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = tex2D(_MainTex, i.uv);
-
-
+                float4 up =  tex2D(_MainTex, i.uv + float2(0,1)*_MainTex_TexelSize.xy);
+                float4 down =  tex2D(_MainTex, i.uv - float2(0,1)*_MainTex_TexelSize.xy);
+                float4 left =  tex2D(_MainTex, i.uv - float2(1,0)*_MainTex_TexelSize.xy);
+                float4 right =  tex2D(_MainTex, i.uv + float2(1,0)*_MainTex_TexelSize.xy);
+                
+                fixed4 centre = tex2D(_MainTex, i.uv);
+                
+                float amount = sharpness * -1;
+                float4 col = centre*(1+4*sharpness) + (amount*up +amount*right +amount*left +amount*down);
                 col = lerp(start,end,col);
 
 

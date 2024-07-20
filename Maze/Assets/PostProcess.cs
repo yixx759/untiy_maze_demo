@@ -12,6 +12,7 @@ public class PostProcess : MonoBehaviour
     [SerializeField] Material Post;
      [SerializeField , Range(0,1)] float start;
      [SerializeField , Range(0,1)] float end =1;
+     [SerializeField ] float sharpness =1;
     // [SerializeField] float a;
     // [SerializeField] float b;
     // [SerializeField] int test;
@@ -45,6 +46,7 @@ public class PostProcess : MonoBehaviour
           //   Post.SetFloat("b", b);
             Post.SetFloat("start", start);
             Post.SetFloat("end", end);
+            Post.SetFloat("sharpness", sharpness);
           Graphics.Blit(source, destination,Post);
           
         }

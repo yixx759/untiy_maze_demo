@@ -1037,6 +1037,7 @@ MonoBehaviour:
   Post: {fileID: 2100000, guid: 0d9dbcac257af644581c7643a796b1b0, type: 2}
   start: 0
   end: 1
+  sharpness: 0.5
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
