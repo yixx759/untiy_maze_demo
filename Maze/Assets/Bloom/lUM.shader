@@ -35,6 +35,7 @@ Shader "Unlit/lUM"
             sampler2D _MainTex;
             float4 _MainTex_ST;
             float thresh =0;
+            float softthresh =0;
 
             v2f vert (appdata v)
             {
@@ -49,16 +50,17 @@ Shader "Unlit/lUM"
             {
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
-                   float lum = dot(col.xyz,float3( 0.2125, 0.7154, 0.0721));
 
-                    if (lum  > thresh )
-                    {
-
-                        return col;
-                        
-                    }
+               
                 
-                return 0;
+                   float lum = max(col.x,max(col.y,col.z) );
+                float k = thresh *softthresh;
+ float s = pow( min(max(0,(lum-thresh+k)), 2*k),2) /(4*k);
+                   float cont = max(s,lum - thresh);
+                cont /= max(0.000001, lum);
+
+                
+                return col*cont;
             }
             ENDCG
         }

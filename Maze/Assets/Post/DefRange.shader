@@ -36,7 +36,8 @@ Shader "Unlit/DefRange"
             float4 _MainTex_ST;
             float4 _MainTex_TexelSize;
             float start , end;
-            float sharpness;
+            float sharpness, exposure ;
+            float4  whiteBal;
 
             v2f vert (appdata v)
             {
@@ -59,8 +60,11 @@ Shader "Unlit/DefRange"
                 
                 float amount = sharpness * -1;
                 float4 col = centre*(1+4*sharpness) + (amount*up +amount*right +amount*left +amount*down);
-                col = lerp(start,end,col);
 
+                
+                col = lerp(start,end,col);
+                col *= exposure;
+                col *= whiteBal;
 
                 
                 return col;
