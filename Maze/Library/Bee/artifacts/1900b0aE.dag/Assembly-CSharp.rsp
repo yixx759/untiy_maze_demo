@@ -374,6 +374,7 @@
 "Assets/PostFocus.cs"
 "Assets/PostProcess.cs"
 "Assets/PRNG.cs"
+"Assets/Res.cs"
 "Assets/Store.cs"
 "Assets/WFC.cs"
 -langversion:9.0

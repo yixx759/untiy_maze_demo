@@ -52,6 +52,7 @@
      <Compile Include="Assets\PostProcess.cs" />
      <Compile Include="Assets\Movement.cs" />
      <Compile Include="Assets\Store.cs" />
+     <Compile Include="Assets\Res.cs" />
      <None Include="Assets\Textures\Mater\Cube.shader" />
      <None Include="Assets\Curve.shader" />
      <None Include="Assets\Materials\Noiseer.shader" />
