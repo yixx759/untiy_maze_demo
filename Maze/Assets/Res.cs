@@ -22,6 +22,7 @@ public class Res : MonoBehaviour
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
         RenderTexture.active = final;
-        Graphics.Blit(final, (RenderTexture)null);
+        final.filterMode = FilterMode.Point;
+        Graphics.Blit(final, destination);
     }
 }

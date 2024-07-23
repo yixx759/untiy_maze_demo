@@ -278,10 +278,10 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 26.991467
   orthographic: 0
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -1037,7 +1037,6 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
-  - component: {fileID: 963194232}
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
   - component: {fileID: 963194231}
@@ -1173,19 +1172,6 @@ MonoBehaviour:
   intensity: 1
   thresh: 0.53
   softthresh: 0
---- !u!114 &963194232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ea281985b42f5f43acd605e4e6f98d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  final: {fileID: 8400000, guid: 19724e974ef974546b56e0d2b17ad796, type: 2}
 --- !u!1 &1190772310
 GameObject:
   m_ObjectHideFlags: 0
