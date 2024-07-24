@@ -58,6 +58,7 @@
      <None Include="Assets\Materials\Noiseer.shader" />
      <None Include="Assets\Bloom\Box.shader" />
      <None Include="Assets\Decal.shader" />
+     <None Include="Assets\Anti\AntiAliasing.shader" />
      <None Include="Assets\Post\Chromatic.shader" />
      <None Include="Assets\Bloom\lUM.shader" />
      <None Include="Assets\Decal 1.shader" />
