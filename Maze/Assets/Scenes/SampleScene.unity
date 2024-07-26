@@ -1425,6 +1425,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194232}
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
   - component: {fileID: 963194231}
@@ -1556,6 +1557,28 @@ MonoBehaviour:
   intensity: 1
   thresh: 0.53
   softthresh: 0
+--- !u!114 &963194232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5974f3eeda848b4db15ad5ccf39e797, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chromatic: {fileID: 2100000, guid: 54f11a04af5d8b646b2f0f835d93cc66, type: 2}
+  redoff: {x: 0.006, y: 0}
+  blueoff: {x: 0, y: 0.006}
+  greenoff: {x: 0, y: -0.006}
+  Post: {fileID: 2100000, guid: 0d9dbcac257af644581c7643a796b1b0, type: 2}
+  start: 0
+  end: 1
+  sharpness: 1
+  exposure: 1
+  whiteBal: {r: 1, g: 1, b: 1, a: 0}
 --- !u!1 &1190772310
 GameObject:
   m_ObjectHideFlags: 0

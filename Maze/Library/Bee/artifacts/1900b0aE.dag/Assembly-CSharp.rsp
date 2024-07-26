@@ -371,6 +371,7 @@
 "Assets/Message_SPW.cs"
 "Assets/MOV.cs"
 "Assets/Movement.cs"
+"Assets/Post/MasterPost.cs"
 "Assets/PostFocus.cs"
 "Assets/PostProcess.cs"
 "Assets/PRNG.cs"
