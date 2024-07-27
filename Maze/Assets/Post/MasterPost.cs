@@ -15,6 +15,24 @@ public class MasterPost : MonoBehaviour
     [SerializeField ] float sharpness =1;
     [SerializeField ] float exposure =1;
     [SerializeField ] Color whiteBal ;
+    
+    
+    
+    
+    // [SerializeField] private Material Foci;
+    // [SerializeField] private float focus;
+    // [SerializeField] private float _vignette;
+    // [SerializeField, Range(0,1)] private float _zoom;
+    //
+    // [SerializeField] private GameObject MSGObjectInstance;
+    // private Message_SPW MsgInstance;
+    
+    
+    
+    
+    
+    
+    
     // [SerializeField] float a;
     // [SerializeField] float b;
     // [SerializeField] int test;
@@ -31,12 +49,41 @@ public class MasterPost : MonoBehaviour
 
     private void Start()
     {
+        
+    //    MsgInstance = MSGObjectInstance.GetComponent<Message_SPW>();
+        
         this.GetComponent<Camera>().depthTextureMode = DepthTextureMode.Depth;
         tmp = new RenderTexture(1920, 1080, 0);
 
+        
     }
-
-   
+    
+    // void Update()
+    // {
+    //     Foci.SetFloat("_curve", focus);
+    //     Foci.SetFloat("_vignette", _vignette);
+    //     Foci.SetFloat("_zoom", _zoom);
+    //
+    //
+    //     if (MsgInstance.dirSet && MsgInstance.indexMes >-1 )
+    //     {
+    //         float dotToMessage = Vector3.Dot(Movement.t.forward,
+    //             (MsgInstance.Messages[MsgInstance.indexMes].transform.position - Movement.t.position ).normalized);
+    //         dotToMessage = dotToMessage * 0.5f + 0.5f;
+    //         print(dotToMessage);
+    //     
+    //             
+    //         Foci.SetFloat("_lookDir", dotToMessage);
+    //     
+    //     
+    //     }
+    //     
+    //     
+    //     
+    //     //use sin to make shake
+    //     //do dot here
+    // }
+    //
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
         if (Post != null)
@@ -69,5 +116,13 @@ public class MasterPost : MonoBehaviour
             Graphics.Blit(source, destination);
         }
 
+        
+        
+        
+        //
+        // if (MsgInstance.dirSet && MsgInstance.indexMes > -1)
+        // {
+        //     Graphics.Blit(source, destination, Foci);
+        // }
     }
 }
