@@ -54,11 +54,13 @@
      <Compile Include="Assets\Res.cs" />
      <Compile Include="Assets\Movement.cs" />
      <Compile Include="Assets\Store.cs" />
+     <Compile Include="Assets\Anti\Anti.cs" />
      <None Include="Assets\Textures\Mater\Cube.shader" />
      <None Include="Assets\Curve.shader" />
      <None Include="Assets\Materials\Noiseer.shader" />
      <None Include="Assets\Bloom\Box.shader" />
      <None Include="Assets\Decal.shader" />
+     <None Include="Assets\Anti\BadOutline.shader" />
      <None Include="Assets\Anti\AntiAliasing.shader" />
      <None Include="Assets\Post\Chromatic.shader" />
      <None Include="Assets\Bloom\lUM.shader" />
