@@ -1594,7 +1594,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anti: {fileID: 2100000, guid: 7c845e6ae8292d049b47346e5946b76b, type: 2}
   FThresh: 0.061
-  RThresh: 0.115
+  RThresh: 0.184
+  filterMult: 1
 --- !u!1 &1190772310
 GameObject:
   m_ObjectHideFlags: 0

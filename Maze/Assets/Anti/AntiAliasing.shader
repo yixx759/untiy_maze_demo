@@ -37,10 +37,11 @@ Shader "Unlit/AntiAliasing"
             float4 _MainTex_TexelSize;
  float FixThresh;
  float RelThresh;
+ float filterMult;
 
             struct LumaNeighbour
             {
-              float m, n,e,s,w;
+              float m, n,e,s,w, ne, nw, se,sw;
                 float big, small,diff;
                 
             };
@@ -53,6 +54,10 @@ Shader "Unlit/AntiAliasing"
                 m.e = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(0,1)).g;
                 m.s = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,0)).g;
                 m.w = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(0,-1)).g;
+                m.ne = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,1)).g;
+                m.nw = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,-1)).g;
+                m.sw = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,-1)).g;
+                m.se = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,1)).g;
                 m.big = max( max( max( max(m.m,m.n),m.e),m.s),m.w);
                 m.small = min( min( min( min(m.m,m.n),m.e),m.s),m.w);
                 m.diff = m.big - m.small;
@@ -72,18 +77,25 @@ Shader "Unlit/AntiAliasing"
             float filter(LumaNeighbour body)
             {
 
-            float filter = (body.n+body.e+body.s+body.w);
-                filter *= 1.0/4;
+            float filter = 2*(body.n+body.e+body.s+body.w);
+                filter += body.ne +body.nw +body.se +body.nw ;
+                filter *= 1.0/12;
                 return filter;
             }
 
 
             bool edgeOr(LumaNeighbour LUM)
             {
-                float Hor = abs( LUM.n+LUM.s - LUM.m*2);
-                float Ver = abs( LUM.e+LUM.w - LUM.m*2);
+                float Hor = 2 *abs( LUM.n+LUM.s - LUM.m*2) +
+                   abs (LUM.ne + LUM.se - 2*LUM.e)+
+                   abs (LUM.nw + LUM.sw - 2*LUM.w);
 
-                    return Hor> Ver;
+                
+                float Ver = 2*abs( LUM.e+LUM.w - LUM.m*2) +
+                   abs (LUM.ne + LUM.nw - 2*LUM.n)+
+                   abs (LUM.se + LUM.sw - 2*LUM.s);
+
+                    return Hor>= Ver;
                 
             }
             
@@ -92,15 +104,63 @@ Shader "Unlit/AntiAliasing"
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
                 LumaNeighbour neigh = getNeighbours(i.uv);
-
+                // if (neigh.diff < max(FixThresh, neigh.big*RelThresh))
+                // {
+                //     return 0;
+                // }
                 float filtere =  abs(filter(neigh) - neigh.m);
+              
                 filtere /= neigh.diff;
+               filtere = saturate(filtere);
                 filtere = smoothstep(0,1, filtere);
-                filtere *= filtere;
+              
+                filtere *= filtere*filterMult;
 
-bool Horizontal = edgeOr(neigh);
-                float4 horcol = Horizontal ? float4(1,0,0,1) :   float4(0,1,0,1);
-                return neigh.diff < max(FixThresh, neigh.big*RelThresh) ? 0 :horcol;;
+                
+            bool Horizontal = edgeOr(neigh);
+            float2 nuuv = i.uv;
+                float lp, ln;
+                float pixelstep;
+                if (Horizontal)
+                {
+                    pixelstep = _MainTex_TexelSize.y;
+                    lp = neigh.n;
+                    ln = neigh.s;
+                    
+                }
+                else
+                {
+                    pixelstep = _MainTex_TexelSize.x;
+                       lp = neigh.e;
+                    ln = neigh.w;
+                }
+
+                float gradp = abs(lp - neigh.m);
+                float gradn = abs(ln - neigh.m);
+                
+                pixelstep = (gradp < gradn) ?  -pixelstep : pixelstep;
+
+                if (Horizontal)
+                {
+                    nuuv.y += filtere * pixelstep;
+                    
+                }
+                else
+                {
+                         nuuv.x += filtere * pixelstep;
+                }
+
+
+                if (neigh.diff < max(FixThresh, neigh.big*RelThresh))
+                {
+                 
+                    return tex2D(_MainTex, i.uv);
+                  
+                }
+                
+                return  tex2D(_MainTex, nuuv);
+              //  float4 horcol = Horizontal ? float4(1,0,0,1) :   float4(0,1,0,1);
+             //   return neigh.diff < max(FixThresh, neigh.big*RelThresh) ? 0 :horcol;;
                 return col.g;
                 //add diagonal
                 //put in options to stitch to acc luma
