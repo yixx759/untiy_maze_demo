@@ -14,8 +14,9 @@ Shader "Unlit/AntiAliasing"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile Diagonal No_Diagonal
             // make fog work
-       
+        #define SampleC 5
 
             #include "UnityCG.cginc"
 
@@ -38,6 +39,7 @@ Shader "Unlit/AntiAliasing"
  float FixThresh;
  float RelThresh;
  float filterMult;
+        
 
             struct LumaNeighbour
             {
@@ -48,16 +50,27 @@ Shader "Unlit/AntiAliasing"
 
             LumaNeighbour getNeighbours(float2 uv)
             {
+                
                 LumaNeighbour m;
                 m.m = tex2D(_MainTex, uv).g;
                 m.n = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,0)).g;
                 m.e = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(0,1)).g;
                 m.s = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,0)).g;
                 m.w = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(0,-1)).g;
-                m.ne = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,1)).g;
+
+
+                #if defined(Diagonal)
+
+                  m.ne = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,1)).g;
                 m.nw = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,-1)).g;
                 m.sw = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,-1)).g;
                 m.se = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,1)).g;
+
+                
+                #endif
+                
+                
+                
                 m.big = max( max( max( max(m.m,m.n),m.e),m.s),m.w);
                 m.small = min( min( min( min(m.m,m.n),m.e),m.s),m.w);
                 m.diff = m.big - m.small;
@@ -77,30 +90,162 @@ Shader "Unlit/AntiAliasing"
             float filter(LumaNeighbour body)
             {
 
-            float filter = 2*(body.n+body.e+body.s+body.w);
+            float filter = (body.n+body.e+body.s+body.w);
+
+            #if defined(Diagonal)
+            {
+                     filter *= 2;
                 filter += body.ne +body.nw +body.se +body.nw ;
                 filter *= 1.0/12;
+            }
+                #else
+                {
+                    
+                    filter *= 1.0/4; 
+                }
+                #endif
+           
                 return filter;
             }
 
 
             bool edgeOr(LumaNeighbour LUM)
             {
-                float Hor = 2 *abs( LUM.n+LUM.s - LUM.m*2) +
+                float Hor =1;
+                float Ver =1;
+                #if defined(Diagonal)
+                {
+
+                 Hor = 2 *abs( LUM.n+LUM.s - LUM.m*2) +
                    abs (LUM.ne + LUM.se - 2*LUM.e)+
                    abs (LUM.nw + LUM.sw - 2*LUM.w);
 
                 
-                float Ver = 2*abs( LUM.e+LUM.w - LUM.m*2) +
+                 Ver = 2*abs( LUM.e+LUM.w - LUM.m*2) +
                    abs (LUM.ne + LUM.nw - 2*LUM.n)+
                    abs (LUM.se + LUM.sw - 2*LUM.s);
 
+
+                    
+                }
+                #else
+                {
+
+                   Hor = abs( LUM.n+LUM.s - LUM.m*2) ;
+
+                
+                 Ver = abs( LUM.e+LUM.w - LUM.m*2) ;
+            }
+                #endif
+                
+               
                     return Hor>= Ver;
                 
             }
+
+            float getEdgeBlend(float2 uv, LumaNeighbour Luma, bool H, float pixelS, float otherLuma, float GradiaentLuma)
+            {
+                float2 edgeuv = uv;
+                float2 uvStep =0;
+
+                if(H)
+                {
+                    edgeuv.y += 0.5*pixelS;
+                    uvStep.x = _MainTex_TexelSize.x;
+                    
+                }
+                else
+                {
+                    edgeuv.x += 0.5*pixelS;
+                    uvStep.y = _MainTex_TexelSize.y;
+                }
+                float edgeLuma = 0.5 * (Luma.m+otherLuma);
+                float gradientThresh = 0.25*GradiaentLuma;
+
+                float2 uvP = edgeuv + uvStep;
+	            float lumaGradientP = (tex2D(_MainTex, uvP).g - edgeLuma);
+	                bool atEndP = abs(lumaGradientP) >= gradientThresh;
+
+                for(int i =0; i < SampleC && !atEndP;i++ )
+                {
+
+                     uvP += uvStep;
+	             lumaGradientP = (tex2D(_MainTex, uvP).g - edgeLuma);
+	                 atEndP = abs(lumaGradientP) >= gradientThresh;
+
+
+                    
+                }
+
+                float2 uvN = edgeuv - uvStep;
+	            float lumaGradientN = (tex2D(_MainTex, uvN).g - edgeLuma);
+	                bool atEndN = abs(lumaGradientN) >= gradientThresh;
+
+                for(int i =0; i < SampleC && !atEndN;i++ )
+                {
+
+                     uvN -= uvStep;
+	             lumaGradientN = (tex2D(_MainTex, uvN).g - edgeLuma);
+	                 atEndN = abs(lumaGradientN) >= gradientThresh;
+
+
+                    
+                }
+
+
+
+
+
+                
+            float distFrom, distTo, dist;
+                bool deltaSighn;
+                if(H)
+                {
+                    distFrom = uvP.x - uv.x;
+                     distTo=   uv.x-uvN.x;
+                }
+                else
+                {
+                    
+                    distFrom = uvP.y - uv.y;
+                     distTo =  uv.y-uvN.y ;
+                }
+
+                if(distFrom <= distTo)
+                {
+                    dist = distFrom;
+                    deltaSighn = lumaGradientP >= 0;
+                    
+                }
+                else
+                {
+                      dist = distTo;
+                     deltaSighn = lumaGradientN >= 0;
+                }
+
+                
+                if (deltaSighn == (Luma.m - edgeLuma >= 0)) {
+		            return 0.0;
+	            }
+	            else {
+		            return 0.5- dist / (distFrom - distTo);
+	            }
+
+                
+                
+            }
+
+
+
+
+
+
+            
             
             fixed4 frag (v2f i) : SV_Target
             {
+                
+            
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
                 LumaNeighbour neigh = getNeighbours(i.uv);
@@ -137,9 +282,23 @@ Shader "Unlit/AntiAliasing"
 
                 float gradp = abs(lp - neigh.m);
                 float gradn = abs(ln - neigh.m);
-                
-                pixelstep = (gradp < gradn) ?  -pixelstep : pixelstep;
+                float grad ;
+                float l ;
+                if((gradp < gradn))
+                {
 
+                pixelstep = -pixelstep ;
+                    grad = gradn;
+                    l = ln;
+                }
+                else
+                {
+                    grad = gradp;
+                    l = lp;
+                }
+                
+            float fl = getEdgeBlend(i.uv, neigh,Horizontal,pixelstep, l,grad);
+              filtere = max(filtere, fl);
                 if (Horizontal)
                 {
                     nuuv.y += filtere * pixelstep;
@@ -150,14 +309,15 @@ Shader "Unlit/AntiAliasing"
                          nuuv.x += filtere * pixelstep;
                 }
 
+                
 
                 if (neigh.diff < max(FixThresh, neigh.big*RelThresh))
                 {
                  
-                    return tex2D(_MainTex, i.uv);
+                  return col;
                   
                 }
-                
+
                 return  tex2D(_MainTex, nuuv);
               //  float4 horcol = Horizontal ? float4(1,0,0,1) :   float4(0,1,0,1);
              //   return neigh.diff < max(FixThresh, neigh.big*RelThresh) ? 0 :horcol;;
