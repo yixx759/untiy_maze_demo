@@ -244,25 +244,33 @@ Shader "Unlit/AntiAliasing"
             
             fixed4 frag (v2f i) : SV_Target
             {
-                
+                // if(i.uv.x > 0.5 && i.uv.x <0.50 + _MainTex_TexelSize.x && i.uv.y > 0.5 && i.uv.y <0.50 + _MainTex_TexelSize.y)
+                // {
+                //     return float4(1,0,0,1);
+                //     
+                // }
             
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
                 LumaNeighbour neigh = getNeighbours(i.uv);
+              
                 // if (neigh.diff < max(FixThresh, neigh.big*RelThresh))
                 // {
                 //     return 0;
                 // }
+
+                
                 float filtere =  abs(filter(neigh) - neigh.m);
               
-                filtere /= neigh.diff;
-               filtere = saturate(filtere);
+               
+               filtere = saturate(filtere/neigh.diff);
                 filtere = smoothstep(0,1, filtere);
               
                 filtere *= filtere*filterMult;
 
                 
             bool Horizontal = edgeOr(neigh);
+           
             float2 nuuv = i.uv;
                 float lp, ln;
                 float pixelstep;
@@ -276,7 +284,7 @@ Shader "Unlit/AntiAliasing"
                 else
                 {
                     pixelstep = _MainTex_TexelSize.x;
-                       lp = neigh.e;
+                    lp = neigh.e;
                     ln = neigh.w;
                 }
 
@@ -296,9 +304,10 @@ Shader "Unlit/AntiAliasing"
                     grad = gradp;
                     l = lp;
                 }
-                
+             
             float fl = getEdgeBlend(i.uv, neigh,Horizontal,pixelstep, l,grad);
-              filtere = max(filtere, fl);
+             
+             // filtere = max(filtere, fl);
                 if (Horizontal)
                 {
                     nuuv.y += filtere * pixelstep;
