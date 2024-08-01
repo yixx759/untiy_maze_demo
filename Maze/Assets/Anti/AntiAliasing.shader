@@ -39,6 +39,7 @@ Shader "Unlit/AntiAliasing"
  float FixThresh;
  float RelThresh;
  float filterMult;
+ bool enab;
         
 
             struct LumaNeighbour
@@ -53,18 +54,18 @@ Shader "Unlit/AntiAliasing"
                 
                 LumaNeighbour m;
                 m.m = tex2D(_MainTex, uv).g;
-                m.n = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,0)).g;
-                m.e = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(0,1)).g;
-                m.s = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,0)).g;
-                m.w = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(0,-1)).g;
+                m.n = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(0,1)).g;
+                m.e = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,0)).g;
+                m.s = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(0,-1)).g;
+                m.w = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,0)).g;
 
 
                 #if defined(Diagonal)
 
                   m.ne = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,1)).g;
-                m.nw = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,-1)).g;
+                m.nw = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,1)).g;
                 m.sw = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,-1)).g;
-                m.se = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(-1,1)).g;
+                m.se = tex2D(_MainTex, uv + _MainTex_TexelSize.xy * float2(1,-1)).g;
 
                 
                 #endif
@@ -139,7 +140,7 @@ Shader "Unlit/AntiAliasing"
                 #endif
                 
                
-                    return Hor>= Ver;
+                    return Hor >= Ver;
                 
             }
 
@@ -276,6 +277,7 @@ Shader "Unlit/AntiAliasing"
                 float pixelstep;
                 if (Horizontal)
                 {
+                   
                     pixelstep = _MainTex_TexelSize.y;
                     lp = neigh.n;
                     ln = neigh.s;
@@ -283,6 +285,7 @@ Shader "Unlit/AntiAliasing"
                 }
                 else
                 {
+                    
                     pixelstep = _MainTex_TexelSize.x;
                     lp = neigh.e;
                     ln = neigh.w;
@@ -304,30 +307,47 @@ Shader "Unlit/AntiAliasing"
                     grad = gradp;
                     l = lp;
                 }
+
+               
              
             float fl = getEdgeBlend(i.uv, neigh,Horizontal,pixelstep, l,grad);
              
              // filtere = max(filtere, fl);
                 if (Horizontal)
                 {
-                    nuuv.y += filtere * pixelstep;
+                   
+                    nuuv.y +=  pixelstep;
                     
                 }
                 else
                 {
-                         nuuv.x += filtere * pixelstep;
+                         nuuv.x += pixelstep;
                 }
 
                 
 
                 if (neigh.diff < max(FixThresh, neigh.big*RelThresh))
                 {
-                 
+            
                   return col;
                   
                 }
-
-                return  tex2D(_MainTex, nuuv);
+            
+             
+                
+              
+              if  (!enab)
+              {
+                    return  tex2D(_MainTex, i.uv);
+                  
+              }
+              else
+              {
+                 
+                  
+                    return  lerp( tex2D(_MainTex, i.uv),tex2D(_MainTex, nuuv),filtere );
+              }
+              
               //  float4 horcol = Horizontal ? float4(1,0,0,1) :   float4(0,1,0,1);
              //   return neigh.diff < max(FixThresh, neigh.big*RelThresh) ? 0 :horcol;;
                 return col.g;

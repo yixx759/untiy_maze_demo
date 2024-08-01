@@ -14,6 +14,7 @@ public class Anti : MonoBehaviour
 
 
     [SerializeField] private bool dig = false;
+    [SerializeField] private bool en = false;
 
     private LocalKeyword key;
     private LocalKeyword akey;
@@ -29,6 +30,7 @@ public class Anti : MonoBehaviour
         anti.SetFloat("FixThresh",FThresh);
         anti.SetFloat("RelThresh",RThresh);
         anti.SetFloat("filterMult",filterMult);
+        anti.SetInteger("enab",en ? 1 : 0);
     
 
         if (dig)

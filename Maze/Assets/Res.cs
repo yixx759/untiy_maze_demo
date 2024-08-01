@@ -9,6 +9,8 @@ public class Res : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField] private RenderTexture final;
     private RenderTexture tmp;
+
+
     [SerializeField] private Material anti;
     [SerializeField, Range(0.0312f, 0.0833f)] private float FThresh;
     [SerializeField,Range(0.063f, 0.333f)] private float RThresh;
@@ -17,7 +19,8 @@ public class Res : MonoBehaviour
 
     [SerializeField] private bool dig = false;
     [SerializeField] private bool antiEnable = false;
-
+    [SerializeField] private bool en = false;
+    
     private LocalKeyword key;
     private LocalKeyword akey;
     void Start()
@@ -40,12 +43,13 @@ public class Res : MonoBehaviour
 
         tmp = RenderTexture.GetTemporary(final.width, final.height,0 );
         tmp.filterMode = FilterMode.Point;
-
+    
 
             anti.SetFloat("FixThresh",FThresh);
         anti.SetFloat("RelThresh",RThresh);
         anti.SetFloat("filterMult",filterMult);
-    
+        anti.SetInteger("enab",en ? 1 : 0);
+
 
         if (dig)
         {
@@ -62,6 +66,7 @@ public class Res : MonoBehaviour
         {
             Graphics.Blit(final, tmp, anti);
             Graphics.Blit(tmp, destination);
+
         }
         else
         {
@@ -71,6 +76,7 @@ public class Res : MonoBehaviour
 
 
         RenderTexture.ReleaseTemporary(tmp);
+     
 
 
 
