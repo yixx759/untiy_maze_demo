@@ -16,7 +16,7 @@ Shader "Unlit/AntiAliasing"
             #pragma fragment frag
             #pragma multi_compile Diagonal No_Diagonal
             // make fog work
-        #define SampleC 5
+        #define SampleC 7
 
             #include "UnityCG.cginc"
 
@@ -143,50 +143,67 @@ Shader "Unlit/AntiAliasing"
                     return Hor >= Ver;
                 
             }
-
+            
+                
             float getEdgeBlend(float2 uv, LumaNeighbour Luma, bool H, float pixelS, float otherLuma, float GradiaentLuma)
             {
-                float2 edgeuv = uv;
-                float2 uvStep =0;
 
+
+
+              
+                float2 edgeuv = uv;
+                float2 uvStep =0.0;
+
+
+//make func go across and check toip bottom or other way round  not contine up or across
+                
                 if(H)
                 {
-                    edgeuv.y += 0.5*pixelS;
+                   // edgeuv.y += 0.5*pixelS;
+                    edgeuv.y += pixelS;
                     uvStep.x = _MainTex_TexelSize.x;
                     
                 }
                 else
                 {
-                    edgeuv.x += 0.5*pixelS;
+                   // edgeuv.x += 0.5*pixelS;
+                    edgeuv.x +=pixelS;
                     uvStep.y = _MainTex_TexelSize.y;
                 }
                 float edgeLuma = 0.5 * (Luma.m+otherLuma);
                 float gradientThresh = 0.25*GradiaentLuma;
-
+          
                 float2 uvP = edgeuv + uvStep;
-	            float lumaGradientP = (tex2D(_MainTex, uvP).g - edgeLuma);
+                float2 prevp = uv+uvStep;
+                float inbe =  lerp(tex2D(_MainTex, uvP).g,tex2D(_MainTex, prevp).g, 0.5 );
+	            float lumaGradientP =( inbe  - edgeLuma);
 	                bool atEndP = abs(lumaGradientP) >= gradientThresh;
-
+                
                 for(int i =0; i < SampleC && !atEndP;i++ )
                 {
-
+                    prevp += uvStep;
                      uvP += uvStep;
-	             lumaGradientP = (tex2D(_MainTex, uvP).g - edgeLuma);
+                    inbe =  lerp(tex2D(_MainTex, uvP).g,tex2D(_MainTex, prevp).g, 0.5 );
+	             lumaGradientP = ( inbe - edgeLuma);
 	                 atEndP = abs(lumaGradientP) >= gradientThresh;
 
 
                     
                 }
-
+              
                 float2 uvN = edgeuv - uvStep;
-	            float lumaGradientN = (tex2D(_MainTex, uvN).g - edgeLuma);
+                prevp = uv - uvStep;
+                inbe = lerp(tex2D(_MainTex, uvN).g,tex2D(_MainTex, prevp).g, 0.5 );
+	            float lumaGradientN = (inbe - edgeLuma);
 	                bool atEndN = abs(lumaGradientN) >= gradientThresh;
 
                 for(int i =0; i < SampleC && !atEndN;i++ )
                 {
 
                      uvN -= uvStep;
-	             lumaGradientN = (tex2D(_MainTex, uvN).g - edgeLuma);
+                     prevp -= uvStep;
+                     inbe = lerp(tex2D(_MainTex, uvN).g,tex2D(_MainTex, prevp).g, 0.5 );
+	                  lumaGradientN = (inbe - edgeLuma);
 	                 atEndN = abs(lumaGradientN) >= gradientThresh;
 
 
@@ -211,7 +228,7 @@ Shader "Unlit/AntiAliasing"
                     distFrom = uvP.y - uv.y;
                      distTo =  uv.y-uvN.y ;
                 }
-
+             
                 if(distFrom <= distTo)
                 {
                     dist = distFrom;
@@ -223,13 +240,14 @@ Shader "Unlit/AntiAliasing"
                       dist = distTo;
                      deltaSighn = lumaGradientN >= 0;
                 }
-
+                
                 
                 if (deltaSighn == (Luma.m - edgeLuma >= 0)) {
 		            return 0.0;
 	            }
 	            else {
-		            return 0.5- dist / (distFrom - distTo);
+		           
+		            return 0.5 - dist / (distTo +distFrom ) ;
 	            }
 
                 
@@ -308,11 +326,15 @@ Shader "Unlit/AntiAliasing"
                     l = lp;
                 }
 
-               
              
             float fl = getEdgeBlend(i.uv, neigh,Horizontal,pixelstep, l,grad);
-             
-             // filtere = max(filtere, fl);
+      if(enab)
+      {
+
+        filtere = max(filtere, saturate(fl));   
+          
+      }
+           
                 if (Horizontal)
                 {
                    
@@ -328,25 +350,18 @@ Shader "Unlit/AntiAliasing"
 
                 if (neigh.diff < max(FixThresh, neigh.big*RelThresh))
                 {
-            
+             
                   return col;
                   
                 }
-            
+             
+              
              
                 
-              
-              if  (!enab)
-              {
-                    return  tex2D(_MainTex, i.uv);
-                  
-              }
-              else
-              {
-                 
-                  
+            
+               
                     return  lerp( tex2D(_MainTex, i.uv),tex2D(_MainTex, nuuv),filtere );
-              }
+              
               
               //  float4 horcol = Horizontal ? float4(1,0,0,1) :   float4(0,1,0,1);
              //   return neigh.diff < max(FixThresh, neigh.big*RelThresh) ? 0 :horcol;;

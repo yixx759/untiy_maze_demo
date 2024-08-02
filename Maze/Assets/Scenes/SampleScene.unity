@@ -507,8 +507,9 @@ MonoBehaviour:
   FThresh: 0.0833
   RThresh: 0.333
   filterMult: 1
-  dig: 0
+  dig: 1
   antiEnable: 1
+  en: 1
 --- !u!1 &287602032
 GameObject:
   m_ObjectHideFlags: 0
@@ -1603,6 +1604,7 @@ MonoBehaviour:
   RThresh: 0.184
   filterMult: 1
   dig: 1
+  en: 0
 --- !u!1 &1190772310
 GameObject:
   m_ObjectHideFlags: 0
