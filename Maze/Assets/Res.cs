@@ -6,6 +6,14 @@ using UnityEngine.Rendering;
 
 public class Res : MonoBehaviour
 {
+    enum Quality
+    {
+        Low,
+        Medium,
+        High
+    }
+
+
     // Start is called before the first frame update
     [SerializeField] private RenderTexture final;
     private RenderTexture tmp;
@@ -15,6 +23,7 @@ public class Res : MonoBehaviour
     [SerializeField, Range(0.0312f, 0.0833f)] private float FThresh;
     [SerializeField,Range(0.063f, 0.333f)] private float RThresh;
     [SerializeField,Range(0f, 1f)] private float filterMult;
+    [SerializeField] private Quality Q;
 
 
     [SerializeField] private bool dig = false;
@@ -23,10 +32,15 @@ public class Res : MonoBehaviour
     
     private LocalKeyword key;
     private LocalKeyword akey;
+    
+    private LocalKeyword LowQ;
+    private LocalKeyword MidQ;
     void Start()
     {
         key = new LocalKeyword(anti.shader, "Diagonal");
         akey = new LocalKeyword(anti.shader, "No_Diagonal");
+        LowQ = new LocalKeyword(anti.shader, "LOW");
+        MidQ = new LocalKeyword(anti.shader, "MID");
     }
 
     // Update is called once per frame
@@ -34,6 +48,28 @@ public class Res : MonoBehaviour
     {
         
      
+    }
+
+    void Quali()
+    {
+        if (Q == Quality.Low)
+        {
+            anti.EnableKeyword(LowQ);
+            anti.DisableKeyword(MidQ);
+            
+        }
+        else if (Q == Quality.Medium)
+        {
+            anti.DisableKeyword(LowQ);
+            anti.EnableKeyword(MidQ);
+        }
+        else
+        {
+            anti.DisableKeyword(LowQ);
+            anti.DisableKeyword(MidQ);
+        }
+        
+        
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
@@ -61,6 +97,13 @@ public class Res : MonoBehaviour
             anti.DisableKeyword(key);
             anti.EnableKeyword(akey);
         }
+        
+        
+        Quali();
+        
+        
+        
+        
 
         if (antiEnable)
         {

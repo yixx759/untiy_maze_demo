@@ -15,8 +15,29 @@ Shader "Unlit/AntiAliasing"
             #pragma vertex vert
             #pragma fragment frag
             #pragma multi_compile Diagonal No_Diagonal
+            #pragma multi_compile _ LOW MID
             // make fog work
-        #define SampleC 7
+
+
+         #if defined(LOW)
+            
+        #define SampleC 4
+        #define EdgeMove 1.0, 1.0, 2.0, 2.0
+            
+        #elif defined(MID)
+
+             #define SampleC 8
+        #define EdgeMove 1.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 4.0
+            
+            #else
+            
+            #define SampleC 10
+        #define EdgeMove 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 4.0
+            
+            #endif
+
+
+            const static float edgeStepS[SampleC] = {EdgeMove};
 
             #include "UnityCG.cginc"
 
@@ -179,9 +200,10 @@ Shader "Unlit/AntiAliasing"
 	            float lumaGradientP =( inbe  - edgeLuma);
 	                bool atEndP = abs(lumaGradientP) >= gradientThresh;
                 
+                UNITY_UNROLL
                 for(int i =0; i < SampleC && !atEndP;i++ )
                 {
-                    prevp += uvStep;
+                    prevp += uvStep * edgeStepS[i] ;
                      uvP += uvStep;
                     inbe =  lerp(tex2D(_MainTex, uvP).g,tex2D(_MainTex, prevp).g, 0.5 );
 	             lumaGradientP = ( inbe - edgeLuma);
@@ -196,11 +218,12 @@ Shader "Unlit/AntiAliasing"
                 inbe = lerp(tex2D(_MainTex, uvN).g,tex2D(_MainTex, prevp).g, 0.5 );
 	            float lumaGradientN = (inbe - edgeLuma);
 	                bool atEndN = abs(lumaGradientN) >= gradientThresh;
-
+                
+                UNITY_UNROLL
                 for(int i =0; i < SampleC && !atEndN;i++ )
                 {
 
-                     uvN -= uvStep;
+                     uvN -= uvStep * edgeStepS[i];
                      prevp -= uvStep;
                      inbe = lerp(tex2D(_MainTex, uvN).g,tex2D(_MainTex, prevp).g, 0.5 );
 	                  lumaGradientN = (inbe - edgeLuma);
@@ -268,7 +291,11 @@ Shader "Unlit/AntiAliasing"
                 //     return float4(1,0,0,1);
                 //     
                 // }
+
+
             
+           
+                
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
                 LumaNeighbour neigh = getNeighbours(i.uv);
@@ -345,6 +372,10 @@ Shader "Unlit/AntiAliasing"
                 {
                          nuuv.x += pixelstep;
                 }
+
+
+
+
 
                 
 
