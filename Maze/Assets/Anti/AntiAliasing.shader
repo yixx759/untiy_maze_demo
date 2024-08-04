@@ -312,7 +312,7 @@ Shader "Unlit/AntiAliasing"
                filtere = saturate(filtere/neigh.diff);
                 filtere = smoothstep(0,1, filtere);
               
-                filtere *= filtere*filterMult;
+                filtere *= filtere;
 
                 
             bool Horizontal = edgeOr(neigh);
@@ -358,8 +358,12 @@ Shader "Unlit/AntiAliasing"
       if(enab)
       {
 
-        filtere = max(filtere, saturate(fl));   
+        filtere = max(filtere, saturate(fl))*filterMult;   
           
+      }
+      else
+      {
+           filtere *= filterMult;
       }
            
                 if (Horizontal)

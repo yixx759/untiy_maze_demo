@@ -108,12 +108,13 @@ public class Res : MonoBehaviour
         if (antiEnable)
         {
             Graphics.Blit(final, tmp, anti);
-            Graphics.Blit(tmp, destination);
+            Graphics.Blit(tmp, final);
 
         }
         else
         {
-            Graphics.Blit(final, destination);
+            Graphics.Blit(final, tmp);
+            Graphics.Blit(tmp, final);
         }
 
 

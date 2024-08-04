@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class Post : MonoBehaviour
 {
+    
+    [SerializeField] private RenderTexture final;
+  
+
     [SerializeField] private Material mat;
     [SerializeField] private Material box;
     [SerializeField] private int scale = 1;
@@ -23,7 +27,9 @@ public class Post : MonoBehaviour
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
-     
+        RenderTexture.active = final;
+        RenderTexture tmp1 = RenderTexture.GetTemporary(final.width, final.height,0 );
+
         mat.SetFloat("thresh", thresh);
         mat.SetFloat("softthresh", softthresh);
         
@@ -33,8 +39,8 @@ public class Post : MonoBehaviour
         
         RenderTexture[] s = new RenderTexture[16];
 //create tmp
-       RenderTexture curdes=  s[0] = RenderTexture.GetTemporary(1920, 1080);
-        Graphics.Blit(source, curdes, mat);
+       RenderTexture curdes=  s[0] = RenderTexture.GetTemporary(final.width, final.height);
+        Graphics.Blit(final, curdes, mat);
         int height = source.height;
         int width = source.width;
         
@@ -42,6 +48,9 @@ public class Post : MonoBehaviour
         {
             height /= 2;
             width /= 2;
+            if (height < 2) {
+                break;
+            }
            // s[i] = new RenderTexture(1920 / i, 1080 / i, 0);
             s[i] = RenderTexture.GetTemporary(width, height);
             Graphics.Blit(curdes, s[i], box, 1);
@@ -62,13 +71,15 @@ public class Post : MonoBehaviour
 
 
         }
-        Graphics.Blit(source,destination );
+        Graphics.Blit(final,tmp1 );
+        Graphics.Blit(tmp1,final );
         box.SetFloat("intensity", intensity);
-        Graphics.Blit(curdes , destination,box, 2);
+        Graphics.Blit(curdes , final,box, 2);
         
       
       
 
         RenderTexture.ReleaseTemporary(curdes);
+        RenderTexture.ReleaseTemporary(tmp1);
     }
 }
