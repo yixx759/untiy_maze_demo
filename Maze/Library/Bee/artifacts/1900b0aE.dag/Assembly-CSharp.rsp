@@ -374,6 +374,7 @@
 "Assets/Movement.cs"
 "Assets/Post/Chroma.cs"
 "Assets/Post/MasterPost.cs"
+"Assets/Post/Noise.cs"
 "Assets/PostFocus.cs"
 "Assets/PostProcess.cs"
 "Assets/PRNG.cs"

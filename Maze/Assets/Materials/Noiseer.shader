@@ -50,7 +50,7 @@ Shader "Unlit/Noiseer"
           // Make sure that we don't return 0.0
           if(r == 0.0)
           {
-    return 0.000000000001;
+             return 0.000000000001;
               
           }
         
@@ -103,7 +103,8 @@ float4 CreateNoise(float lum,float a, float b, float max, float min, float2 uv)
     {
    
         float4 np = (gaussrand(lum,a*(1-lum),uv));
-        float4 ng = gaussrand(0,b*b,uv);
+        float4 ng = gaussrand(0,b,uv);
+  
                 float finalc = (np-a*lum)  + ng;
             
         return finalc;
@@ -124,9 +125,9 @@ float4 CreateNoise(float lum,float a, float b, float max, float min, float2 uv)
                 fixed4 col = tex2D(_MainTex, i.uv);
                 float lum = dot(col.xyz,float3( 0.2125, 0.7154, 0.0721));
                 float4 noise = CreateNoise( lum,a,b,1,-1,i.uv);
-                 fixed4 chroma = tex2D(_Col, i.uv*3);
+                 fixed4 chroma = tex2D(_Col, i.uv*5);
              
-
+         
             return col+(((noise-lum)*chroma));
    
        

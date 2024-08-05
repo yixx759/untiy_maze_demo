@@ -427,6 +427,7 @@ GameObject:
   - component: {fileID: 269624334}
   - component: {fileID: 269624336}
   - component: {fileID: 269624333}
+  - component: {fileID: 269624337}
   - component: {fileID: 269624335}
   m_Layer: 0
   m_Name: Camera
@@ -571,6 +572,22 @@ MonoBehaviour:
   intensity: 1
   thresh: 0.53
   softthresh: 0
+--- !u!114 &269624337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269624329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 614d65410595c1447902bb6032806c6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  final: {fileID: 8400000, guid: 19724e974ef974546b56e0d2b17ad796, type: 2}
+  noise: {fileID: 2100000, guid: 50ec92577fca23742b41b5fd3101cf30, type: 2}
+  a: 0.03
+  b: 0.03
 --- !u!1 &287602032
 GameObject:
   m_ObjectHideFlags: 0
