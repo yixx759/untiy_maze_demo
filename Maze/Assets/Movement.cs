@@ -10,6 +10,7 @@ public class Movement : MonoBehaviour
    [SerializeField] private float speed;
 
    public static Transform t;
+
    private Rigidbody r;
    private Vector3 inputDir;
    private Vector3 vel ;
@@ -23,6 +24,8 @@ public class Movement : MonoBehaviour
     {
         t = this.GetComponent<Transform>();
         r = this.GetComponent<Rigidbody>();
+        
+        
         r.useGravity = false;
     }
 

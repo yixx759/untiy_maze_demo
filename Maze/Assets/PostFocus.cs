@@ -13,12 +13,16 @@ public class PostFocus : MonoBehaviour
     
     [SerializeField] private GameObject MSGObjectInstance;
     private Message_SPW MsgInstance;
-    
+    [SerializeField] private RenderTexture final;
+    RenderTexture tmp ;
+
+
  
     // Start is called before the first frame update
     void Start()
     {
         MsgInstance = MSGObjectInstance.GetComponent<Message_SPW>();
+        tmp = RenderTexture.GetTemporary(final.width, final.height, 0);
     }
 
     // Update is called once per frame
@@ -34,13 +38,15 @@ public class PostFocus : MonoBehaviour
             float dotToMessage = Vector3.Dot(Movement.t.forward,
                 (MsgInstance.Messages[MsgInstance.indexMes].transform.position - Movement.t.position ).normalized);
             dotToMessage = dotToMessage * 0.5f + 0.5f;
-            print(dotToMessage);
+         
+    
         
-                
+                     
             Foci.SetFloat("_lookDir", dotToMessage);
         
         
         }
+      
         
         
         
@@ -50,13 +56,19 @@ public class PostFocus : MonoBehaviour
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
+      
+
         if (MsgInstance.dirSet && MsgInstance.indexMes > -1)
         {
-            Graphics.Blit(source, destination, Foci);
+            Graphics.Blit(final, tmp,Foci);
+            Graphics.Blit(tmp, final );
+        
         }
         else
         {
-            Graphics.Blit(source, destination);
+            
+            Graphics.Blit(final, final);
         }
+       
     }
 }
