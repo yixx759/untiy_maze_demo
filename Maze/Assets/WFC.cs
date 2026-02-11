@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Threading;
 using Unity.VisualScripting;
 using UnityEditor.SceneTemplate;
 using UnityEngine;
@@ -14,8 +13,6 @@ using Unity.Jobs;
 using Unity.Collections;
 using Unity.Mathematics;
 using Vector3 = UnityEngine.Vector3;
-
-
 
 public class WFC : MonoBehaviour
 {
@@ -51,8 +48,6 @@ public class WFC : MonoBehaviour
     {
         public ulong[] states;
         public int curstate;
-
-
     }
 
     
@@ -135,8 +130,6 @@ public class WFC : MonoBehaviour
       
 
        
-
-
     }
 
     private ulong othernuLCG( ulong mod, ulong a, ulong c)
@@ -154,8 +147,6 @@ public class WFC : MonoBehaviour
       
 
        
-
-
     }
 
     
@@ -172,18 +163,8 @@ public class WFC : MonoBehaviour
         
         return seed *  0x2545F4914F6CDD1DUL;
 
-
-
-
-
     }
-
-
     
-
-
-
-
     private Material mat;
    
    
@@ -219,11 +200,9 @@ public class WFC : MonoBehaviour
 
     private const int totalTiles = 12;
     public TileInfo[,] MasterTiles;
-    public NativeArray<TileInfo> PassToJobMaze;
 
-    private NativeArray<int> rules;
-  //  private int[,] rules;
-   // private int[,] rulenum;
+    private int[,] rules;
+    private int[,] rulenum;
     
     //make cleaner
     public static bool alltrue = false;
@@ -247,8 +226,6 @@ public class WFC : MonoBehaviour
     const long m8 = 0x00ff00ff00ff00ff; //binary:  8 zeros,  8 ones ...
     const long m16 = 0x0000ffff0000ffff; //binary: 16 zeros, 16 ones ...
     const long m32 = 0x00000000ffffffff; //binary: 32 zeros, 32 ones
-
-
     const uint i1 = 0x55555555; //binary: 0101...
     const uint i2 = 0x33333333; //binary: 00110011..
     const uint i4 = 0x0f0f0f0f; //binary:  4 zeros,  4 ones ...
@@ -272,11 +249,7 @@ public class WFC : MonoBehaviour
         CBR = 512,
         CBL = 1024,
         Cross = 2048
-
-
-
     }
-//this is 12 bit bro fix it
 
     [Flags]
     enum Direction
@@ -286,8 +259,6 @@ public class WFC : MonoBehaviour
         Left = 1,
         Right = 2,
         Up = 3
-
-
     }
 
     private static int TPowerReverse(TileType a)
@@ -319,22 +290,12 @@ public class WFC : MonoBehaviour
                 return 10;
             case 2048:
                 return 11;
-
-
-
-
             default:
                 print("broke");
                 return 500;
-
-
         }
 
-
-
     }
-
-
 
     private static int TPowerReverseBigInt(BigInteger a)
     {
@@ -365,22 +326,12 @@ public class WFC : MonoBehaviour
                 return 10;
             case 2048:
                 return 11;
-
-
-
-
             default:
                 // print("broke");
                 return 500;
-
-
         }
 
-
-
     }
-
-
     private uint selectbitNoBranch(uint v, int range, (int, int) coord)
     {
 
@@ -390,8 +341,6 @@ public class WFC : MonoBehaviour
         //r = (uint)rank;
 
 //       print(System.Convert.ToString(v,2));
-
-
         uint a = (v & i1) + ((v >> 1) & i1); //put count of each  2 bits into those  2 bits 
         uint b = (a & i2) + ((a >> 2) & i2); //put count of each  4 bits into those  4 bits 
         uint c = (b & i4) + ((b >> 4) & i4); //put count of each  8 bits into those  8 bits 
@@ -401,8 +350,6 @@ public class WFC : MonoBehaviour
 
         
         //account for neg numbers
-
-
         Vector2 xy = MasterTiles[coord.Item1, coord.Item2].xy;
        // print("XY: "+ xy );
         //uint r = (uint)Random.Range(1, range + 1);
@@ -425,16 +372,12 @@ public class WFC : MonoBehaviour
         int ia = 1;
 
         s = 32;
-
-
         //
         // if (r > t) {s -= 16; r -= t;}
         s -= ((t - r) & 256) >> 4;
         r -= (t & ((t - r) >> 8));
 
         //if (r > t) {s -= 8; r -= t;}
-
-
         t = (c >> (int)(s - 8)) & 0xf;
 
         // if (r > t) {s -= 8; r -= t;}
@@ -457,12 +400,6 @@ public class WFC : MonoBehaviour
 
         return s;
 
-
-
-
-
-
-
         // return s;
     }
 
@@ -478,8 +415,6 @@ public class WFC : MonoBehaviour
 
         private Material mat;
         public Vector2 xy;
-
-
         //just add tyle type
         // have log ver and non log
         //do their version and compare with this one
@@ -497,22 +432,14 @@ public class WFC : MonoBehaviour
             Known = false;
 
         }
-
-
-
-
         public void TileTypetoImage(TileType t)
         {
             mat.mainTexture = Tiles[TPowerReverse(t)];
-
-
         }
 
         public void IntetoImage(int i)
         {
             mat.mainTexture = Tiles[i];
-
-
         }
 
         public void AddNewBlock(int i)
@@ -520,7 +447,7 @@ public class WFC : MonoBehaviour
             plane = Instantiate(MazePart[i], new UnityEngine.Vector3(xy.x * blockLength.x, 0, xy.y * blockLength.y),
                 (MazePart[i].transform.rotation));
 
-        
+            plane.AddComponent(typeof(MeshCollider));
 
             //plane.GetComponent<Renderer>().material.mainTexture = tex;
 //-89.98
@@ -532,226 +459,216 @@ public class WFC : MonoBehaviour
             Destroy(plane);
             plane = null;
 
-
-
         }
-
-
     }
-
-
-    NativeArray<int> initrules()
+    int[,] initrules()
     {
-        NativeArray<int> a = new NativeArray<int>(totalTiles*4, Allocator.Persistent);
+        int[,] a = new int[totalTiles, 4];
         //remove blank
         //add blank
 
-        a[TPowerReverse(TileType.Blank)+ totalTiles* (int)Direction.Up] = (int)(TileType.Blank | TileType.Up | TileType.Down |
+        a[TPowerReverse(TileType.Blank), (int)Direction.Up] = (int)(TileType.Blank | TileType.Up | TileType.Down |
                                                                     TileType.Left | TileType.Right | TileType.Ll |
                                                                     TileType.Lup | TileType.Up | TileType.CBL |
                                                                     TileType.CBR | TileType.CTL | TileType.CTR |
                                                                     TileType.Cross);
 
-        a[TPowerReverse(TileType.Blank)+ totalTiles* (int)Direction.Left] = (int)(TileType.Blank | TileType.Up | TileType.Down |
+        a[TPowerReverse(TileType.Blank), (int)Direction.Left] = (int)(TileType.Blank | TileType.Up | TileType.Down |
                                                                       TileType.Left | TileType.Right | TileType.Ll |
                                                                       TileType.Lup | TileType.Up | TileType.CBL |
                                                                       TileType.CBR | TileType.CTL | TileType.CTR |
                                                                       TileType.Cross);
 
-        a[TPowerReverse(TileType.Blank)+ totalTiles* (int)Direction.Down] = (int)(TileType.Blank | TileType.Up | TileType.Down |
+        a[TPowerReverse(TileType.Blank), (int)Direction.Down] = (int)(TileType.Blank | TileType.Up | TileType.Down |
                                                                       TileType.Left | TileType.Right | TileType.Ll |
                                                                       TileType.Lup | TileType.Up | TileType.CBL |
                                                                       TileType.CBR | TileType.CTL | TileType.CTR |
                                                                       TileType.Cross);
 
-        a[TPowerReverse(TileType.Blank)+ totalTiles* (int)Direction.Right] = (int)(TileType.Blank | TileType.Up | TileType.Down |
+        a[TPowerReverse(TileType.Blank), (int)Direction.Right] = (int)(TileType.Blank | TileType.Up | TileType.Down |
                                                                        TileType.Left | TileType.Right | TileType.Ll |
                                                                        TileType.Lup | TileType.Up | TileType.CBL |
                                                                        TileType.CBR | TileType.CTL | TileType.CTR |
                                                                        TileType.Cross);
 
         //
-        a[TPowerReverse(TileType.Down)+ totalTiles* (int)Direction.Up] =
+        a[TPowerReverse(TileType.Down), (int)Direction.Up] =
             (int)(TileType.Blank | TileType.Ll | TileType.Up | TileType.CBL | TileType.CBR);
 
-        a[TPowerReverse(TileType.Down)+ totalTiles* (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Up |
+        a[TPowerReverse(TileType.Down), (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Up |
                                                                      TileType.Down | TileType.CTR | TileType.CBR |
                                                                      TileType.Down | TileType.Ll | TileType.Cross);
 
-        a[TPowerReverse(TileType.Down)+ totalTiles* (int)Direction.Down] = (int)(TileType.Blank | TileType.Lup | TileType.Up |
+        a[TPowerReverse(TileType.Down), (int)Direction.Down] = (int)(TileType.Blank | TileType.Lup | TileType.Up |
                                                                      TileType.CBL | TileType.CBR | TileType.Left |
                                                                      TileType.Right | TileType.Cross);
 
-        a[TPowerReverse(TileType.Down)+ totalTiles* (int)Direction.Right] = (int)(TileType.Blank | TileType.Left | TileType.Up |
+        a[TPowerReverse(TileType.Down), (int)Direction.Right] = (int)(TileType.Blank | TileType.Left | TileType.Up |
                                                                       TileType.Down | TileType.CTL | TileType.CBL |
                                                                       TileType.Ll | TileType.Cross);
         //
 
-        a[TPowerReverse(TileType.Right)+ totalTiles* (int)Direction.Up] = (int)(TileType.Blank | TileType.Left | TileType.Down |
+        a[TPowerReverse(TileType.Right), (int)Direction.Up] = (int)(TileType.Blank | TileType.Left | TileType.Down |
                                                                     TileType.Right | TileType.Lup | TileType.CTL |
                                                                     TileType.CTR | TileType.Cross);
 
-        a[TPowerReverse(TileType.Right)+ totalTiles* (int)Direction.Left] = (int)(TileType.Blank | TileType.Blank | TileType.Left |
+        a[TPowerReverse(TileType.Right), (int)Direction.Left] = (int)(TileType.Blank | TileType.Blank | TileType.Left |
                                                                       TileType.Lup | TileType.CTL | TileType.CBL);
 
-        a[TPowerReverse(TileType.Right)+ totalTiles* (int)Direction.Down] = (int)(TileType.Blank | TileType.Left | TileType.Up |
+        a[TPowerReverse(TileType.Right), (int)Direction.Down] = (int)(TileType.Blank | TileType.Left | TileType.Up |
                                                                       TileType.Right | TileType.Lup | TileType.CBR |
                                                                       TileType.CBL | TileType.Cross);
 
-        a[TPowerReverse(TileType.Right)+ totalTiles* (int)Direction.Right] = (int)(TileType.Blank | TileType.Down | TileType.Up |
+        a[TPowerReverse(TileType.Right), (int)Direction.Right] = (int)(TileType.Blank | TileType.Down | TileType.Up |
                                                                        TileType.Left | TileType.Ll | TileType.CTL |
                                                                        TileType.CBL | TileType.Cross);
         //
-        a[TPowerReverse(TileType.Left)+ totalTiles* (int)Direction.Up] = (int)(TileType.Blank | TileType.Left | TileType.Down |
+        a[TPowerReverse(TileType.Left), (int)Direction.Up] = (int)(TileType.Blank | TileType.Left | TileType.Down |
                                                                    TileType.Right | TileType.Lup | TileType.CTL |
                                                                    TileType.CTR | TileType.Cross);
 
-        a[TPowerReverse(TileType.Left)+ totalTiles* (int)Direction.Left] = (int)(TileType.Blank | TileType.Up | TileType.Down |
+        a[TPowerReverse(TileType.Left), (int)Direction.Left] = (int)(TileType.Blank | TileType.Up | TileType.Down |
                                                                      TileType.Right | TileType.Ll | TileType.CTR |
                                                                      TileType.CBR | TileType.Cross);
 
-        a[TPowerReverse(TileType.Left)+ totalTiles* (int)Direction.Down] = (int)(TileType.Blank | TileType.Left | TileType.Right |
+        a[TPowerReverse(TileType.Left), (int)Direction.Down] = (int)(TileType.Blank | TileType.Left | TileType.Right |
                                                                      TileType.Up | TileType.Lup | TileType.CBR |
                                                                      TileType.CBL | TileType.Cross);
 
-        a[TPowerReverse(TileType.Left)+ totalTiles* (int)Direction.Right] = (int)(TileType.Blank | TileType.Blank | TileType.Blank |
+        a[TPowerReverse(TileType.Left), (int)Direction.Right] = (int)(TileType.Blank | TileType.Blank | TileType.Blank |
                                                                       TileType.Right | TileType.CTR | TileType.CBR |
                                                                       TileType.Lup);
         //
 
-        a[TPowerReverse(TileType.Up)+ totalTiles* (int)Direction.Up] = (int)(TileType.Blank | TileType.Left | TileType.Down |
+        a[TPowerReverse(TileType.Up), (int)Direction.Up] = (int)(TileType.Blank | TileType.Left | TileType.Down |
                                                                  TileType.Right | TileType.Lup | TileType.CTL |
                                                                  TileType.CTR | TileType.Cross);
 
-        a[TPowerReverse(TileType.Up)+ totalTiles* (int)Direction.Left] = (int)(TileType.Blank | TileType.Up | TileType.Down |
+        a[TPowerReverse(TileType.Up), (int)Direction.Left] = (int)(TileType.Blank | TileType.Up | TileType.Down |
                                                                    TileType.Right | TileType.Ll | TileType.CTR |
                                                                    TileType.CBR | TileType.Cross);
 
-        a[TPowerReverse(TileType.Up)+ totalTiles* (int)Direction.Down] = (int)(TileType.Blank | TileType.Blank | TileType.Down |
+        a[TPowerReverse(TileType.Up), (int)Direction.Down] = (int)(TileType.Blank | TileType.Blank | TileType.Down |
                                                                    TileType.Ll | TileType.CTL | TileType.CTR);
 
-        a[TPowerReverse(TileType.Up)+ totalTiles* (int)Direction.Right] = (int)(TileType.Blank | TileType.Up | TileType.Down |
+        a[TPowerReverse(TileType.Up), (int)Direction.Right] = (int)(TileType.Blank | TileType.Up | TileType.Down |
                                                                     TileType.Left | TileType.Ll | TileType.CTL |
                                                                     TileType.CBL | TileType.Cross);
 
         //
-        a[TPowerReverse(TileType.Lup)+ totalTiles* (int)Direction.Up] = (int)(TileType.Blank | TileType.Blank | TileType.Left |
+        a[TPowerReverse(TileType.Lup), (int)Direction.Up] = (int)(TileType.Blank | TileType.Blank | TileType.Left |
                                                                   TileType.Down | TileType.Right | TileType.CTL |
                                                                   TileType.CTR | TileType.Lup | TileType.Cross);
 
-        a[TPowerReverse(TileType.Lup)+ totalTiles* (int)Direction.Left] =
+        a[TPowerReverse(TileType.Lup), (int)Direction.Left] =
             (int)(TileType.Blank | TileType.Left | TileType.CBL | TileType.CTL | TileType.Lup);
 
-        a[TPowerReverse(TileType.Lup)+ totalTiles* (int)Direction.Down] = (int)(TileType.Blank | TileType.Blank | TileType.Up |
+        a[TPowerReverse(TileType.Lup), (int)Direction.Down] = (int)(TileType.Blank | TileType.Blank | TileType.Up |
                                                                     TileType.Left | TileType.Right | TileType.CBR |
                                                                     TileType.CBL | TileType.Lup | TileType.Cross);
 
-        a[TPowerReverse(TileType.Lup)+ totalTiles* (int)Direction.Right] =
+        a[TPowerReverse(TileType.Lup), (int)Direction.Right] =
             (int)(TileType.Blank | TileType.Right | TileType.CBR | TileType.CTR | TileType.Lup);
 
         //
 
-        a[TPowerReverse(TileType.Ll)+ totalTiles* (int)Direction.Up] =
+        a[TPowerReverse(TileType.Ll), (int)Direction.Up] =
             (int)(TileType.Blank | TileType.Up | TileType.Ll | TileType.CBL | TileType.CBR);
 
-        a[TPowerReverse(TileType.Ll)+ totalTiles* (int)Direction.Left] = (int)(TileType.Blank | TileType.Blank | TileType.Up |
+        a[TPowerReverse(TileType.Ll), (int)Direction.Left] = (int)(TileType.Blank | TileType.Blank | TileType.Up |
                                                                    TileType.Down | TileType.Right | TileType.Ll |
                                                                    TileType.CTR | TileType.CBR | TileType.Cross);
 
-        a[TPowerReverse(TileType.Ll)+ totalTiles* (int)Direction.Down] =
+        a[TPowerReverse(TileType.Ll), (int)Direction.Down] =
             (int)(TileType.Blank | TileType.Down | TileType.Ll | TileType.CTL | TileType.CTR);
 
-        a[TPowerReverse(TileType.Ll)+ totalTiles* (int)Direction.Right] = (int)(TileType.Blank | TileType.Blank | TileType.Blank |
+        a[TPowerReverse(TileType.Ll), (int)Direction.Right] = (int)(TileType.Blank | TileType.Blank | TileType.Blank |
                                                                     TileType.Up | TileType.Down | TileType.Left |
                                                                     TileType.Ll | TileType.CTL | TileType.CBL |
                                                                     TileType.Cross);
 
         //
 
-        a[TPowerReverse(TileType.CBL)+ totalTiles* (int)Direction.Up] = (int)(TileType.Blank | TileType.Left | TileType.Down |
+        a[TPowerReverse(TileType.CBL), (int)Direction.Up] = (int)(TileType.Blank | TileType.Left | TileType.Down |
                                                                   TileType.Right | TileType.Lup | TileType.CTR |
                                                                   TileType.CTL | TileType.Cross);
 
-        a[TPowerReverse(TileType.CBL)+ totalTiles* (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Down |
+        a[TPowerReverse(TileType.CBL), (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Down |
                                                                     TileType.Up | TileType.Ll | TileType.CTR |
                                                                      TileType.Cross);
         //TileType.CBR |
 
-        a[TPowerReverse(TileType.CBL)+ totalTiles* (int)Direction.Down] =
+        a[TPowerReverse(TileType.CBL), (int)Direction.Down] =
             (int)(TileType.Blank | TileType.Down | TileType.Ll | TileType.CTR | TileType.CTL);
 
-        a[TPowerReverse(TileType.CBL)+ totalTiles* (int)Direction.Right] =
+        a[TPowerReverse(TileType.CBL), (int)Direction.Right] =
             (int)(TileType.Blank | TileType.Right | TileType.Lup | TileType.CBR | TileType.CTR);
 
         //
 
-        a[TPowerReverse(TileType.CBR)+ totalTiles* (int)Direction.Up] = (int)(TileType.Blank | TileType.Left | TileType.Down |
+        a[TPowerReverse(TileType.CBR), (int)Direction.Up] = (int)(TileType.Blank | TileType.Left | TileType.Down |
                                                                   TileType.Right | TileType.Lup | TileType.CTR |
                                                                   TileType.CTL | TileType.Cross);
 
-        a[TPowerReverse(TileType.CBR)+ totalTiles* (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Down |
+        a[TPowerReverse(TileType.CBR), (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Down |
                                                                     TileType.Up | TileType.Ll | TileType.CBL |
                                                                     TileType.CTL);
 
-        a[TPowerReverse(TileType.CBR)+ totalTiles* (int)Direction.Down] =
+        a[TPowerReverse(TileType.CBR), (int)Direction.Down] =
             (int)(TileType.Blank | TileType.Down | TileType.Ll | TileType.CTR | TileType.CTL);
 
-        a[TPowerReverse(TileType.CBR)+ totalTiles* (int)Direction.Right] = (int)(TileType.Blank | TileType.Left | TileType.Up |
+        a[TPowerReverse(TileType.CBR), (int)Direction.Right] = (int)(TileType.Blank | TileType.Left | TileType.Up |
                                                                      TileType.Down | TileType.Ll | 
                                                                      TileType.CTL | TileType.Cross);
 //TileType.CBL |
 
         //
 
-        a[TPowerReverse(TileType.CTL)+ totalTiles* (int)Direction.Up] =
+        a[TPowerReverse(TileType.CTL), (int)Direction.Up] =
             (int)(TileType.Blank | TileType.Up | TileType.Ll | TileType.CBR | TileType.CBL);
 
-        a[TPowerReverse(TileType.CTL)+ totalTiles* (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Down |
+        a[TPowerReverse(TileType.CTL), (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Down |
                                                                     TileType.Up | TileType.Ll | TileType.CTR |
                                                                     TileType.CBR | TileType.Cross);
 
-        a[TPowerReverse(TileType.CTL)+ totalTiles* (int)Direction.Down] = (int)(TileType.Blank | TileType.Up | TileType.Left |
+        a[TPowerReverse(TileType.CTL), (int)Direction.Down] = (int)(TileType.Blank | TileType.Up | TileType.Left |
                                                                     TileType.Right | TileType.Lup | TileType.CBR |
                                                                     TileType.CBL | TileType.Cross);
 
-        a[TPowerReverse(TileType.CTL)+ totalTiles* (int)Direction.Right] =
+        a[TPowerReverse(TileType.CTL), (int)Direction.Right] =
             (int)(TileType.Blank | TileType.Right | TileType.Lup | TileType.CTR | TileType.CBR);
 
         //
 
-        a[TPowerReverse(TileType.CTR)+ totalTiles* (int)Direction.Up] =
+        a[TPowerReverse(TileType.CTR), (int)Direction.Up] =
             (int)(TileType.Blank | TileType.Up | TileType.Ll | TileType.CBR | TileType.CBL);
 
-        a[TPowerReverse(TileType.CTR)+ totalTiles* (int)Direction.Left] =
+        a[TPowerReverse(TileType.CTR), (int)Direction.Left] =
             (int)(TileType.Blank | TileType.Left | TileType.Lup | TileType.CTL | TileType.CBL);
 
-        a[TPowerReverse(TileType.CTR)+ totalTiles* (int)Direction.Down] = (int)(TileType.Blank | TileType.Up | TileType.Left |
+        a[TPowerReverse(TileType.CTR), (int)Direction.Down] = (int)(TileType.Blank | TileType.Up | TileType.Left |
                                                                     TileType.Right | TileType.Lup | TileType.CBR |
                                                                     TileType.CBL | TileType.Cross);
 
-        a[TPowerReverse(TileType.CTR)+ totalTiles* (int)Direction.Right] = (int)(TileType.Blank | TileType.Left | TileType.Down |
+        a[TPowerReverse(TileType.CTR), (int)Direction.Right] = (int)(TileType.Blank | TileType.Left | TileType.Down |
                                                                      TileType.Up | TileType.Ll | TileType.CTL |
                                                                      TileType.CBL | TileType.Cross);
-
-
         //
-        a[TPowerReverse(TileType.Cross)+ totalTiles* (int)Direction.Up] = (int)(TileType.Blank | TileType.Down | TileType.Left |
+        a[TPowerReverse(TileType.Cross), (int)Direction.Up] = (int)(TileType.Blank | TileType.Down | TileType.Left |
                                                                     TileType.Right | TileType.Lup | TileType.CTR |
                                                                     TileType.CTL | TileType.Cross);
 
-        a[TPowerReverse(TileType.Cross)+ totalTiles* (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Down |
+        a[TPowerReverse(TileType.Cross), (int)Direction.Left] = (int)(TileType.Blank | TileType.Right | TileType.Down |
                                                                       TileType.Up | TileType.Ll | TileType.Cross |
                                                                       TileType.CBR | TileType.CTR);
 
-        a[TPowerReverse(TileType.Cross)+ totalTiles* (int)Direction.Down] = (int)(TileType.Blank | TileType.Up | TileType.Left |
+        a[TPowerReverse(TileType.Cross), (int)Direction.Down] = (int)(TileType.Blank | TileType.Up | TileType.Left |
                                                                       TileType.Right | TileType.Lup | TileType.CBR |
                                                                       TileType.CBL | TileType.Cross);
 
-        a[TPowerReverse(TileType.Cross)+ totalTiles* (int)Direction.Right] = (int)(TileType.Blank | TileType.Left | TileType.Down |
+        a[TPowerReverse(TileType.Cross), (int)Direction.Right] = (int)(TileType.Blank | TileType.Left | TileType.Down |
                                                                        TileType.Up | TileType.Ll | TileType.Cross |
                                                                        TileType.CBL | TileType.CTL | TileType.Cross);
-
-
         //////////////////////////////
         ///
         ///a[TPowerReverse(TileType.Blank), (int)Direction.Up] = (int) (TileType.Blank | TileType.Up |TileType.Down | TileType.Left | TileType.Right |TileType.Ll | TileType.Lup | TileType.Up |TileType.CBL | TileType.CBR | TileType.CTL |TileType.CTR | TileType.Cross);
@@ -870,38 +787,28 @@ public class WFC : MonoBehaviour
         //  
         //  
 
-
-
-
-
         return a;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
         CurTile = new Vector2(6, 6);
         MazeStart = new Vector2(0, 0);
         MazeEnd = new Vector2(totalx, totaly);
-        print("Here Fag" + (TMaze[0].transform.GetChild(4).GetComponent<Renderer>().bounds.size.x));
-        print("Here Fa1g" + (TMaze[0].transform.GetChild(4).name));
-            blockLength = new Vector2(TMaze[0].transform.GetChild(4).GetComponent<Renderer>().bounds.size.x, TMaze[0].transform.GetChild(4).GetComponent<Renderer>().bounds.size.z);
-     blockLengthH = blockLength/2;
+        blockLength = new Vector2(TMaze[0].transform.GetChild(4).GetComponent<Renderer>().bounds.size.x, TMaze[0].transform.GetChild(4).GetComponent<Renderer>().bounds.size.z);
+        blockLengthH = blockLength/2;
         
         StateTracker nus = new StateTracker();
         initilize_State(ref nus);
         seed = MTwist(ref nus);
-         seeda = MTwist(ref nus);
-         seedb = MTwist(ref nus);
-
-
+        seeda = MTwist(ref nus);
+        seedb = MTwist(ref nus);
         tex = stex;
         Tiles = TTemp;
         MazePart = TMaze;
         rules = initrules();
-
-
         totaly = totalx;
 
         MasterTiles = new TileInfo[totalx, totaly];
@@ -917,11 +824,7 @@ public class WFC : MonoBehaviour
             for (int j = 0; j < totaly; j++)
             {
                 MasterTiles[i, j].Inst(new Vector2(i, j));
-
-
-
             }
-
         }
 
         int sx = Random.Range(0, totalx);
@@ -937,17 +840,27 @@ public class WFC : MonoBehaviour
         UpdateNeighbour(-1, 0, Direction.Left, (sx, sy), TT);
         UpdateNeighbour(0, 1, Direction.Up, (sx, sy), TT);
         UpdateNeighbour(0, -1, Direction.Down, (sx, sy), TT);
-        //printarray(totalx);
 
+        while (!alltrue)
+        {
+            (int, int) tind = findTarget();
+            TT = targetIndex(tind);
+            MasterTiles[tind.Item1, tind.Item2].Known = true;
+            MasterTiles[tind.Item1, tind.Item2].Entropy = 1;
+            MasterTiles[tind.Item1, tind.Item2].possibility =
+                (MasterTiles[tind.Item1, tind.Item2].possibility & 1 << TT);
 
+            MasterTiles[tind.Item1, tind.Item2].AddNewBlock(TT);
+            UpdateNeighbour(1, 0, Direction.Right, tind, TT);
+            UpdateNeighbour(-1, 0, Direction.Left, tind, TT);
+            UpdateNeighbour(0, 1, Direction.Up, tind, TT);
+            UpdateNeighbour(0, -1, Direction.Down, tind, TT);
 
-
-
-        
-
+            alltrue = done();
+            TempTimer = Timer;
+        }
     }
-
-
+    
     bool done()
     {
 
@@ -971,15 +884,7 @@ public class WFC : MonoBehaviour
     //do better
     int nuentropy(int x, int y)
     {
-
-
-
-
-
-//        print("NuWorked:");
         long xi = (long)MasterTiles[x, y].possibility;
-
-
 
         xi = (xi & m1) + ((xi >> 1) & m1); //put count of each  2 bits into those  2 bits 
         xi = (xi & m2) + ((xi >> 2) & m2); //put count of each  4 bits into those  4 bits 
@@ -987,37 +892,7 @@ public class WFC : MonoBehaviour
         xi = (xi & m8) + ((xi >> 8) & m8); //put count of each 16 bits into those 16 bits 
         xi = (xi & m16) + ((xi >> 16) & m16); //put count of each 32 bits into those 32 bits 
         xi = (xi & m32) + ((xi >> 32) & m32); //put count of each 64 bits into those 64 bits 
-
-
-
-
-
-
-
-
-
-
-
-
         return (int)xi;
-
-        // int count = 0;
-        // int num = MasterTiles[x, y].possibility;
-        // //automate this
-        // for (int i = 0; i < totalTiles; i++)
-        // {
-        //     if ((num & 1) == 1)
-        //     {
-        //         count++;
-        //
-        //     }
-        //     num = num >> 1;
-        //
-        // }
-
-
-
-
     }
 
     (int, int) findTarget()
@@ -1030,7 +905,6 @@ public class WFC : MonoBehaviour
         {
             for (int j = 0; j < totalx; j++)
             {
-                //  print("i: "+i+" j: "+j+" "+MasterTiles[i, j].Entropy);
                 if (MasterTiles[j, i].Entropy < target && !MasterTiles[j, i].Known)
                 {
                     target = MasterTiles[j, i].Entropy;
@@ -1042,16 +916,10 @@ public class WFC : MonoBehaviour
         }
 
         return targetcord;
-
-
     }
 
-    //
     int targetIndex((int, int) coord)
     {
-
-
-
         int g = Random.Range(0, lesschanceofblank + 1);
         uint num = (uint)MasterTiles[coord.Item1, coord.Item2].possibility;
         int ent = MasterTiles[coord.Item1, coord.Item2].Entropy;
@@ -1061,43 +929,27 @@ public class WFC : MonoBehaviour
             ent--;
 
         }
-     
-
+        
         return (int)selectbitNoBranch(num, ent,coord) - 1;
-        // return tt;
-
-
     }
 
     void UpdateNeighbour(int offx, int offy, Direction Diru, (int, int) coord, int TT)
     {
-
-
         if (coord.Item1 + offx < totalx && coord.Item2 + offy < totaly && coord.Item1 + offx >= 0 &&
             coord.Item2 + offy >= 0 && MasterTiles[coord.Item1 + offx, coord.Item2 + offy].Entropy != 0 &&
             MasterTiles[coord.Item1 + offx, coord.Item2 + offy].Known == false)
         {
-//           
             MasterTiles[coord.Item1 + offx, coord.Item2 + offy].possibility =
-                (MasterTiles[coord.Item1 + offx, coord.Item2 + offy].possibility & rules[TT+totalTiles* (int)Diru]);
+                (MasterTiles[coord.Item1 + offx, coord.Item2 + offy].possibility & rules[TT, (int)Diru]);
             MasterTiles[coord.Item1 + offx, coord.Item2 + offy].Entropy =
                 nuentropy(coord.Item1 + offx, coord.Item2 + offy);
-
-
         }
-        
-
     }
-
-
-
-
 
     void move(ScrollDir dir)
     {
         switch (dir)
         {
-
             case ScrollDir.right:
 
                 for (int i = 0; i < totalx; i++)
@@ -1105,18 +957,12 @@ public class WFC : MonoBehaviour
 
                     MasterTiles[0, i].DelObj();
                 }
-
-
                 for (int i = 1; i < totalx; i++)
                 {
                     for (int j = 0; j < totalx; j++)
                     {
-
                         MasterTiles[(i - 1), j] = MasterTiles[(i), j];
-
                     }
-
-
                 }
 
                 for (int i = 0; i < totalx; i++)
@@ -1135,8 +981,6 @@ public class WFC : MonoBehaviour
                     MasterTiles[(totalx - 1), i].DelObj();
                 }
 
-
-
                 for (int i = totalx - 1; i > 0; i--)
                 {
                     for (int j = 0; j < totalx; j++)
@@ -1145,8 +989,6 @@ public class WFC : MonoBehaviour
                         MasterTiles[i, j] = MasterTiles[(i - 1), j];
 
                     }
-
-
                 }
 
                 for (int i = 0; i < totalx; i++)
@@ -1156,8 +998,6 @@ public class WFC : MonoBehaviour
                 }
 
                 break;
-
-
             case ScrollDir.down:
 
                 for (int i = 0; i < totalx; i++)
@@ -1165,18 +1005,13 @@ public class WFC : MonoBehaviour
 
                     MasterTiles[i, totalx - 1].DelObj();
                 }
-
-
                 for (int i = totalx - 1; i > 0; i--)
                 {
                     for (int j = 0; j < totalx; j++)
                     {
 
                         MasterTiles[j, i] = MasterTiles[j, i - 1];
-
-
                     }
-
 
                 }
 
@@ -1186,10 +1021,7 @@ public class WFC : MonoBehaviour
                     MasterTiles[i, 0].xy = new Vector2(-1, -1);
 //optimize combine with replace
                 }
-
-
                 break;
-
 
             case ScrollDir.up:
 
@@ -1200,7 +1032,6 @@ public class WFC : MonoBehaviour
 //optimize combine with replace
                 }
 
-
                 for (int i = 1; i < totalx; i++)
                 {
                     for (int j = 0; j < totalx; j++)
@@ -1209,8 +1040,6 @@ public class WFC : MonoBehaviour
                         MasterTiles[(j), i - 1] = MasterTiles[(j), i];
 
                     }
-
-
                 }
 
                 for (int i = 0; i < totalx; i++)
@@ -1220,55 +1049,26 @@ public class WFC : MonoBehaviour
                 }
 
                 break;
-
-
-
-
-
-
-
-
         }
-
-
-
-
-
-
-
-
-
-
-
     }
 
     void replace(ScrollDir dir)
     {
 
         //cache the y instead of clal from stored
-
-
-        Vector2 start = Vector2.zero;
+    
         Vector2 nustart = Vector2.zero;
         switch (dir)
         {
             case ScrollDir.left:
-
-
                 MazeStart.x--;
                 MazeEnd.x--;
                 for (int i = totalx - 1; i >= 0; i--)
                 {
-
-
                     MasterTiles[0, i].Inst(new Vector2(MasterTiles[1, i].xy.x - 1, MasterTiles[1, i].xy.y));
-
-
                     //please amke tuple vector 2
                     (int, int) xy = ((int)1, i);
                     UpdateNeighbour(-1, 0, Direction.Left, xy, TPowerReverseBigInt(MasterTiles[1, i].possibility));
-
-
 
                 }
 
@@ -1281,11 +1081,6 @@ public class WFC : MonoBehaviour
               
                 for (int i = 0; i < totalx; i++)
                 {
-                    if (i == totalx - 1)
-                    {
-                        // print((MasterTiles[((totalx - 2)), i].possibility));
-                    }
-
                     nustart = MasterTiles[(totalx - 2), i].xy;
                     MasterTiles[((totalx - 1)), i]
                         .Inst(new Vector2(MasterTiles[((totalx - 2)), i].xy.x + 1, nustart.y));
@@ -1296,11 +1091,8 @@ public class WFC : MonoBehaviour
 
                     UpdateNeighbour(1, 0, Direction.Right, xy,
                         TPowerReverseBigInt(MasterTiles[((totalx - 2)), i].possibility));
-                    //print((xy.Item1+1)+", "+xy.Item2);
-                    //print(MasterTiles[(totalx-1),i].possibility);
                 }
 
-                // print("out a here");
                 break;
             case ScrollDir.down:
                 MazeStart.y--;
@@ -1310,33 +1102,20 @@ public class WFC : MonoBehaviour
                 {
 
                     MasterTiles[i, 0].Inst(new Vector2(MasterTiles[i, 1].xy.x, MasterTiles[i, 1].xy.y - 1));
-
-
                     (int, int) xy = ((int)i, 1);
                     UpdateNeighbour(0, -1, Direction.Down, xy, TPowerReverseBigInt(MasterTiles[i, 1].possibility));
-
-
                 }
 
                 break;
             case ScrollDir.up:
-                //print("up");
 
                 MazeStart.y++;
                 MazeEnd.y++;
                 
                 for (int i = 0; i < totalx; i++)
                 {
-                    if (i == totalx - 1)
-                    {
-                        //print(MasterTiles[i,  totalx-2].possibility);
-                    }
-
-
                     MasterTiles[i, totalx - 1].Inst(new Vector2(MasterTiles[i, totalx - 2].xy.x,
                         MasterTiles[i, totalx - 2].xy.y + 1));
-
-
                     (int, int) xy = (i, totalx - 2);
                     UpdateNeighbour(0, 1, Direction.Up, xy,
                         TPowerReverseBigInt(MasterTiles[i, totalx - 2].possibility));
@@ -1345,123 +1124,41 @@ public class WFC : MonoBehaviour
 
                 break;
 
-
-
-        }
-        // printarray(totalx);
-
-
-
-
-
-
-    }
-
-
-
-
-    void printarray(int fsize)
-    {
-        string a = "";
-        string b = "";
-
-        for (int i = fsize - 1; i >= 0; i--)
-        {
-            for (int j = 0; j < fsize; j++)
-            {
-
-                b += MasterTiles[i, j].xy.ToString();
-                b += " ";
-
-            }
-
-            a += "\n";
-            b += "\n";
         }
 
-        //print(a);
-        print(b);
     }
-
-
-
-
-
     // Update is called once per frame
     void Update()
     {
-
-
-        //do thos in start
-        //while not done
-
-        //make new tiles multiple
-
-     
-
-        
-
-
-//optimze when finhsed generation
-
-
-//for large scale maze do parralel on opposite ends then once magnitude between points
-//low enough treat as one.
+  
 
         while (!alltrue)
         {
             //if (!alltrue && TempTimer <= 0)
             (int, int) tind = findTarget();
-
-
-
-
             int TT = targetIndex(tind);
-//                print("TTTERRR: " + TT );
-
-
             MasterTiles[tind.Item1, tind.Item2].Known = true;
             MasterTiles[tind.Item1, tind.Item2].Entropy = 1;
             MasterTiles[tind.Item1, tind.Item2].possibility =
                 (MasterTiles[tind.Item1, tind.Item2].possibility & 1 << TT);
 
-            // MasterTiles[tind.Item1, tind.Item2].IntetoImage(TT);
             MasterTiles[tind.Item1, tind.Item2].AddNewBlock(TT);
-            // UpdateNeighbour(1, 0, Direction.Right, tind, TT);
-            // UpdateNeighbour(-1, 0, Direction.Left, tind, TT);
-            // UpdateNeighbour(0, 1, Direction.Up, tind, TT);
-            // UpdateNeighbour(0, -1, Direction.Down, tind, TT);
             UpdateNeighbour(1, 0, Direction.Right, tind, TT);
             UpdateNeighbour(-1, 0, Direction.Left, tind, TT);
             UpdateNeighbour(0, 1, Direction.Up, tind, TT);
             UpdateNeighbour(0, -1, Direction.Down, tind, TT);
 
-
-
-
-
-
-
-
-
-
-
             alltrue = done();
             TempTimer = Timer;
-
-
         }
         if (alltrue && !set)
         {
-            
-          //  print("The inital Tile");
             CurTilePos = MasterTiles[(int)CurTile.x, (int)CurTile.y].plane.transform.position;
             CurTilePos.y = 0;
-           // print(CurTilePos);
             set = true;
         }
 
-        TempTimer -= Time.deltaTime;
+    
 
         bool moved = false;
            
@@ -1471,9 +1168,6 @@ public class WFC : MonoBehaviour
         
         if (alltrue)
         {
-            
-            
-            
             if (Mathf.Abs(p.x - CurTilePos.x) > blockLengthH.x)
             {
             
@@ -1490,9 +1184,6 @@ public class WFC : MonoBehaviour
                 CurTilePos = MasterTiles[(int)(CurTile.x-MazeStart.x),  (int)(CurTile.y-MazeStart.y)].plane.transform.position;
                 CurTilePos.y = 0;
                 moved = true;
-                // print(p - CurTilePos);
-                // print(CurTilePos);
-                // print(CurTile);
                 alltrue = false;
 
             }
@@ -1511,308 +1202,20 @@ public class WFC : MonoBehaviour
                 CurTilePos = MasterTiles[(int)(CurTile.x-MazeStart.x), (int)(CurTile.y-MazeStart.y)].plane.transform.position;
                 CurTilePos.y = 0;
                 moved = true;
-                // print(p - CurTilePos);
-                // print(CurTilePos);
-                // print(CurTile);
                 alltrue = false;
             }
-
-        
-        
-            
-            
-           // print(p - CurTilePos);
-            Debug.DrawLine(p , CurTilePos+ Vector3.up*2, Color.red);
-            
-            
-        }
-
-       
-    
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            direction = ScrollDir.up;
-            moved = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            moved = true;
-            direction = ScrollDir.down;
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            moved = true;
-            direction = ScrollDir.right;
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            moved = true;
-            direction = ScrollDir.left;
-        
+ 
         }
 
         double nutim = 0;
-        // move(direction);
-        //replace(direction);
-
-
-//do compute shader
 
         if (moved)
         {
-            //print("Moved : ");
-            // print(direction);
-            if (direction == ScrollDir.up || direction ==  ScrollDir.down)
-            {
-                PassToJobMaze = new NativeArray<TileInfo>(MasterTiles.GetLength(0), Allocator.Temp);
-
-
-            }
-            else
-            {
-                PassToJobMaze = new NativeArray<TileInfo>(MasterTiles.GetLength(1), Allocator.Temp);
-            }
             move(direction);
             replace(direction);
-//                print("Were Here");
             alltrue = false;
             hasmoved = true;
-            // ArrMover mov = new ArrMover() { fieldsize = totaly, odfield = MasterTiles, d = direction };
-            // JobHandle jb = mov.Schedule(fieldsize, 128);
-            // jb.Complete();
-//                print(moveTracker);
             moveTracker++;
-
         }
-
-        if (alltrue && Input.GetKeyDown(KeyCode.Space))
-        {
-            //CreateMessage(Random.Range(0,totalx),Random.Range(0,totaly));
-            //check for blank
-        }
-
-
     }
-
-    [BurstCompile]
-    struct calcTile : IJobParallelFor
-    {
-        
-        [ReadOnly]
-        public int max;
-
-        [ReadOnly] public ScrollDir dir;
-
-        public NativeArray<TileInfo> Tiles;
-        
-        ulong xorshift64star(ulong x)
-        {
-
-            x ^= x >> 12;
-            x ^= x << 25;
-            x ^= x >> 27;
-        
-            return x *  0x2545F4914F6CDD1DUL;
-
-
-
-
-
-        }
-        
-         private uint selectbitNoBranch(uint v, int range, int i)
-    {
-
-        // Input value to find position with rank r.
-
-        //  v = 5024 ;
-        //r = (uint)rank;
-
-//       print(System.Convert.ToString(v,2));
-
-
-        uint a = (v & i1) + ((v >> 1) & i1); //put count of each  2 bits into those  2 bits 
-        uint b = (a & i2) + ((a >> 2) & i2); //put count of each  4 bits into those  4 bits 
-        uint c = (b & i4) + ((b >> 4) & i4); //put count of each  8 bits into those  8 bits 
-        uint t = (c & i8) + ((c >> 8) & i8); //put count of each 16 bits into those 16 bits 
-
-        t = (t >> 16) & 0xffff;
-
-        
-        //account for neg numbers
-
-
-        Vector2 xy = Tiles[i].xy;
-       // print("XY: "+ xy );
-        //uint r = (uint)Random.Range(1, range + 1);
-       
-       // uint   r = (uint) nuLCG((ulong)range , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
-       //uint   r = (uint) nuLCG((ulong)range , (seeda * (uint)xy.x), (seedb * (uint)xy.y)) + 1;
-      uint   r = (uint) ((xorshift64star((ulong)((xy.x)*(xy.y))) % (uint)range + 1));
-     // uint   r = (uint) othernuLCG((ulong)range , (seeda ), (seedb )) + 1;
-           
-      //  
-      // print(range);
-      //   print(System.Convert.ToString( v,2));
-      
-        
-        
-        //test with entropy
-    //    print("R: " + r);
-        uint s = 32;
-
-        int ia = 1;
-
-        s = 32;
-
-
-        //
-        // if (r > t) {s -= 16; r -= t;}
-        s -= ((t - r) & 256) >> 4;
-        r -= (t & ((t - r) >> 8));
-
-        //if (r > t) {s -= 8; r -= t;}
-
-
-        t = (c >> (int)(s - 8)) & 0xf;
-
-        // if (r > t) {s -= 8; r -= t;}
-        s -= ((t - r) & 256) >> 5;
-        r -= (t & ((t - r) >> 8));
-        t = (b >> (int)(s - 4)) & 0x7;
-
-        //if (r > t) {s -= 4; r -= t;}
-        s -= ((t - r) & 256) >> 6;
-        r -= (t & ((t - r) >> 8));
-        t = (a >> (int)(s - 2)) & 0x3;
-
-        // if (r > t) {s -= 2; r -= t;}
-        s -= ((t - r) & 256) >> 7;
-        r -= (t & ((t - r) >> 8));
-        t = (v >> (int)(s - 1)) & 0x1;
-
-        //if (r > t) s--;
-        s -= ((t - r) & 256) >> 8;
-
-        return s;
-
-
-
-
-
-
-
-        // return s;
-    }
-        
-        
-         int targetIndex(int i)
-         {
-
-
-
-           //  int g = Random.Range(0, lesschanceofblank + 1);
-             uint num = (uint)Tiles[i].possibility;
-             int ent = Tiles[i].Entropy;
-             // if (g % (lesschanceofblank + 1) != 0)
-             // {
-             //     num = num ^ (1);
-             //     ent--;
-             //
-             // }
-             //
-
-             return (int)selectbitNoBranch(num, ent,i) - 1;
-             // return tt;
-
-
-         }
-         
-         
-         
-         
-         void UpdateNeighbour(int off, Direction Diru, int i, int TT)
-         {
-
-
-//              if (coord.Item1 + offx < totalx  && coord.Item1 + offx >= 0 &&
-//                  coord.Item2 + offy >= 0 && MasterTiles[coord.Item1 + offx, coord.Item2 + offy].Entropy != 0 &&
-//                  MasterTiles[coord.Item1 + offx, coord.Item2 + offy].Known == false)
-//              {
-// //           
-//                  MasterTiles[coord.Item1 + offx, coord.Item2 + offy].possibility =
-//                      (MasterTiles[coord.Item1 + offx, coord.Item2 + offy].possibility & rules[TT, (int)Diru]);
-//                  MasterTiles[coord.Item1 + offx, coord.Item2 + offy].Entropy =
-//                      nuentropy(coord.Item1 + offx, coord.Item2 + offy);
-//
-//
-//              }
-        
-
-         }
-
-         
-         
-         
-         
-         
-      
-       public void Execute(int i) 
-        {
-            
-            //calc loop size in update dynamicly
-            
-         
-//
-//
-//
-//
-            int TT = targetIndex(i);
-    // //                print("TTTERRR: " + TT );
-    //
-    //
-            TileInfo tmp = Tiles[i];
-            tmp.Known = true;
-            tmp.Entropy = 1;
-            tmp.possibility = 
-                (tmp.possibility & 1 << TT);
-
-
-            if (dir == ScrollDir.up || dir == ScrollDir.down)
-            {
-                
-                
-            }
-            else
-            {
-     
-                
-                
-                
-            }
-//
-//             // MasterTiles[tind.Item1, tind.Item2].IntetoImage(TT);
-//             MasterTiles[tind.Item1, tind.Item2].AddNewBlock(TT);
-//             // UpdateNeighbour(1, 0, Direction.Right, tind, TT);
-//             // UpdateNeighbour(-1, 0, Direction.Left, tind, TT);
-//             // UpdateNeighbour(0, 1, Direction.Up, tind, TT);
-//             // UpdateNeighbour(0, -1, Direction.Down, tind, TT);
-//             UpdateNeighbour(1, 0, Direction.Right, tind, TT);
-//             UpdateNeighbour(-1, 0, Direction.Left, tind, TT);
-//             UpdateNeighbour(0, 1, Direction.Up, tind, TT);
-//             UpdateNeighbour(0, -1, Direction.Down, tind, TT);
-            
-            
-            ////do done an instantiat outside.
-            
-            //mult by  4
-          
-            //and left and right
-            
-          
-        }
-
-    }
-
-
 }

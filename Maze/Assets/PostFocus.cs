@@ -15,6 +15,7 @@ public class PostFocus : MonoBehaviour
     private Message_SPW MsgInstance;
     [SerializeField] private RenderTexture final;
     RenderTexture tmp ;
+    private float timeMult = 0f;
 
 
  
@@ -42,14 +43,18 @@ public class PostFocus : MonoBehaviour
     
         
                      
-            Foci.SetFloat("_lookDir", dotToMessage);
+            Foci.SetFloat("_lookDir", dotToMessage*timeMult);
         
         
         }
-      
-        
-        
-        
+
+
+        if (timeMult < 1f&&MsgInstance.dirSet)
+        {
+            timeMult += Time.deltaTime*0.5f;
+            print(timeMult);
+        }
+
         //use sin to make shake
         //do dot here
     }

@@ -9,10 +9,7 @@ public class PRNG : MonoBehaviour
     static private long seed1 = 642362;
     static private long seed2 = 2266742;
     static private long seed3 = 1843711;
-  
     
-
-
     struct TwistConst
     {
         public const int n = 624;
@@ -30,8 +27,7 @@ public class PRNG : MonoBehaviour
         public const ulong LMASK = (0xffffffffUL >> (w - r));
         public const  ulong UMASK =(0xffffffffUL << r);
     }
-    
-    
+
     struct StateTracker
     {
         public uint[] states;
@@ -102,20 +98,7 @@ public class PRNG : MonoBehaviour
         return z;
     
     }
-
-
-    //
-    // private long LCG( long mod, long a, long c)
-    // {
-    //
-    //         seed = (seed * a + c) % mod;
-    //         return seed;
-    //   
-    //
-    //    
-    //
-    //
-    // }
+    
     private ulong nuLCG( ulong mod, ulong a, ulong c)
     {
         unchecked
@@ -123,14 +106,8 @@ public class PRNG : MonoBehaviour
             ulong tmp = ((ulong)seed * a + c) % mod;
             return tmp;
         }
-        
-       
-      
-
-       
-
-
     }
+    
     long Middle_Square(int n)
     {
         seed *= seed;
@@ -154,9 +131,6 @@ public class PRNG : MonoBehaviour
         state ^= state << 5;
 
         return state;
-
-
-
     }
     
     uint xorshift128(ref uint[] states)
@@ -173,9 +147,6 @@ public class PRNG : MonoBehaviour
         t ^= t >> 8; 
 
         return states[0] = t ^ s ^ (s >> 19);
-
-
-
     }
 
 
@@ -192,7 +163,6 @@ public class PRNG : MonoBehaviour
          s[2] ^= t;
          s[3] = (s[3] << 45) | (s[3] >> (64 - 45));
          return res;
-
     }
 
     
@@ -204,40 +174,14 @@ public class PRNG : MonoBehaviour
         x ^= x >> 27;
         
         return x *  0x2545F4914F6CDD1DUL;
-
-
-
-
-
     }
 
 
     // Start is called before the first frame update
     void Start()
     {
-
-//        print(DateTime.Now.Millisecond);
         StateTracker nus = new StateTracker();
         initilize_State(ref nus);
-
-        // uint[] states = new uint[4];
-        //
-        // states[0]  = (uint)seed;
-        // states[1] = (uint)seed1;
-        // states[2] = (uint)seed2;
-        // states[3] = (uint)seed3;
-
-        
-        // ulong[] states = new ulong[4];
-        //
-        // states[0]  = (ulong)seed;
-        // states[1] = (ulong)seed-599;
-        // states[2] = (ulong)seed*2;
-        // states[3] = (ulong)seed/44;
-        
-        
-      //  uint nuseed = (uint)seed;
-      //  ulong nuseed = (ulong)seed;
 
       seed = MTwist(ref nus);
       ulong seeda = MTwist(ref nus);
@@ -250,19 +194,7 @@ public class PRNG : MonoBehaviour
 
       for (ulong x = 0; x < 10; x++)
         {
-            
-           // print((LCG(500,63,23)));
-          //  print(Middle_Square(8));
-          // print(MTwist(ref nus));
-          //nuseed = xorshift32(nuseed);
-         // print(nuseed);
-         //print(xorshift128(ref states));
-         // print(xoshiro64p(ref states));
-         //nuseed = xorshift64star(nuseed);
-        // print(nuseed);
-
-
-        for (ulong y = 0; y < 10; y++)
+            for (ulong y = 0; y < 10; y++)
         {
            
          // print("x: "+x+" y: "+y+": "+ (nuLCG(31,seeda*x,seedc*y)+1));
@@ -275,20 +207,12 @@ public class PRNG : MonoBehaviour
           double d1 = Time.realtimeSinceStartupAsDouble;
           print((xorshift64star(x+seeda*y) )%31);
           totalerxoro += Time.realtimeSinceStartupAsDouble - d1;
-
         }
-
-;
-
-       
-
-
         }
       
       print("LCG: "+ totalerlcg/100);
       print("xoro: "+ totalerxoro/100);
-
-
+      
     }
 
     // Update is called once per frame

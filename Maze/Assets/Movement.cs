@@ -8,6 +8,8 @@ public class Movement : MonoBehaviour
    [SerializeField] private Camera cam;
    [SerializeField] private float RateofChange;
    [SerializeField] private float speed;
+   [SerializeField] private float Riteheight;
+   [SerializeField] private float RiteDamper;
 
    public static Transform t;
 
@@ -33,22 +35,16 @@ public class Movement : MonoBehaviour
     void Update()
     {
 
-        if (WFC.alltrue)
-        {
-            r.useGravity = true;
-        }
+        
        vel = r.velocity;
         
         inputDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         inputDir = inputDir.normalized * speed;
         inputDir = t.rotation * inputDir;
+        
         rotx += Input.GetAxis("Mouse X");
-        float nu = roty - Input.GetAxis("Mouse Y");
-        if ( nu < 90 && nu > -90)
-        {
-            roty = nu;
-        }
-
+        roty -= Input.GetAxis("Mouse Y");
+        roty = Mathf.Clamp(roty, -90, 90);
 
         t.rotation = Quaternion.Euler(0,rotx,0);
         cam.transform.rotation = Quaternion.Euler(roty,rotx,0);
@@ -62,6 +58,22 @@ public class Movement : MonoBehaviour
         vel.x = Mathf.MoveTowards(vel.x, inputDir.x, RateofChange);
         vel.z = Mathf.MoveTowards(vel.z, inputDir.z, RateofChange);
 
+        
+        
         r.velocity = vel;
+        RaycastHit ray;
+        if (Physics.Raycast(new Ray(transform.position, -transform.up), out ray, 50f))
+        {
+            
+                float x = (ray.distance -Riteheight) - (Vector3.Dot(vel,-transform.up ) * RiteDamper)  ;
+                r.AddForce(-transform.up * x);
+            
+            
+        
+        }
+
+
+
+
     }
 }
